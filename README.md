@@ -1,6 +1,10 @@
-# JogaHub 1.2.9
+# JogaHub 1.3.0
 
-Prateleira dos meus jogos, hospedada como site estático (GitHub Pages).
+Prateleira de jogos como conteúdo principal e uma aba separada de filmes antigos em domínio público, hospedada como site estático (GitHub Pages).
+
+## Filmes antigos
+
+O catálogo fica em `js/data-filmes.js` e a explicação completa está em `COMO-ADICIONAR-FILMES.md`. Os vídeos não ficam armazenados neste projeto: o player incorpora a reprodução fornecida pelo Internet Archive.
 
 ## Como adicionar um item novo (jogo, livro ou app)
 

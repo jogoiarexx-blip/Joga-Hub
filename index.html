@@ -4,16 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#08080f">
-<title>JogaHub 1.2.9</title>
-<meta name="description" content="JogaHub — sua central gamer com jogos por links em um só lugar.">
-<link rel="stylesheet" href="css/style.css?v=30">
+<title>JogaHub 1.3.1</title>
+<meta name="description" content="JogaHub — jogos em destaque e uma seleção de filmes antigos em domínio público.">
+<link rel="stylesheet" href="css/style.css?v=32">
 <link rel="icon" href="assets/favicon.png">
-<link rel="manifest" href="manifest.webmanifest?v=30">
+<link rel="manifest" href="manifest.webmanifest?v=32">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
-<script defer src="js/data-jogos.js?v=30"></script>
-<script defer src="js/data-links.js?v=30"></script>
-<script defer src="js/offline-assets.js?v=30"></script>
-<script defer src="js/app.js?v=30"></script>
+<script defer src="js/data-jogos.js?v=32"></script>
+<script defer src="js/data-links.js?v=32"></script>
+<script defer src="js/data-filmes.js?v=32"></script>
+<script defer src="js/offline-assets.js?v=32"></script>
+<script defer src="js/app.js?v=32"></script>
 </head>
 <body>
 
@@ -37,6 +38,11 @@
 
 
 <div class="type-tabs" id="typeTabs" aria-label="Tipos de conteúdo"></div>
+
+<aside id="movieNotice" class="movie-notice" hidden>
+  <span aria-hidden="true">🎞️</span>
+  <p><strong>Cinema clássico:</strong> esta seleção usa obras marcadas como domínio público no Internet Archive. A reprodução precisa de internet.</p>
+</aside>
 
 <div class="controls">
   <label class="search-wrap" for="search">
