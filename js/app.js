@@ -1,9 +1,10 @@
 /* JOGAHUB — home, busca, favoritos e progresso de leitura */
 
 const TYPES = {
-  jogo:  { label: 'jogos',  action: 'jogar', icon: '🎮' }
+  jogo:  { label: 'Jogos',  action: 'jogar', icon: '🎮', singular: 'jogo' },
+  filme: { label: 'Filmes Antigos', action: 'assistir', icon: '🎞️', singular: 'filme' }
 };
-const TYPE_ORDER = ['jogo'];
+const TYPE_ORDER = ['jogo', 'filme'];
 const GAME_CATEGORIES = {
   arcade: {label:'Arcade', icon:'🕹️', order:1},
   acao: {label:'Ação', icon:'💥', order:2},
@@ -17,11 +18,15 @@ const GAME_CATEGORIES = {
   'simulação': {label:'Simulação', icon:'🔧', order:10},
   outros: {label:'Outros', icon:'🎮', order:99}
 };
-const ITEMS = [...JOGOS, ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : [])].filter(item => item.id !== 'exemplo');
+const ITEMS = [
+  ...JOGOS,
+  ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : []),
+  ...(typeof FILMES !== 'undefined' ? FILMES : [])
+].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.9';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.9-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.3.0';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.3.0-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -33,6 +38,11 @@ function isExternalItem(item){
   return !!item?.url && /^https?:\/\//i.test(item.url);
 }
 function itemHref(item){
+  if(item.type === 'filme' && item.archiveId){
+    const url = `https://archive.org/embed/${encodeURIComponent(item.archiveId)}`;
+    const source = item.sourceUrl || `https://archive.org/details/${encodeURIComponent(item.archiveId)}`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme`;
+  }
   if(isExternalItem(item)){
     if(item.embed === true){
       return `link-player.html?url=${encodeURIComponent(item.url)}&title=${encodeURIComponent(item.title || '')}`;
@@ -42,6 +52,7 @@ function itemHref(item){
   return item.path || '#';
 }
 function itemLinkAttrs(item){
+  if(item.type === 'filme' && item.archiveId) return '';
   return isExternalItem(item) && item.embed !== true ? ' target="_blank" rel="noopener noreferrer"' : '';
 }
 function installGameHref(item){
@@ -82,18 +93,19 @@ function cardHTML(item){
   const thumb = item.thumb
     ? `<div class="card-thumb"><img src="${escapeHTML(item.thumb)}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy"></div>`
     : `<div class="card-thumb card-thumb-placeholder"><span>${meta.icon}</span></div>`;
-  const onlineBadge = isExternalItem(item) ? `<span class="online-badge">🌐 online</span>` : '';
+  const onlineBadge = (isExternalItem(item) || item.archiveId) ? `<span class="online-badge">🌐 online</span>` : '';
+  const yearBadge = item.year ? `<span class="year-badge">${escapeHTML(item.year)}</span>` : '';
   const progressHTML = '';
   return `
     <article class="card" style="--accent:${item.accent}" data-id="${escapeHTML(item.id)}">
       <button class="favorite-btn${isFav?' active':''}" type="button" data-favorite="${escapeHTML(item.id)}" aria-label="${isFav?'Remover dos':'Adicionar aos'} favoritos" aria-pressed="${isFav}">♥</button>
       <a class="card-main" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)}>
         ${thumb}
-        <div class="card-tags"><span class="tag"><span class="tag-icon">${meta.icon}</span>${escapeHTML(item.genre)}</span>${onlineBadge}</div>
+        <div class="card-tags"><span class="tag"><span class="tag-icon">${meta.icon}</span>${escapeHTML(item.genre)}</span>${yearBadge}${onlineBadge}</div>
         <h2>${escapeHTML(item.title)}</h2>
         <p>${escapeHTML(item.desc)}</p>
         
-        <span class="play">▶ ${isExternalItem(item) ? meta.action + ' online' : meta.action}</span>
+        <span class="play">▶ ${(isExternalItem(item) || item.archiveId) ? meta.action + ' online' : meta.action}</span>
       </a>
       <div class="card-extra-actions">
         ${isExternalItem(item) && item.installable === true ? `<a class="install-game-btn" href="${escapeHTML(installGameHref(item))}" aria-label="Instalar ${escapeHTML(item.title)}">📲 instalar jogo</a>` : ''}
@@ -124,11 +136,17 @@ function renderItems(list){
     grid.innerHTML = `<div class="main-grid">${list.map(cardHTML).join('')}</div>`;
   }
   empty.style.display = list.length ? 'none' : 'block';
-  meta.textContent = list.length ? `${list.length} ${list.length === 1 ? 'jogo encontrado' : 'jogos encontrados'}` : '';
+  const typeMeta = TYPES[activeType] || TYPES.jogo;
+  meta.textContent = list.length ? `${list.length} ${list.length === 1 ? typeMeta.singular + ' encontrado' : typeMeta.label.toLowerCase() + ' encontrados'}` : '';
 }
 function renderTypeTabs(){
   const tabsEl = document.getElementById('typeTabs');
-  if(tabsEl) tabsEl.innerHTML = '';
+  if(!tabsEl) return;
+  tabsEl.innerHTML = TYPE_ORDER.filter(type => ITEMS.some(item => item.type === type)).map(type => {
+    const meta = TYPES[type];
+    const count = ITEMS.filter(item => item.type === type).length;
+    return `<button class="type-btn${type === activeType ? ' active' : ''}" data-type="${escapeHTML(type)}" type="button" aria-pressed="${type === activeType}">${meta.icon} ${escapeHTML(meta.label)} <span>${count}</span></button>`;
+  }).join('');
 }
 function renderGenreFilters(){
   const pool = activeType === 'todos' ? ITEMS : ITEMS.filter(i => i.type === activeType);
@@ -168,6 +186,16 @@ function applyFilters(){
       && (!term || searchable.includes(term));
   });
   renderItems(sortByTypeOrder(filtered));
+  const movieNotice = document.getElementById('movieNotice');
+  if(movieNotice) movieNotice.hidden = activeType !== 'filme';
+  const search = document.getElementById('search');
+  if(search) search.placeholder = activeType === 'filme'
+    ? 'buscar filme por título, ano ou gênero...'
+    : 'buscar jogo por título, gênero ou descrição...';
+  const empty = document.getElementById('emptyState');
+  if(empty) empty.textContent = activeType === 'filme'
+    ? 'nenhum filme encontrado com esse filtro.'
+    : 'nenhum jogo encontrado com esse filtro.';
 }
 function toggleFavorite(id, button){
   const favorites = loadFavorites();
@@ -222,8 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderFeatured();
   const continueSection = document.getElementById('continueSection');
   if(continueSection) continueSection.hidden = true;
-  const typeTabs = document.getElementById('typeTabs');
-  if(typeTabs) typeTabs.hidden = true;
+  renderTypeTabs();
   renderGenreFilters();
   applyFilters();
   const installBtn = document.getElementById('installApp');
@@ -255,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('typeTabs').addEventListener('click', e => {
     const btn=e.target.closest('.type-btn'); if(!btn) return;
     activeType=btn.dataset.type;
-    document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+    document.querySelectorAll('.type-btn').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
     renderGenreFilters(); applyFilters();
   });
   document.getElementById('filters').addEventListener('click', e => {
@@ -268,5 +295,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn=e.target.closest('[data-favorite]'); if(!btn) return;
     e.preventDefault(); e.stopPropagation(); toggleFavorite(btn.dataset.favorite, btn);
   });
-  window.addEventListener('pageshow', () => { renderContinueReading(); applyFilters(); });
+  window.addEventListener('pageshow', applyFilters);
 });
