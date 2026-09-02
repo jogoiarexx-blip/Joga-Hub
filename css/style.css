@@ -135,6 +135,10 @@ header{
   border-color:transparent;
   box-shadow:0 10px 26px rgba(34,211,255,.16);
 }
+.type-btn span{display:inline-grid;place-items:center;min-width:22px;height:22px;margin-left:6px;padding:0 6px;border-radius:999px;background:rgba(255,255,255,.09);font:700 10px var(--font-mono)}
+.type-btn.active span{background:rgba(4,17,29,.18)}
+.movie-notice{max-width:1080px;margin:16px auto 0;padding:14px 18px;display:flex;align-items:flex-start;gap:12px;border:1px solid rgba(226,193,74,.25);border-radius:12px;background:linear-gradient(90deg,rgba(226,193,74,.08),rgba(17,26,45,.65));color:var(--text-dim)}
+.movie-notice[hidden]{display:none}.movie-notice>span{font-size:25px}.movie-notice p{margin:0;font-size:13px;line-height:1.55}.movie-notice strong{color:var(--gold)}
 
 /* ---------- CONTROLES ---------- */
 .controls{
@@ -441,6 +445,11 @@ footer span{color:var(--brand-blue)}
 
 /* ---------- CONTEÚDOS POR LINK ---------- */
 .card-tags{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.online-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:4px;color:#79e7ff;border:1px solid #1d879d;background:rgba(24,174,204,.08)}
+.year-badge{display:inline-flex;align-items:center;font:700 10px var(--font-mono);padding:3px 7px;border-radius:4px;color:#ffe889;border:1px solid rgba(226,193,74,.45);background:rgba(226,193,74,.08)}
+
+/* Filmes preservam o formato clássico de pôster, sem alterar os cards de jogos. */
+.card[data-id^="filme-"] .card-thumb{aspect-ratio:2/3}.card[data-id^="filme-"] .card-thumb img{object-fit:cover}
+@media(max-width:700px){.movie-notice{margin-left:14px;margin-right:14px}.card[data-id^="filme-"] .card-thumb{aspect-ratio:2/3}}
 
 /* v1.2.5 — instalação de jogos externos/PWA */
 .card-extra-actions{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.install-game-btn{display:flex;align-items:center;justify-content:center;min-height:38px;text-decoration:none;border:1px solid rgba(38,216,255,.42);background:linear-gradient(90deg,rgba(38,216,255,.12),rgba(122,92,255,.12));color:#eff8ff;border-radius:8px;padding:8px 10px;font:700 10px var(--font-mono);transition:.15s ease}.install-game-btn:hover{border-color:var(--brand-blue);box-shadow:0 0 18px rgba(38,216,255,.12);transform:translateY(-1px)}
