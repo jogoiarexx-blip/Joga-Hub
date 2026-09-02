@@ -441,3 +441,6 @@ footer span{color:var(--brand-blue)}
 
 /* ---------- CONTEÚDOS POR LINK ---------- */
 .card-tags{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.online-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:4px;color:#79e7ff;border:1px solid #1d879d;background:rgba(24,174,204,.08)}
+
+/* v1.2.5 — instalação de jogos externos/PWA */
+.card-extra-actions{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.install-game-btn{display:flex;align-items:center;justify-content:center;min-height:38px;text-decoration:none;border:1px solid rgba(38,216,255,.42);background:linear-gradient(90deg,rgba(38,216,255,.12),rgba(122,92,255,.12));color:#eff8ff;border-radius:8px;padding:8px 10px;font:700 10px var(--font-mono);transition:.15s ease}.install-game-btn:hover{border-color:var(--brand-blue);box-shadow:0 0 18px rgba(38,216,255,.12);transform:translateY(-1px)}

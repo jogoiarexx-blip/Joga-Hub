@@ -16,6 +16,7 @@
    - thumb: pode ser caminho local OU URL HTTPS de uma capa
    - embed: true tenta abrir dentro do player do JogaHub; false abre
      diretamente em uma nova aba. Alguns sites bloqueiam iframe.
+   - installable: true mostra o botão de instalação do jogo.
 
    EXEMPLO:
    {
@@ -44,6 +45,7 @@ const LINK_ITEMS = [
     hero: 'assets/hero-joao-crist.webp',
     desc: 'As Aventuras de João e Crist — jogo hospedado externamente no GitHub Pages.',
     url: 'https://jogoiarexx-blip.github.io/As-aventuras-de-Jo-o-e-Crist/',
+    installable: true,
     embed: false
   },
   {
@@ -57,6 +59,7 @@ const LINK_ITEMS = [
     hero: 'assets/hero-zeco-lendas-da-ilha.webp',
     desc: 'Zeco — Lendas da Ilha, hospedado externamente no GitHub Pages.',
     url: 'https://jogoiarexx-blip.github.io/Zeco-Lendas-da-Ilha/',
+    installable: true,
     embed: false
   },
   {
@@ -70,6 +73,7 @@ const LINK_ITEMS = [
     hero: 'assets/hero-crash-fan-game.webp',
     desc: 'Crash Bandicoot Fan Game — jogo hospedado externamente no GitHub Pages.',
     url: 'https://jogoiarexx-blip.github.io/Crash-Fan-game/',
+    installable: true,
     embed: false
   }
 ];

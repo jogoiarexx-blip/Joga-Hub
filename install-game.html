@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050813">
+<title>Instalar jogo — JogaHub</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(circle at 15% 0,rgba(38,216,255,.16),transparent 28%),radial-gradient(circle at 100% 0,rgba(122,92,255,.16),transparent 32%),#050813;color:#f5f9ff}body{min-height:100vh;display:grid;place-items:center;padding:22px}.panel{width:min(620px,100%);background:linear-gradient(160deg,rgba(17,26,45,.98),rgba(8,15,29,.98));border:1px solid rgba(94,157,255,.22);border-radius:22px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.38)}.brand{font-weight:900;font-size:14px;color:#26d8ff;letter-spacing:.08em;text-transform:uppercase}.icon{width:68px;height:68px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#26d8ff,#7a5cff);font-size:32px;margin:18px 0}.panel h1{font-size:clamp(24px,6vw,38px);margin:0 0 10px}.lead{color:#b8c5df;line-height:1.6;margin:0 0 20px}.steps{display:grid;gap:10px;margin:18px 0 22px}.step{padding:13px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);border-radius:12px;color:#dce7ff;line-height:1.45}.step strong{color:#fff}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid rgba(255,255,255,.12);color:#fff;background:#111b30}.primary{background:linear-gradient(90deg,#26d8ff,#ffb400);color:#04111d;border:0}.note{font-size:12px;color:#91a0bd;margin-top:16px;line-height:1.5}@media(max-width:520px){.actions{grid-template-columns:1fr}.panel{padding:20px}}
+</style>
+</head>
+<body>
+<main class="panel">
+  <div class="brand">JogaHub</div>
+  <div class="icon">📲</div>
+  <h1 id="title">Instalar jogo</h1>
+  <p class="lead">O JogaHub abre a página oficial do jogo. A instalação é concluída pelo próprio navegador, porque um site não pode instalar outro PWA diretamente.</p>
+  <div class="steps" id="steps"></div>
+  <div class="actions">
+    <a id="openGame" class="btn primary" target="_blank" rel="noopener noreferrer">Abrir jogo para instalar</a>
+    <a class="btn" href="./">← Voltar ao JogaHub</a>
+  </div>
+  <p class="note">Se a opção de instalar não aparecer, esse jogo pode não ter PWA configurado ou o navegador pode exigir que você abra o jogo e use o menu de instalação.</p>
+</main>
+<script>
+const q=new URLSearchParams(location.search);const raw=q.get('url')||'';const title=q.get('title')||'Jogo';
+let url=null;try{url=new URL(raw);if(!/^https?:$/.test(url.protocol))url=null}catch{}
+document.getElementById('title').textContent=`Instalar ${title}`;
+const btn=document.getElementById('openGame');
+if(url)btn.href=url.href;else{btn.removeAttribute('href');btn.textContent='Link do jogo inválido'}
+const ua=navigator.userAgent;const ios=/iPhone|iPad|iPod/i.test(ua);const android=/Android/i.test(ua);const steps=document.getElementById('steps');
+if(ios){steps.innerHTML='<div class="step"><strong>1.</strong> Toque em “Abrir jogo para instalar”.</div><div class="step"><strong>2.</strong> No Safari, toque em <strong>Compartilhar</strong>.</div><div class="step"><strong>3.</strong> Escolha <strong>Adicionar à Tela de Início</strong>.</div>'}
+else if(android){steps.innerHTML='<div class="step"><strong>1.</strong> Toque em “Abrir jogo para instalar”.</div><div class="step"><strong>2.</strong> No Chrome/Edge, use a opção <strong>Instalar app</strong> ou <strong>Adicionar à tela inicial</strong>.</div><div class="step"><strong>3.</strong> Confirme a instalação.</div>'}
+else{steps.innerHTML='<div class="step"><strong>1.</strong> Abra o jogo pelo botão abaixo.</div><div class="step"><strong>2.</strong> Procure o ícone de instalação na barra de endereço ou a opção <strong>Instalar app</strong> no menu do navegador.</div>'}
+</script>
+</body></html>

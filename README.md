@@ -1,4 +1,4 @@
-# JogaHub 1.2.4
+# JogaHub 1.2.6
 
 Prateleira dos meus jogos, livros e apps, hospedada como site estático (GitHub Pages).
 

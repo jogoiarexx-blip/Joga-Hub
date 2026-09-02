@@ -21,8 +21,8 @@ const ITEMS = [...JOGOS, ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : []
 const FAVORITES_KEY = 'jogahub.favorites';
 const READER_PREFIX = 'jogahub.reader.';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.4';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.4-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.6';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.6-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -44,6 +44,9 @@ function itemHref(item){
 }
 function itemLinkAttrs(item){
   return isExternalItem(item) && item.embed !== true ? ' target="_blank" rel="noopener noreferrer"' : '';
+}
+function installGameHref(item){
+  return `install-game.html?url=${encodeURIComponent(item.url || '')}&title=${encodeURIComponent(item.title || 'Jogo')}`;
 }
 
 function loadFavorites(){
@@ -108,7 +111,7 @@ function cardHTML(item){
         <span class="play">▶ ${progress ? 'continuar' : (isExternalItem(item) ? meta.action + ' online' : meta.action)}</span>
       </a>
       <div class="card-extra-actions">
-        ${item.type === 'app' && !isExternalItem(item) ? `<a class="install-subapp-btn" href="${escapeHTML(item.path)}?install=1">📲 instalar</a>` : ''}
+        ${isExternalItem(item) && item.installable === true ? `<a class="install-game-btn" href="${escapeHTML(installGameHref(item))}" aria-label="Instalar ${escapeHTML(item.title)}">📲 instalar jogo</a>` : ''}
         ${OFFLINE_ASSETS[item.id] ? `<button class="download-btn${localStorage.getItem(OFFLINE_KEY+item.id)==='1'?' downloaded':''}" type="button" data-download="${escapeHTML(item.id)}">${localStorage.getItem(OFFLINE_KEY+item.id)==='1'?'✓ offline':'⬇ baixar'}</button>` : ''}
       </div>
     </article>`;
