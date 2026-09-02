@@ -1,4 +1,4 @@
-# JogaHub 1.2.6 — jogos somente por link
+# JogaHub 1.2.9 — jogos somente por link
 
 Os jogos não ficam mais dentro deste projeto. Publique cada jogo separadamente e adicione somente a URL HTTPS aqui.
 

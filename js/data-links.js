@@ -1,13 +1,13 @@
 /* ===================================================================
    JOGAHUB — conteúdos por LINK
 
-   Use este arquivo quando quiser adicionar jogos, apps ou livros que
+   Use este arquivo quando quiser adicionar jogos que
    já estão hospedados em outro lugar. Assim você não precisa enviar
    todos os arquivos para o repositório principal do JogaHub.
 
    CAMPOS IMPORTANTES:
    - id: identificador único, sem espaços
-   - type: 'jogo', 'app' ou 'livro'
+   - type: 'jogo'
    - title: nome exibido no card
    - genre: gênero exibido no card
    - category: categoria de jogos (arcade, acao, corrida, estrategia,
@@ -74,6 +74,19 @@ const LINK_ITEMS = [
     desc: 'Crash Bandicoot Fan Game — jogo hospedado externamente no GitHub Pages.',
     url: 'https://jogoiarexx-blip.github.io/Crash-Fan-game/',
     installable: true,
+    embed: false
+  },
+  {
+    id: 'ruptura',
+    type: 'jogo',
+    title: 'Ruptura',
+    genre: 'RPG / Ação',
+    category: 'rpg',
+    accent: 'var(--brand-purple)',
+    thumb: 'assets/thumb-ruptura.webp',
+    hero: 'assets/hero-ruptura.webp',
+    desc: 'Ruptura — jogo hospedado externamente no GitHub Pages.',
+    url: 'https://jogoiarexx-blip.github.io/Ruptura/',
     embed: false
   }
 ];

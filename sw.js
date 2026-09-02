@@ -1,10 +1,10 @@
-const SHELL = 'jogahub-1.2.6';
-const CONTENT = 'jogahub-1.2.6-content';
+const SHELL = 'jogahub-1.2.9';
+const CONTENT = 'jogahub-1.2.9-content';
 const SHELL_FILES = [
   './', './index.html', './css/style.css?v=30', './js/data-jogos.js?v=30',
   './js/data-links.js?v=30', './js/offline-assets.js?v=30', './js/app.js?v=30',
   './link-player.html', './install-game.html', './assets/favicon.png', './assets/logo.png', './assets/banner-games.webp',
-  './assets/thumb-jogos-destaque.webp', './assets/thumb-crash-fan-game.webp', './assets/hero-crash-fan-game.webp', './assets/thumb-joao-crist.webp', './assets/hero-joao-crist.webp', './assets/thumb-zeco-lendas-da-ilha.webp', './assets/hero-zeco-lendas-da-ilha.webp', './assets/icon-192.png', './assets/icon-512.png', './manifest.webmanifest?v=30'
+  './assets/thumb-jogos-destaque.webp', './assets/thumb-crash-fan-game.webp', './assets/hero-crash-fan-game.webp', './assets/thumb-joao-crist.webp', './assets/hero-joao-crist.webp', './assets/thumb-zeco-lendas-da-ilha.webp', './assets/hero-zeco-lendas-da-ilha.webp', './assets/thumb-ruptura.webp', './assets/hero-ruptura.webp', './assets/icon-192.png', './assets/icon-512.png', './manifest.webmanifest?v=30'
 ];
 self.addEventListener('install', event => {
   event.waitUntil((async()=>{

@@ -19,10 +19,9 @@ const GAME_CATEGORIES = {
 };
 const ITEMS = [...JOGOS, ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : [])].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
-const READER_PREFIX = 'jogahub.reader.';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.6';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.6-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.9';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.9-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -54,15 +53,6 @@ function loadFavorites(){
   catch { return new Set(); }
 }
 function saveFavorites(set){ localStorage.setItem(FAVORITES_KEY, JSON.stringify([...set])); }
-function getProgress(item){
-  try {
-    const data = JSON.parse(localStorage.getItem(READER_PREFIX + item.id) || 'null');
-    if (!data || !data.total || !data.currentPage) return null;
-    const progressPage = data.lastPage || data.currentPage;
-    const percent = Math.max(0, Math.min(100, Math.round((progressPage / data.total) * 100)));
-    return {...data, percent};
-  } catch { return null; }
-}
 function renderFeatured(){
   const onlineGames = ITEMS.filter(item => item.type === 'jogo' && isExternalItem(item));
   const item = onlineGames[0] || ITEMS[0] || null;
@@ -87,18 +77,13 @@ function renderFeatured(){
 }
 function cardHTML(item){
   const meta = TYPES[item.type] || TYPES.jogo;
-  const progress = item.type === 'livro' ? getProgress(item) : null;
   const favorites = loadFavorites();
   const isFav = favorites.has(item.id);
   const thumb = item.thumb
     ? `<div class="card-thumb"><img src="${escapeHTML(item.thumb)}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy"></div>`
     : `<div class="card-thumb card-thumb-placeholder"><span>${meta.icon}</span></div>`;
   const onlineBadge = isExternalItem(item) ? `<span class="online-badge">🌐 online</span>` : '';
-  const progressHTML = progress ? `
-    <div class="book-progress" aria-label="Progresso de leitura: ${progress.percent}%">
-      <div class="book-progress-row"><span>página ${progress.currentPage} de ${progress.total}</span><strong>${progress.percent}%</strong></div>
-      <div class="progress-track"><span style="width:${progress.percent}%"></span></div>
-    </div>` : '';
+  const progressHTML = '';
   return `
     <article class="card" style="--accent:${item.accent}" data-id="${escapeHTML(item.id)}">
       <button class="favorite-btn${isFav?' active':''}" type="button" data-favorite="${escapeHTML(item.id)}" aria-label="${isFav?'Remover dos':'Adicionar aos'} favoritos" aria-pressed="${isFav}">♥</button>
@@ -107,8 +92,8 @@ function cardHTML(item){
         <div class="card-tags"><span class="tag"><span class="tag-icon">${meta.icon}</span>${escapeHTML(item.genre)}</span>${onlineBadge}</div>
         <h2>${escapeHTML(item.title)}</h2>
         <p>${escapeHTML(item.desc)}</p>
-        ${progressHTML}
-        <span class="play">▶ ${progress ? 'continuar' : (isExternalItem(item) ? meta.action + ' online' : meta.action)}</span>
+        
+        <span class="play">▶ ${isExternalItem(item) ? meta.action + ' online' : meta.action}</span>
       </a>
       <div class="card-extra-actions">
         ${isExternalItem(item) && item.installable === true ? `<a class="install-game-btn" href="${escapeHTML(installGameHref(item))}" aria-label="Instalar ${escapeHTML(item.title)}">📲 instalar jogo</a>` : ''}
@@ -183,21 +168,6 @@ function applyFilters(){
       && (!term || searchable.includes(term));
   });
   renderItems(sortByTypeOrder(filtered));
-}
-function renderContinueReading(){
-  const section = document.getElementById('continueSection');
-  const grid = document.getElementById('continueGrid');
-  const entries = LIVROS.map(item => ({item, progress:getProgress(item)}))
-    .filter(x => x.progress && x.progress.currentPage > 1 && x.progress.percent < 100)
-    .sort((a,b) => (b.progress.updatedAt || 0) - (a.progress.updatedAt || 0));
-  section.hidden = entries.length === 0;
-  if(!entries.length){ grid.innerHTML=''; return; }
-  grid.innerHTML = entries.map(({item,progress}) => `
-    <a class="continue-card" href="${escapeHTML(itemHref(item))}" style="--accent:${item.accent}"${itemLinkAttrs(item)}>
-      ${item.thumb ? `<img src="${escapeHTML(item.thumb)}" alt="">` : ''}
-      <div><span class="eyebrow">${progress.percent}% concluído</span><strong>${escapeHTML(item.title)}</strong>
-      <span>Continuar da página ${progress.currentPage}</span><div class="progress-track"><span style="width:${progress.percent}%"></span></div></div>
-    </a>`).join('');
 }
 function toggleFavorite(id, button){
   const favorites = loadFavorites();
@@ -297,11 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(dl){ e.preventDefault(); e.stopPropagation(); downloadOffline(dl.dataset.download, dl); return; }
     const btn=e.target.closest('[data-favorite]'); if(!btn) return;
     e.preventDefault(); e.stopPropagation(); toggleFavorite(btn.dataset.favorite, btn);
-  });
-  document.getElementById('clearProgress').addEventListener('click', () => {
-    if(!confirm('Limpar o progresso salvo de todos os livros?')) return;
-    Object.keys(localStorage).filter(k=>k.startsWith(READER_PREFIX)).forEach(k=>localStorage.removeItem(k));
-    renderContinueReading(); applyFilters();
   });
   window.addEventListener('pageshow', () => { renderContinueReading(); applyFilters(); });
 });

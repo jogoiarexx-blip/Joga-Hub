@@ -1,6 +1,6 @@
-# JogaHub 1.2.6
+# JogaHub 1.2.9
 
-Prateleira dos meus jogos, livros e apps, hospedada como site estático (GitHub Pages).
+Prateleira dos meus jogos, hospedada como site estático (GitHub Pages).
 
 ## Como adicionar um item novo (jogo, livro ou app)
 
