@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08080f">
+<title>JogaHub 1.2.4</title>
+<meta name="description" content="JogaHub — sua central gamer com jogos por links em um só lugar.">
+<link rel="stylesheet" href="css/style.css?v=30">
+<link rel="icon" href="assets/favicon.png">
+<link rel="manifest" href="manifest.webmanifest?v=30">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<script defer src="js/data-jogos.js?v=30"></script>
+<script defer src="js/data-links.js?v=30"></script>
+<script defer src="js/offline-assets.js?v=30"></script>
+<script defer src="js/app.js?v=30"></script>
+</head>
+<body>
+
+<header>
+  <img class="brand-logo" src="assets/logo.png" alt="JogaHub — central gamer com jogos por links" width="2172" height="724">
+  <button id="installApp" class="install-app" type="button" hidden>⬇ Instalar JogaHub</button>
+</header>
+
+<section id="banner" aria-label="Destaque">
+  <a id="featuredLink" class="featured-banner" href="#">
+    <div class="featured-copy">
+      <span id="featuredTag" class="banner-tag">central gamer</span>
+      <h1 id="featuredTitle">JogaHub</h1>
+      <p id="featuredDesc">Descubra e abra jogos online por links em uma home feita para gamers.</p>
+      <div class="hero-pills" aria-label="Destaques do JogaHub"><span>🎮 jogos por link</span><span>🔥 ação, corrida e aventura</span><span>⚡ rápido e direto</span></div>
+      <span id="featuredAction" class="featured-action">abrir agora →</span>
+    </div>
+    <img id="featuredImg" alt="Marca JogaHub" loading="eager">
+  </a>
+</section>
+
+<section id="continueSection" class="continue-section" hidden aria-hidden="true">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">sua leitura</span>
+      <h2>Continuar lendo</h2>
+    </div>
+    <button id="clearProgress" class="text-btn" type="button">limpar progresso</button>
+  </div>
+  <div id="continueGrid" class="continue-grid"></div>
+</section>
+
+<div class="type-tabs" id="typeTabs" aria-label="Tipos de conteúdo"></div>
+
+<div class="controls">
+  <label class="search-wrap" for="search">
+    <span aria-hidden="true">⌕</span>
+    <input id="search" type="search" autocomplete="off" placeholder="buscar jogo por título, gênero ou descrição..." aria-label="Buscar jogo">
+  </label>
+  <div class="filters" id="filters"></div>
+</div>
+
+<div id="resultsMeta" class="results-meta" aria-live="polite"></div>
+<div id="games"></div>
+<p id="emptyState">nenhum jogo encontrado com esse filtro.</p>
+
+<footer>
+  <img class="brand-mark" src="assets/icon-512.png" alt="JogaHub">
+  <p>feito por <span>JogaHub 1.2.4</span> &middot; home focada em games &middot; catálogo sempre em construção</p>
+</footer>
+
+<script>
+window.addEventListener('load',()=>{setTimeout(()=>{const g=document.getElementById('games');if(g&&!g.children.length){const m=document.getElementById('resultsMeta');if(m)m.textContent='Falha ao carregar o catálogo. Atualize a página.';}},2500);});
+</script>
+</body>
+</html>

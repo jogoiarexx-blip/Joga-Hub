@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08080f">
+<title>JogaHub Player</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#05050a;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}.top{height:56px;display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0c0c16;border-bottom:1px solid #29293b}.top strong{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.btn{border:1px solid #3b3b52;background:#151522;color:#fff;border-radius:10px;padding:9px 12px;text-decoration:none;font-weight:700;cursor:pointer}.primary{background:#675cff;border-color:#675cff}.wrap{height:calc(100% - 56px);position:relative}.wrap iframe{width:100%;height:100%;border:0;background:#000}.notice{position:absolute;inset:0;display:none;place-items:center;padding:24px;text-align:center;background:#08080f;z-index:2}.notice.show{display:grid}.notice div{max-width:560px}.notice p{color:#aaa;line-height:1.6}.notice .btn{display:inline-block;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="top"><button class="btn" onclick="history.back()">← voltar</button><strong id="title">JogaHub Player</strong><a id="external" class="btn primary" target="_blank" rel="noopener">abrir fora ↗</a></div>
+<div class="wrap"><iframe id="frame" allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe><div id="notice" class="notice"><div><h2>Este site não permitiu abrir dentro do JogaHub</h2><p>Alguns servidores bloqueiam iframe por segurança. O jogo ainda pode funcionar normalmente abrindo o link diretamente.</p><a id="fallback" class="btn primary" target="_blank" rel="noopener">Abrir jogo em nova aba</a></div></div></div>
+<script>
+const q=new URLSearchParams(location.search), raw=q.get('url')||'', title=q.get('title')||'Conteúdo online';
+let u=null; try{u=new URL(raw); if(!/^https?:$/.test(u.protocol)) u=null;}catch{}
+document.getElementById('title').textContent=title;
+if(!u){document.getElementById('notice').classList.add('show');document.querySelector('#notice h2').textContent='Link inválido';}
+else{document.getElementById('external').href=u.href;document.getElementById('fallback').href=u.href;document.getElementById('frame').src=u.href;}
+</script>
+</body></html>
