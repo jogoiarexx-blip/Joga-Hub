@@ -1,0 +1,40 @@
+JOGAHUB v1.0.20 — ATIVAR DETECÇÃO AUTOMÁTICA DE LIVES
+
+1) Entre em https://console.cloud.google.com/
+2) Crie um projeto ou escolha um projeto existente.
+3) Abra APIs e serviços > Biblioteca.
+4) Procure por "YouTube Data API v3" e clique em ATIVAR.
+5) Vá em APIs e serviços > Credenciais.
+6) Crie uma CHAVE DE API.
+7) Abra a chave criada e configure:
+
+RESTRIÇÕES DO APLICATIVO
+- Escolha: Sites / HTTP referrers.
+- Adicione o endereço do seu GitHub Pages.
+  Exemplo:
+  https://SEUUSUARIO.github.io/*
+
+Se o JogaHub estiver em um repositório/projeto específico, também pode adicionar:
+  https://SEUUSUARIO.github.io/NOME-DO-REPOSITORIO/*
+
+RESTRIÇÕES DE API
+- Escolha: Restringir chave.
+- Marque somente: YouTube Data API v3.
+- Salve.
+
+8) Abra o JogaHub > TV ao Vivo.
+9) Na caixa "Detecção automática do YouTube", cole a chave (começa normalmente com AIza...).
+10) Toque em "Salvar e testar".
+
+COMO FUNCIONA
+- O JogaHub usa um vídeo oficial conhecido de ge tv e CazéTV para descobrir o ID real de cada canal.
+- Depois consulta o YouTube procurando apenas transmissão com eventType=live e videoEmbeddable=true.
+- Se achar uma live, mostra selo vermelho "● AO VIVO" e troca automaticamente o player.
+- Se não houver live, mostra "FORA DO AR" e mantém um conteúdo oficial de reserva.
+- Verifica ao abrir a aba e a cada 30 minutos.
+- O botão "Atualizar" força nova verificação manual.
+- A chave fica salva apenas no navegador daquele aparelho via localStorage.
+
+IMPORTANTE
+- Não use uma chave sem restrições num site público.
+- Se mudar o endereço do GitHub Pages, atualize os HTTP referrers da chave.

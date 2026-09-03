@@ -1,4 +1,31 @@
-# JogaHub 1.0.17
+# JogaHub 1.0.24
+
+## v1.0.23 — Jackie Chan + catálogo sem repetição
+
+- Nova seção/filtro 🥋 Jackie Chan.
+- As Aventuras de Jackie Chan adicionada como série quando houver episódio público reproduzível.
+- Filmes completos anteriores a 2000 adicionados do YouTube e busca automática no Internet Archive.
+- Descoberta opcional no YouTube usa a chave já configurada, com apenas uma consulta para reduzir a cota.
+- Home de Filmes & TV agora evita repetir o mesmo vídeo em várias fileiras; filtros continuam disponíveis para buscas específicas.
+- Séries aparecem uma vez por série e os episódios ficam agrupados no player.
+
+## v1.0.23 — Pica-Pau do Internet Archive
+- Mantém os episódios individuais oficiais do YouTube.
+- Recoloca o item `OnovoShowoPicaPau` do Internet Archive no catálogo interno.
+- Adiciona busca automática específica por itens públicos de Pica-Pau em português/dublados no Internet Archive.
+- Itens encontrados são agrupados como **Pica-Pau — Internet Archive** e abrem no player interno.
+
+
+## v1.0.23 — Pica-Pau em episódios individuais
+- Remove a dependência da live/playlist anterior do Pica-Pau.
+- Adiciona 4 episódios completos oficiais como vídeos individuais.
+- Cada episódio tem progresso e navegação anterior/próximo próprios.
+
+## v1.0.23 — ge tv + CazéTV e correção de vídeo
+- Remove os dois itens de Mr Bean Animado que estavam retornando vídeo indisponível.
+- Adiciona ge tv e CazéTV à aba TV ao Vivo/Esportes usando conteúdo dos canais oficiais verificados no YouTube.
+- Mantém TV Cultura, SBT e Record News.
+
 
 Prateleira de jogos como conteúdo principal e uma aba separada de filmes antigos em domínio público, hospedada como site estático (GitHub Pages).
 
@@ -147,7 +174,7 @@ Adiciona ALF (catálogo oficial PT-BR), WWE Vault/Raw com vídeos oficiais incor
 Catálogo ampliado com Mercado Play, Plex, Pluto TV, NetMovies/YouTube oficial e Internet Archive. Baki the Grappler clássico permanece apenas como catálogo enquanto não houver fonte oficial completa em PT-BR.
 
 
-## v1.0.17 — YouTube PT-BR oficial/licenciado
+## v1.0.23 — YouTube PT-BR oficial/licenciado
 
 - Novo filtro **▶️ YouTube PT**.
 - Adicionados filmes completos dublados de canais NetMovies.
@@ -195,7 +222,7 @@ Os links do Internet Archive enviados pelo usuário foram verificados, mas não 
 - O catálogo principal continua escondendo páginas que servem apenas como “Onde assistir”.
 
 
-## v1.0.17 — Doramas oficiais no player
+## v1.0.23 — Doramas oficiais no player
 - Nova categoria 🌸 Doramas.
 - Adicionados K-dramas completos do canal oficial KBS WORLD TV: If We Were a Season, My Happy Home e The Tuna and the Dolphin.
 - Os títulos são reproduzidos dentro do JogaHub via player oficial do YouTube.
@@ -203,7 +230,17 @@ Os links do Internet Archive enviados pelo usuário foram verificados, mas não 
 - KOCOWA/Viki continuam fora do catálogo principal quando não permitem reprodução incorporada no JogaHub.
 
 
-## v1.0.17 — Catálogo multifonte ampliado
+## v1.0.23 — Catálogo multifonte ampliado
 - Regra do Archive ampliada: publicação pública entra quando não há indicação explícita de upload não autorizado.
 - Novos conteúdos internos: Pokémon, He-Man, She-Ra, Turma da Mônica, NetMovies, dramas turcos e arquivos PT do Internet Archive.
 - O catálogo principal continua exibindo somente itens que possuem player interno (Archive, YouTube ou vídeo direto).
+
+
+## v1.0.23 — detecção automática de lives no GitHub Pages
+- ge tv e CazéTV podem ser detectadas automaticamente via YouTube Data API v3.
+- Na aba **TV ao Vivo**, cole uma API key do YouTube e toque em **Salvar e testar**.
+- A chave fica em `localStorage` apenas naquele navegador/aparelho.
+- O site resolve o canal a partir de um vídeo oficial conhecido e procura `eventType=live` + `videoEmbeddable=true`.
+- Verificação ao abrir a aba e a cada 30 minutos; botão **Atualizar** permite checagem manual.
+- Sem chave ou se a API falhar, permanece o vídeo oficial de reserva.
+- Para GitHub Pages, restrinja a chave por **HTTP referrers** ao endereço do seu site e restrinja a API somente a **YouTube Data API v3**.

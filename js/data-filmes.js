@@ -488,24 +488,44 @@ const FILMES_CATALOGO = [
     nostalgiaTags: ['clássicos da TV', 'sessão da tarde', 'cinema em casa', 'dublado']
   },
   {
-    id: 'serie-pica-pau-oficial',
-    type: 'filme',
-    title: 'Pica-Pau — Episódios Completos',
-    year: 'Oficial',
-    genre: 'Desenho',
-    mediaType: 'serie',
-    seriesId: 'pica-pau-oficial',
-    seriesTitle: 'Pica-Pau',
-    season: 0,
-    accent: 'var(--gold)',
-    thumb: 'https://i.ytimg.com/vi/kI6Sonj01QE/hqdefault.jpg',
-    desc: 'Coleção oficial em português do canal Pica-Pau em Português. A playlist é carregada diretamente do YouTube e acompanha os episódios publicados pelo canal.',
-    youtubePlaylistId: 'PLnKM4dFgKAoaEcokWCSbk9qYkLHM_dbR_',
-    youtubePreviewId: 'kI6Sonj01QE',
-    sourceUrl: 'https://www.youtube.com/playlist?list=PLnKM4dFgKAoaEcokWCSbk9qYkLHM_dbR_',
-    sourceLabel: 'YouTube oficial',
-    classicTv: true,
-    nostalgiaTags: ['desenho clássico', 'TV', 'família']
+    id: 'pica-pau-com-dois-pica-paus',
+    type: 'filme', title: 'Pica-Pau — Com Dois Pica-Paus', year: 'Oficial', genre: 'Desenho', mediaType: 'serie',
+    seriesId: 'pica-pau-oficial', seriesTitle: 'Pica-Pau', season: 1, episode: 1,
+    language: 'Português', portuguese: true, colorContent: true, youtubePt: true, freeLegal: true,
+    accent: 'var(--gold)', thumb: 'https://i.ytimg.com/vi/NVY1s7czIK4/hqdefault.jpg',
+    desc: 'Episódio completo em português publicado pelo canal verificado Pica-Pau em Português.',
+    youtubeId: 'NVY1s7czIK4', sourceUrl: 'https://www.youtube.com/watch?v=NVY1s7czIK4', sourceLabel: 'Pica-Pau em Português — oficial',
+    classicTv: true, nostalgiaTags: ['desenho clássico','Pica-Pau','episódio completo','família']
+  },
+  {
+    id: 'pica-pau-tv-a-cabo',
+    type: 'filme', title: 'Pica-Pau — TV a Cabo', year: 'Oficial', genre: 'Desenho', mediaType: 'serie',
+    seriesId: 'pica-pau-oficial', seriesTitle: 'Pica-Pau', season: 1, episode: 2,
+    language: 'Português', portuguese: true, colorContent: true, youtubePt: true, freeLegal: true,
+    accent: 'var(--gold)', thumb: 'https://i.ytimg.com/vi/tTht-QGnvC8/hqdefault.jpg',
+    desc: 'Episódio completo em português publicado pelo canal verificado Pica-Pau em Português.',
+    youtubeId: 'tTht-QGnvC8', sourceUrl: 'https://www.youtube.com/watch?v=tTht-QGnvC8', sourceLabel: 'Pica-Pau em Português — oficial',
+    classicTv: true, nostalgiaTags: ['desenho clássico','Pica-Pau','episódio completo','família']
+  },
+  {
+    id: 'pica-pau-a-granja',
+    type: 'filme', title: 'Pica-Pau — A Granja do Pica-Pau', year: 'Oficial', genre: 'Desenho', mediaType: 'serie',
+    seriesId: 'pica-pau-oficial', seriesTitle: 'Pica-Pau', season: 1, episode: 3,
+    language: 'Português', portuguese: true, colorContent: true, youtubePt: true, freeLegal: true,
+    accent: 'var(--gold)', thumb: 'https://i.ytimg.com/vi/Ar1sRRY-moQ/hqdefault.jpg',
+    desc: 'Episódio completo em português publicado pelo canal verificado Pica-Pau em Português.',
+    youtubeId: 'Ar1sRRY-moQ', sourceUrl: 'https://www.youtube.com/watch?v=Ar1sRRY-moQ', sourceLabel: 'Pica-Pau em Português — oficial',
+    classicTv: true, nostalgiaTags: ['desenho clássico','Pica-Pau','episódio completo','família']
+  },
+  {
+    id: 'pica-pau-um-encontro-gelado',
+    type: 'filme', title: 'Pica-Pau — Um Encontro Gelado', year: 'Oficial', genre: 'Desenho', mediaType: 'serie',
+    seriesId: 'pica-pau-oficial', seriesTitle: 'Pica-Pau', season: 1, episode: 4,
+    language: 'Português', portuguese: true, colorContent: true, youtubePt: true, freeLegal: true,
+    accent: 'var(--gold)', thumb: 'https://i.ytimg.com/vi/x0makBZvuXs/hqdefault.jpg',
+    desc: 'Episódio completo em português publicado pelo canal verificado Pica-Pau em Português.',
+    youtubeId: 'x0makBZvuXs', sourceUrl: 'https://www.youtube.com/watch?v=x0makBZvuXs', sourceLabel: 'Pica-Pau em Português — oficial',
+    classicTv: true, nostalgiaTags: ['desenho clássico','Pica-Pau','episódio completo','família']
   },
   {
     id: 'filme-era-uma-vez-no-oeste-1968',
@@ -1035,22 +1055,6 @@ const FILMES_CATALOGO = [
     nostalgiaTags:['YouTube','infantil','dublado','Peppa Pig','episódios completos']
   },
   {
-    id:'yt-mrbean-animado-competicao', type:'filme', title:'Mr Bean Animado — A Grande Competição', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
-    seriesId:'mr-bean-animado-pt', seriesTitle:'Mr Bean Animado', kids:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
-    youtubeId:'08S8eHq-T9g', thumb:'https://i.ytimg.com/vi/08S8eHq-T9g/hqdefault.jpg', accent:'var(--green)',
-    desc:'Episódio completo publicado pelo canal oficial Mr Bean em Português.',
-    sourceUrl:'https://www.youtube.com/watch?v=08S8eHq-T9g', sourceLabel:'Mr Bean em Português — canal oficial',
-    classicTv:true, nostalgiaTags:['YouTube','Mr Bean','desenho','comédia','episódio completo']
-  },
-  {
-    id:'yt-mrbean-animado-acorde', type:'filme', title:'Mr Bean Animado — Acorde Mr Bean!', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
-    seriesId:'mr-bean-animado-pt', seriesTitle:'Mr Bean Animado', kids:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
-    youtubeId:'wGbv01-9smQ', thumb:'https://i.ytimg.com/vi/wGbv01-9smQ/hqdefault.jpg', accent:'var(--green)',
-    desc:'Episódio completo publicado pelo canal oficial Mr Bean em Português.',
-    sourceUrl:'https://www.youtube.com/watch?v=wGbv01-9smQ', sourceLabel:'Mr Bean em Português — canal oficial',
-    classicTv:true, nostalgiaTags:['YouTube','Mr Bean','desenho','comédia','episódio completo']
-  },
-  {
     id:'yt-netmovies-horror-entre-nos', type:'filme', title:'O Horror Entre Nós', year:'Filme completo', genre:'Terror', mediaType:'filme',
     language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'terror', freeLegal:true,
     youtubeId:'H6xio03z7_w', thumb:'https://i.ytimg.com/vi/H6xio03z7_w/hqdefault.jpg', accent:'var(--red)',
@@ -1184,12 +1188,76 @@ const FILMES_CATALOGO = [
     desc:'Compilação pública com episódios da 8ª temporada em dublagem portuguesa, publicada no canal DramaBox em Português. Direitos/licenciamento do canal não foram confirmados de forma independente.',
     sourceUrl:'https://www.youtube.com/watch?v=wTwga8RRSLI', sourceLabel:'DramaBox em Português — publicação pública; direitos não verificados',
     nostalgiaTags:['drama','série turca','dublado','romance','YouTube']
-  }
+  },
 
+  {
+    id:'pica-pau-archive-ep1', type:'filme', title:'Pica-Pau — Episódio do Internet Archive', year:'Archive', genre:'Desenho / Comédia', mediaType:'serie',
+    seriesId:'pica-pau-archive', seriesTitle:'Pica-Pau — Internet Archive', season:1, episode:1, language:'Português', portuguese:true, colorContent:true, rightsUnclear:true,
+    archiveId:'OnovoShowoPicaPau', thumb:'https://archive.org/services/img/OnovoShowoPicaPau', accent:'var(--red)',
+    desc:'Episódio de Pica-Pau em português publicado no Internet Archive. O item está público no Archive; a autorização/licenciamento não está claramente indicada nos metadados.',
+    sourceUrl:'https://archive.org/details/OnovoShowoPicaPau', sourceLabel:'Internet Archive — publicação pública; direitos não verificados',
+    classicTv:true, nostalgiaTags:['Pica-Pau','Internet Archive','desenho clássico','português']
+  },
+
+
+  // Jackie Chan — filmes completos publicados no YouTube e desenho clássico.
+  // O catálogo também faz descoberta dinâmica no Internet Archive e, se configurada,
+  // na YouTube Data API para ampliar os títulos anteriores a 2000.
+  {
+    id:'yt-jackie-adventures-t1e1', type:'filme', title:'A Mão Negra', year:'2000', genre:'Desenho / Ação / Comédia', mediaType:'serie',
+    seriesId:'jackie-chan-adventures-youtube', seriesTitle:'As Aventuras de Jackie Chan', season:1, episode:1,
+    language:'Português (dublado)', portuguese:true, colorContent:true, classicTv:true, kids:true, jackieChan:true, rightsUnclear:true,
+    youtubeId:'pkp_rRmUYEg', thumb:'https://i.ytimg.com/vi/pkp_rRmUYEg/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Episódio público em português de As Aventuras de Jackie Chan. A publicação está disponível no YouTube; os direitos do upload não foram confirmados de forma independente.',
+    sourceUrl:'https://www.youtube.com/watch?v=pkp_rRmUYEg', sourceLabel:'YouTube — publicação pública; direitos não verificados',
+    nostalgiaTags:['Jackie Chan','desenho','anos 2000','dublado','TV']
+  },
+  {
+    id:'yt-jackie-drunken-master-1978', type:'filme', title:'Drunken Master', year:'1978', genre:'Ação / Artes marciais / Comédia', mediaType:'filme',
+    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'hCCpjX5v5gY', thumb:'https://i.ytimg.com/vi/hCCpjX5v5gY/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Longa completo de Jackie Chan (1978) disponibilizado publicamente pelo canal verificado Sony Pictures Entertainment India.',
+    sourceUrl:'https://www.youtube.com/watch?v=hCCpjX5v5gY', sourceLabel:'Sony Pictures Entertainment India — YouTube verificado', nostalgiaTags:['Jackie Chan','kung fu','1978']
+  },
+  {
+    id:'yt-jackie-winners-sinners-1983', type:'filme', title:'Winners and Sinners', year:'1983', genre:'Ação / Comédia / Artes marciais', mediaType:'filme',
+    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'y57iuGqeSjk', thumb:'https://i.ytimg.com/vi/y57iuGqeSjk/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Filme completo de 1983 com Jackie Chan, publicado pelo canal verificado Shout! Studios.',
+    sourceUrl:'https://www.youtube.com/watch?v=y57iuGqeSjk', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1983','comédia','ação']
+  },
+  {
+    id:'yt-jackie-wheels-meals-1984', type:'filme', title:'Wheels on Meals', year:'1984', genre:'Ação / Comédia / Artes marciais', mediaType:'filme',
+    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'nPdH4s_GIvQ', thumb:'https://i.ytimg.com/vi/nPdH4s_GIvQ/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Filme completo de 1984 com Jackie Chan, Sammo Hung e Yuen Biao, publicado gratuitamente no YouTube.',
+    sourceUrl:'https://www.youtube.com/watch?v=nPdH4s_GIvQ', sourceLabel:'YouTube — publicação pública', nostalgiaTags:['Jackie Chan','1984','Sammo Hung','ação']
+  },
+  {
+    id:'yt-jackie-protector-1985', type:'filme', title:'The Protector', year:'1985', genre:'Ação / Policial / Artes marciais', mediaType:'filme',
+    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'d4zAkiajuZc', thumb:'https://i.ytimg.com/vi/d4zAkiajuZc/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Filme completo de 1985 estrelado por Jackie Chan, publicado pelo canal verificado Shout! Studios.',
+    sourceUrl:'https://www.youtube.com/watch?v=d4zAkiajuZc', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1985','policial']
+  },
+  {
+    id:'yt-jackie-city-hunter-1993', type:'filme', title:'City Hunter', year:'1993', genre:'Ação / Comédia / Artes marciais', mediaType:'filme',
+    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'8SxjZ5_92zE', thumb:'https://i.ytimg.com/vi/8SxjZ5_92zE/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Filme completo de 1993 estrelado por Jackie Chan, publicado pelo canal verificado Shout! Studios.',
+    sourceUrl:'https://www.youtube.com/watch?v=8SxjZ5_92zE', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1993','City Hunter']
+  },
+  {
+    id:'yt-jackie-crime-story-1993', type:'filme', title:'Crime Story', year:'1993', genre:'Ação / Policial / Drama', mediaType:'filme',
+    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'TpEL8DTI_Hs', thumb:'https://i.ytimg.com/vi/TpEL8DTI_Hs/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Filme completo de 1993 estrelado por Jackie Chan, publicado pelo canal verificado Shout! Studios.',
+    sourceUrl:'https://www.youtube.com/watch?v=TpEL8DTI_Hs', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1993','policial','drama']
+  },
 
 ];
 
-// v1.0.17 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
+// v1.0.23 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
 // O app também busca automaticamente itens PT/dublados publicados no Internet Archive. Itens sem licença clara podem aparecer; apenas sinais explícitos de upload não autorizado são filtrados.
 // Entradas que servem apenas como “Onde assistir” continuam fora da interface principal.
 const FILMES = FILMES_CATALOGO.filter((item) => {
