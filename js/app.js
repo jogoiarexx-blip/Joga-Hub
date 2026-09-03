@@ -25,10 +25,25 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.0.2';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.0.2-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.0.5';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.0.5-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
+
+const MEDIA_CACHE = 'jogahub-offline-media-v1';
+const MEDIA_REGISTRY_KEY = 'jogahub.offline.media.registry';
+function loadMediaRegistry(){try{return JSON.parse(localStorage.getItem(MEDIA_REGISTRY_KEY)||'{}')}catch{return {}}}
+function saveMediaRegistry(v){localStorage.setItem(MEDIA_REGISTRY_KEY,JSON.stringify(v))}
+function formatBytes(n){n=Number(n)||0;if(!n)return 'tamanho desconhecido';const u=['B','KB','MB','GB'];let i=0;while(n>=1024&&i<u.length-1){n/=1024;i++}return `${n>=10||i===0?n.toFixed(0):n.toFixed(1)} ${u[i]}`}
+async function showDownloads(){
+  const modal=document.getElementById('downloadsModal'),list=document.getElementById('downloadsList'),storage=document.getElementById('downloadsStorage');if(!modal||!list)return;
+  const reg=loadMediaRegistry(),entries=Object.values(reg).sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
+  list.innerHTML=entries.length?entries.map(x=>`<article class="download-item"><img src="${escapeHTML(x.thumb||'assets/icon-512.png')}" alt=""><div class="download-copy"><b>${escapeHTML(x.title||'Vídeo offline')}</b><span>${escapeHTML([x.year,x.genre,formatBytes(x.size)].filter(Boolean).join(' • '))}</span><span class="download-status">✓ disponível offline</span></div><div class="download-actions"><a href="${escapeHTML(x.playerHref||'#')}">▶ assistir</a><button type="button" data-remove-media="${escapeHTML(x.id)}">remover</button></div></article>`).join(''):'<div class="download-empty">Nenhum vídeo salvo ainda.<br>Abra um filme compatível e toque em <b>⬇ Baixar offline</b>.</div>';
+  try{const e=await navigator.storage?.estimate?.();storage.textContent=e?.quota?`Armazenamento do navegador: ${formatBytes(e.usage)} usados de aproximadamente ${formatBytes(e.quota)}.`:'Os downloads ficam salvos somente neste aparelho.'}catch{storage.textContent='Os downloads ficam salvos somente neste aparelho.'}
+  modal.hidden=false;
+}
+async function removeMediaDownload(id){const reg=loadMediaRegistry(),x=reg[id];if(!x)return;try{const c=await caches.open(MEDIA_CACHE);if(x.url)await c.delete(x.url)}catch{}delete reg[id];saveMediaRegistry(reg);showDownloads()}
+
 
 function escapeHTML(value='') {
   return String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
@@ -37,7 +52,12 @@ function escapeHTML(value='') {
 function isExternalItem(item){
   return !!item?.url && /^https?:\/\//i.test(item.url);
 }
+function isCatalogExternal(item){
+  return item?.type === 'filme' && item?.catalogOnly === true && /^https?:\/\//i.test(item.sourceUrl || '');
+}
+
 function itemHref(item){
+  if(isCatalogExternal(item)) return item.sourceUrl;
   if(item.type === 'filme' && item.youtubePlaylistId){
     const url = `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(item.youtubePlaylistId)}`;
     const source = item.sourceUrl || `https://www.youtube.com/playlist?list=${encodeURIComponent(item.youtubePlaylistId)}`;
@@ -64,8 +84,12 @@ function itemHref(item){
 }
 function itemLinkAttrs(item){
   if(item.type === 'filme' && (item.archiveId || item.youtubePlaylistId || item.youtubeId)) return '';
-  return isExternalItem(item) && item.embed !== true ? ' target="_blank" rel="noopener noreferrer"' : '';
+  return (isCatalogExternal(item) || (isExternalItem(item) && item.embed !== true)) ? ' target="_blank" rel="noopener noreferrer"' : '';
 }
+function movieActionLabel(item){
+  return isCatalogExternal(item) ? 'Onde assistir' : 'Assistir';
+}
+
 function installGameHref(item){
   return `install-game.html?url=${encodeURIComponent(item.url || '')}&title=${encodeURIComponent(item.title || 'Jogo')}`;
 }
@@ -75,6 +99,39 @@ function loadFavorites(){
   catch { return new Set(); }
 }
 function saveFavorites(set){ localStorage.setItem(FAVORITES_KEY, JSON.stringify([...set])); }
+function itemDecade(item){
+  const y=Number(item.year); if(!y) return '';
+  if(y<1980) return '70-';
+  if(y<1990) return '80';
+  if(y<2000) return '90';
+  if(y<2010) return '2000';
+  return '2010+';
+}
+function homeTile(item, label=''){
+  const p=movieProgress(item), state=item.type==='filme'?movieWatchState(item):null;
+  const meta=item.type==='filme'?(item.seriesTitle||item.title):item.title;
+  return `<a class="home-tile" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)}>
+    <div class="home-tile-art">${item.thumb?`<img src="${escapeHTML(item.thumb)}" alt="${escapeHTML(meta)}" loading="lazy">`:`<span>${item.type==='filme'?'🎬':'🎮'}</span>`}<i>${item.type==='filme'?(isCatalogExternal(item)?'↗':'▶'):'🎮'}</i>${p?`<b style="width:${Math.round(p.time/p.duration*100)}%"></b>`:''}</div>
+    <small>${escapeHTML(label|| (item.type==='filme'?'Assistir':'Jogar'))}</small><strong>${escapeHTML(meta)}</strong>${state?`<em>${escapeHTML(state.label)}</em>`:''}
+  </a>`;
+}
+function renderHomeDashboard(){
+  const box=document.getElementById('homeDashboard'); if(!box) return;
+  if(activeType!=='todos'){box.hidden=true;box.innerHTML='';return;}
+  const games=ITEMS.filter(i=>i.type==='jogo'); const movies=ITEMS.filter(i=>i.type==='filme');
+  const continuing=movies.filter(movieProgress).slice(0,8);
+  const recentMovies=[...movies].sort((a,b)=>(Number(b.year)||0)-(Number(a.year)||0)).slice(0,10);
+  const tv=movies.filter(i=>i.classicTv).slice(0,10);
+  const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
+  const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
+  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.0.5</span><h2>Continue de onde parou</h2><p>Jogos, filmes, séries e desenhos reunidos em uma home mais rápida.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${movies.length}</b> vídeos</span></div></div>
+    ${row('▶ Continue assistindo','Seu progresso salvo aparece aqui.',continuing,'Continuar')}
+    ${row('📺 Nostalgia da TV','Clássicos, desenhos e séries que marcaram época.',tv,'Clássico da TV')}
+    ${row('🆕 Descobrir agora','Alguns destaques do catálogo para abrir direto.',recentMovies,'Assistir')}
+    ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
+    ${row('🎮 Continue jogando','Acesso rápido aos jogos do JogaHub.',games.slice(0,10),'Jogar')}`;
+  box.hidden=false;
+}
 function renderFeatured(){
   const games=ITEMS.filter(i=>i.type==='jogo'), movies=ITEMS.filter(i=>i.type==='filme');
   const item=activeType==='filme'?(movies.find(movieProgress)||movies[0]):activeType==='jogo'?games[0]:(movies.find(movieProgress)||games[0]||movies[0]);
@@ -82,7 +139,7 @@ function renderFeatured(){
   if(activeType==='filme'){tag.textContent='filmes & séries';title.textContent=item?.seriesTitle||item?.title||'Filmes & TV';desc.textContent=item?.desc||'Clássicos, desenhos e séries reunidos em uma experiência de streaming.';action.textContent=item?'assistir agora →':'explorar catálogo →';}
   else if(activeType==='jogo'){tag.textContent='jogos';title.textContent='JogaHub Games';desc.textContent=`${games.length} jogos organizados por gênero, favoritos e acesso rápido.`;action.textContent=item?`jogar ${item.title} →`:'explorar jogos →';}
   else{tag.textContent='sua central de entretenimento';title.textContent='JogaHub';desc.textContent=`Jogos, filmes, séries e desenhos em um só lugar. ${games.length} jogos e ${movies.length} conteúdos para assistir.`;action.textContent=item?.type==='filme'?'continuar assistindo →':'começar agora →';}
-  if(item){link.href=itemHref(item);if(isExternalItem(item)&&item.embed!==true){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
+  if(item){link.href=itemHref(item);if(isCatalogExternal(item)||(isExternalItem(item)&&item.embed!==true)){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
   document.getElementById('featuredImg').hidden=true;
 }
 function movieProgress(item){
@@ -136,7 +193,7 @@ function cardHTML(item){
     </article>`;
 }
 function movieKindLabel(item){
-  if(item.mediaType === 'serie') return item.episode ? `S${item.season || 1}:E${item.episode}` : 'Série';
+  if(item.mediaType === 'serie') return item.episode ? `S${item.season || 1}:E${item.episode}` : (item.seasonCount ? `Série • ${item.seasonCount} temporadas` : 'Série');
   if(item.mediaType === 'colecao') return 'Coleção';
   return 'Filme';
 }
@@ -147,9 +204,9 @@ function movieCardHTML(item, compact=false){
   const state = movieWatchState(item);
   const pct = p ? Math.max(0, Math.min(100, (p.time/p.duration)*100)) : 0;
   return `<article class="stream-card${compact?' compact':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
-    <a class="stream-poster" href="${escapeHTML(itemHref(item))}" aria-label="Assistir ${escapeHTML(item.title)}">
+    <a class="stream-poster" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)} aria-label="${isCatalogExternal(item)?'Onde assistir':'Assistir'} ${escapeHTML(item.title)}">
       <img src="${escapeHTML(item.thumb || '')}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy">
-      <span class="stream-play">▶</span>
+      <span class="stream-play">${isCatalogExternal(item)?'↗':'▶'}</span>
       ${state?`<span class="stream-state${state.finished?' watched':''}">${state.label}</span>`:''}
       ${p?`<span class="stream-progress"><i style="width:${pct.toFixed(1)}%"></i></span>`:''}
     </a>
@@ -161,15 +218,20 @@ function movieCardHTML(item, compact=false){
   </article>`;
 }
 function seriesCardHTML(group){
-  const first=group.items[0], seasons=[...new Set(group.items.map(i=>i.season||1))];
-  const next=group.items.find(i=>!movieWatchState(i)?.finished) || first;
-  const watched=group.items.filter(i=>movieWatchState(i)?.finished).length;
-  return `<article class="stream-card series-summary" style="--accent:${first.accent || 'var(--gold)'}">
-    <a class="stream-poster" href="${escapeHTML(itemHref(next))}" aria-label="Abrir ${escapeHTML(group.title)}">
-      <img src="${escapeHTML(first.thumb || '')}" alt="Capa de ${escapeHTML(group.title)}" loading="lazy"><span class="stream-play">▶</span>
-      <span class="series-count">${group.items.length} ep.</span>
+  const first=group.items[0];
+  const catalogOnly=group.items.length===1 && first.catalogOnly;
+  const seasons=catalogOnly ? Number(first.seasonCount||0) : [...new Set(group.items.map(i=>i.season||1))].length;
+  const episodes=catalogOnly ? Number(first.episodeCount||0) : group.items.length;
+  const next=catalogOnly ? first : (group.items.find(i=>!movieWatchState(i)?.finished) || first);
+  const watched=catalogOnly ? 0 : group.items.filter(i=>movieWatchState(i)?.finished).length;
+  const availability=first.availabilityStatus ? `<small class="series-availability">${escapeHTML(first.availabilityStatus)}</small>` : '';
+  return `<article class="stream-card series-summary${catalogOnly?' catalog-only':''}" style="--accent:${first.accent || 'var(--gold)'}">
+    <a class="stream-poster" href="${escapeHTML(itemHref(next))}"${itemLinkAttrs(next)} aria-label="${catalogOnly?'Onde assistir':'Abrir'} ${escapeHTML(group.title)}">
+      <img src="${escapeHTML(first.thumb || '')}" alt="Capa de ${escapeHTML(group.title)}" loading="lazy"><span class="stream-play">${catalogOnly?'↗':'▶'}</span>
+      <span class="series-count">${episodes ? `${episodes} ep.` : 'Série'}</span>
+      ${catalogOnly?'<span class="catalog-badge">CATÁLOGO</span>':''}
     </a>
-    <div class="stream-card-copy"><div class="stream-card-title"><b>${escapeHTML(group.title)}</b></div><span>${seasons.length} ${seasons.length===1?'temporada':'temporadas'} • ${group.items.length} episódios</span><small>${watched?`${watched}/${group.items.length} assistidos`:'Começar série'}</small></div>
+    <div class="stream-card-copy"><div class="stream-card-title"><b>${escapeHTML(group.title)}</b></div><span>${seasons||1} ${(seasons||1)===1?'temporada':'temporadas'}${episodes?` • ${episodes} episódios`:''}</span>${availability}<small>${catalogOnly?'↗ Onde assistir':(watched?`${watched}/${episodes} assistidos`:'Começar série')}</small></div>
   </article>`;
 }
 function renderMovieHub(list){
@@ -199,12 +261,12 @@ function renderMovieHub(list){
         <h1>${escapeHTML(featured.seriesTitle || featured.title)}</h1>
         <p>${escapeHTML(featured.desc || '')}</p>
         <div class="stream-hero-meta"><span>${escapeHTML(featured.genre||'')}</span>${featured.year?`<span>${escapeHTML(featured.year)}</span>`:''}<span>${escapeHTML(movieKindLabel(featured))}</span></div>
-        <div class="stream-hero-actions"><a class="stream-primary" href="${escapeHTML(itemHref(featured))}">▶ ${heroP?'Continuar '+heroPct+'%':'Assistir agora'}</a><button type="button" class="stream-secondary" data-favorite="${escapeHTML(featured.id)}">♥ Minha Lista</button></div>
+        <div class="stream-hero-actions"><a class="stream-primary" href="${escapeHTML(itemHref(featured))}"${itemLinkAttrs(featured)}>${isCatalogExternal(featured)?'↗ Onde assistir':`▶ ${heroP?'Continuar '+heroPct+'%':'Assistir agora'}`}</a><button type="button" class="stream-secondary" data-favorite="${escapeHTML(featured.id)}">♥ Minha Lista</button></div>
       </div>
     </section>
     ${section('Continuar assistindo','Retome exatamente de onde você parou.',continuing)}
     ${section('Minha Lista','Seus favoritos ficam reunidos aqui.',favs)}
-    ${section('📺 Clássicos da TV','Filmes, séries e desenhos nostálgicos com fonte incorporável.',classicTv)}
+    ${section('📺 Clássicos da TV','Filmes, séries e desenhos nostálgicos — incluindo catálogo externo quando necessário.',classicTv)}
     ${section('Coloridos em português','Clássicos dublados e coleções oficiais com títulos coloridos.',colorPt)}
     ${section('Em português','Conteúdos dublados ou originalmente em português.',portuguese)}
     ${section('Coleções oficiais','Catálogos licenciados incorporados de fontes oficiais.',collections)}
@@ -264,7 +326,7 @@ function renderGenreFilters(){
     return;
   }
   if(activeType === 'filme'){
-    const options=[['todos','🍿 Início'],['classicos-tv','📺 Clássicos da TV'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
+    const options=[['todos','🍿 Início'],['classicos-tv','📺 Nostalgia TV'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
     document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
     return;
   }
@@ -292,6 +354,10 @@ function applyFilters(){
     const searchable = normalize([i.title, i.desc, i.genre, i.category, i.type, i.language, i.sourceLabel, ...(i.nostalgiaTags||[]), TYPES[i.type]?.label, GAME_CATEGORIES[i.category]?.label].join(' '));
     const movieFilter = activeType !== 'filme' || genre === 'todos'
       || (genre === 'classicos-tv' && i.classicTv)
+      || (genre === 'dec70' && itemDecade(i) === '70-')
+      || (genre === 'dec80' && itemDecade(i) === '80')
+      || (genre === 'dec90' && itemDecade(i) === '90')
+      || (genre === 'dec2000' && itemDecade(i) === '2000')
       || (genre === 'portugues' && (i.portuguese || /portugu/i.test(i.language || '')))
       || (genre === 'coloridos' && i.colorContent && (i.portuguese || /portugu/i.test(i.language || '')))
       || (genre === 'series' && i.mediaType === 'serie')
@@ -327,10 +393,14 @@ function toggleFavorite(id, button){
 }
 
 function syncNavigation(){
+  
+  const header=document.querySelector('.site-header');
+  const syncHeader=()=>header?.classList.toggle('scrolled',window.scrollY>24);
+  window.addEventListener('scroll',syncHeader,{passive:true});syncHeader();
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===activeType));
   document.querySelectorAll('.type-btn').forEach(b=>{const on=b.dataset.type===activeType;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
 }
-function setView(view){activeType=view||'todos';renderTypeTabs();renderGenreFilters();renderFeatured();syncNavigation();applyFilters();window.scrollTo({top:0,behavior:'smooth'});}
+function setView(view){activeType=view||'todos';renderTypeTabs();renderGenreFilters();renderFeatured();renderHomeDashboard();syncNavigation();applyFilters();window.scrollTo({top:0,behavior:'smooth'});}
 function showFavorites(){const fav=loadFavorites();activeType='todos';renderFeatured();syncNavigation();const list=ITEMS.filter(i=>fav.has(i.id));renderItems(list);document.getElementById('resultsMeta').textContent=list.length?`${list.length} itens na Minha Lista`:'Sua lista ainda está vazia.';}
 function downloadOffline(id, btn){
   if(!('serviceWorker' in navigator) || !OFFLINE_ASSETS[id]){
@@ -352,7 +422,7 @@ if('serviceWorker' in navigator){
     try {
       // limpa caches da versão que causou o problema no GitHub Pages
       const names = await caches.keys();
-      await Promise.all(names.filter(n => (n.startsWith('nexora-') || n.startsWith('linkora-') || n.startsWith('jogahub-')) && n !== CURRENT_SHELL_CACHE && n !== CURRENT_CONTENT_CACHE).map(n => caches.delete(n)));
+      await Promise.all(names.filter(n => (n.startsWith('nexora-') || n.startsWith('linkora-') || n.startsWith('jogahub-')) && n !== CURRENT_SHELL_CACHE && n !== CURRENT_CONTENT_CACHE && n !== MEDIA_CACHE).map(n => caches.delete(n)));
       await navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'});
     } catch(err){ console.warn('PWA:', err); }
   });
@@ -372,6 +442,7 @@ window.addEventListener('appinstalled', () => {
 document.addEventListener('DOMContentLoaded', () => {
   activeType = 'todos';
   renderFeatured();
+  renderHomeDashboard();
   const continueSection = document.getElementById('continueSection');
   if(continueSection) continueSection.hidden = true;
   renderTypeTabs();
@@ -405,13 +476,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
   document.querySelectorAll('[data-action="search"]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('search')?.focus();document.querySelector('.controls')?.scrollIntoView({behavior:'smooth',block:'center'});}));
   document.querySelectorAll('[data-action="favorites"]').forEach(b=>b.addEventListener('click',showFavorites));
+  document.querySelectorAll('[data-action="downloads"]').forEach(b=>b.addEventListener('click',showDownloads));
+  document.getElementById('closeDownloads')?.addEventListener('click',()=>document.getElementById('downloadsModal').hidden=true);
+  document.getElementById('downloadsModal')?.addEventListener('click',e=>{if(e.target.id==='downloadsModal')e.currentTarget.hidden=true;const b=e.target.closest('[data-remove-media]');if(b)removeMediaDownload(b.dataset.removeMedia)});
   syncNavigation();
   document.getElementById('search').addEventListener('input', applyFilters);
   document.getElementById('typeTabs').addEventListener('click', e => {
     const btn=e.target.closest('.type-btn'); if(!btn) return;
     activeType=btn.dataset.type;
     document.querySelectorAll('.type-btn').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
-    renderGenreFilters(); renderFeatured(); syncNavigation(); applyFilters();
+    renderGenreFilters(); renderFeatured(); renderHomeDashboard(); syncNavigation(); applyFilters();
   });
   document.getElementById('filters').addEventListener('click', e => {
     const btn=e.target.closest('.filter-btn'); if(!btn) return;
