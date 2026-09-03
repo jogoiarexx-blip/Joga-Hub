@@ -1,7 +1,7 @@
 {
-  "name": "JogaHub 1.5.2",
+  "name": "JogaHub 1.0.2",
   "short_name": "JogaHub",
-  "description": "Catálogo de jogos, filmes clássicos e desenhos com fontes online incorporadas.",
+  "description": "Central de entretenimento com jogos, filmes clássicos, séries e desenhos.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

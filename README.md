@@ -1,4 +1,4 @@
-# JogaHub 1.3.0
+# JogaHub 1.0.2
 
 Prateleira de jogos como conteúdo principal e uma aba separada de filmes antigos em domínio público, hospedada como site estático (GitHub Pages).
 
@@ -93,3 +93,22 @@ Os jogos locais foram removidos. Novos jogos devem ser publicados separadamente 
 - Adicionados os episódios/arquivos dublados de Mr. Bumpy encontrados e ainda disponíveis para reprodução incorporada.
 - Mr. Bumpy aparece como série própria e os itens encontrados são agrupados no player.
 - Catálogo deixa claro que a preservação dublada online é incompleta e pode mudar conforme a disponibilidade das fontes.
+
+
+## v1.0.1 — player e streaming
+- Novo player com modo cinema, mini player flutuante e tela cheia.
+- Próximo episódio automático com contagem regressiva quando a fonte permite controle do player.
+- Retomada e histórico aprimorados para Internet Archive e vídeos individuais do YouTube.
+- Preferências de velocidade e volume persistentes.
+- Séries agrupadas no catálogo e painel com temporadas/episódios no player.
+- Estados “assistido” e porcentagem vista nos cards/episódios.
+- Melhorias de layout e controles para celular.
+
+
+## v1.0.2 — Clássicos da TV
+- Novo filtro **📺 Clássicos da TV**.
+- Linha dedicada na área de streaming.
+- Busca reconhece termos nostálgicos como TV anos 90, Sessão da Tarde e Cinema em Casa.
+- Adicionado **Era uma Vez no Oeste (1968)** via NetMovies Clássicos oficial/licenciado.
+- Mr. Bumpy, Pica-Pau e a coleção NetMovies agora também aparecem na área de Clássicos da TV.
+- Títulos sem fonte oficial incorporável não são cadastrados como reprodução para evitar links quebrados ou cópias não autorizadas.
