@@ -1,4 +1,4 @@
-# JogaHub 1.0.15
+# JogaHub 1.0.17
 
 Prateleira de jogos como conteúdo principal e uma aba separada de filmes antigos em domínio público, hospedada como site estático (GitHub Pages).
 
@@ -147,7 +147,7 @@ Adiciona ALF (catálogo oficial PT-BR), WWE Vault/Raw com vídeos oficiais incor
 Catálogo ampliado com Mercado Play, Plex, Pluto TV, NetMovies/YouTube oficial e Internet Archive. Baki the Grappler clássico permanece apenas como catálogo enquanto não houver fonte oficial completa em PT-BR.
 
 
-## v1.0.15 — YouTube PT-BR oficial/licenciado
+## v1.0.17 — YouTube PT-BR oficial/licenciado
 
 - Novo filtro **▶️ YouTube PT**.
 - Adicionados filmes completos dublados de canais NetMovies.
@@ -195,9 +195,15 @@ Os links do Internet Archive enviados pelo usuário foram verificados, mas não 
 - O catálogo principal continua escondendo páginas que servem apenas como “Onde assistir”.
 
 
-## v1.0.15 — Doramas oficiais no player
+## v1.0.17 — Doramas oficiais no player
 - Nova categoria 🌸 Doramas.
 - Adicionados K-dramas completos do canal oficial KBS WORLD TV: If We Were a Season, My Happy Home e The Tuna and the Dolphin.
 - Os títulos são reproduzidos dentro do JogaHub via player oficial do YouTube.
 - Eles estão em coreano com legendas em inglês; não são marcados como dublados em português.
 - KOCOWA/Viki continuam fora do catálogo principal quando não permitem reprodução incorporada no JogaHub.
+
+
+## v1.0.17 — Catálogo multifonte ampliado
+- Regra do Archive ampliada: publicação pública entra quando não há indicação explícita de upload não autorizado.
+- Novos conteúdos internos: Pokémon, He-Man, She-Ra, Turma da Mônica, NetMovies, dramas turcos e arquivos PT do Internet Archive.
+- O catálogo principal continua exibindo somente itens que possuem player interno (Archive, YouTube ou vídeo direto).
