@@ -10,7 +10,7 @@
    Para longa-metragem use mediaType: 'filme'.
    =================================================================== */
 
-const FILMES = [
+const FILMES_CATALOGO = [
 
   {
     id: 'colecao-series-gratis-mercado-play',
@@ -880,5 +880,164 @@ const FILMES = [
     classicTv:true, nostalgiaTags:['Corrida Maluca','Wacky Races','Hanna-Barbera','anos 60','desenho clássico','dublado','nostalgia']
   }
 
+,
+  // ==================================================================
+  // v1.0.15 — YOUTUBE PT-BR + DORAMAS OFICIAIS: somente vídeos/players incorporáveis
+  // Fontes oficiais/licenciadas validadas em setembro/2026.
+  // ==================================================================
+  {
+    id:'yt-netmovies-congelado', type:'filme', title:'Congelado', year:'Filme completo', genre:'Ação / Suspense', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'NaCgFZviCuU', thumb:'https://i.ytimg.com/vi/NaCgFZviCuU/hqdefault.jpg', accent:'var(--blue)',
+    desc:'Filme completo dublado disponibilizado pelo canal verificado NetMovies.',
+    sourceUrl:'https://www.youtube.com/watch?v=NaCgFZviCuU', sourceLabel:'NetMovies — YouTube oficial', nostalgiaTags:['YouTube','dublado','filme completo','NetMovies','ação']
+  },
+  {
+    id:'yt-netmovies-aprisionados', type:'filme', title:'Aprisionados', year:'Filme completo', genre:'Terror', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'terror', freeLegal:true,
+    youtubeId:'nEpCfMLsHVo', thumb:'https://i.ytimg.com/vi/nEpCfMLsHVo/hqdefault.jpg', accent:'var(--red)',
+    desc:'Filme completo de terror dublado disponibilizado pelo canal verificado NetMovies.',
+    sourceUrl:'https://www.youtube.com/watch?v=nEpCfMLsHVo', sourceLabel:'NetMovies — YouTube oficial', nostalgiaTags:['YouTube','dublado','filme completo','NetMovies','terror']
+  },
+  {
+    id:'yt-netmovies-o-massacre', type:'filme', title:'O Massacre', year:'Filme completo', genre:'Terror', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'terror', freeLegal:true,
+    youtubeId:'bHWHQQbeCsA', thumb:'https://i.ytimg.com/vi/bHWHQQbeCsA/hqdefault.jpg', accent:'var(--red)',
+    desc:'Filme completo de terror dublado disponibilizado pelo canal verificado NetMovies.',
+    sourceUrl:'https://www.youtube.com/watch?v=bHWHQQbeCsA', sourceLabel:'NetMovies — YouTube oficial', nostalgiaTags:['YouTube','dublado','filme completo','NetMovies','terror']
+  },
+  {
+    id:'yt-netmovies-encontro-inesperado', type:'filme', title:'Encontro Inesperado', year:'Filme completo', genre:'Romance', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'romance', freeLegal:true,
+    youtubeId:'FA2Xso8SL4g', thumb:'https://i.ytimg.com/vi/FA2Xso8SL4g/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Filme completo de romance dublado publicado pelo canal NetMovies Romance.',
+    sourceUrl:'https://www.youtube.com/watch?v=FA2Xso8SL4g', sourceLabel:'NetMovies Romance — YouTube', nostalgiaTags:['YouTube','dublado','filme completo','NetMovies','romance']
+  },
+  {
+    id:'yt-netmovies-a-contaminacao', type:'filme', title:'A Contaminação', year:'Filme completo', genre:'Ficção científica / Suspense', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'ficcao', freeLegal:true,
+    youtubeId:'UsXYF4gTfIM', thumb:'https://i.ytimg.com/vi/UsXYF4gTfIM/hqdefault.jpg', accent:'var(--purple)',
+    desc:'Filme completo de ficção científica dublado disponibilizado pelo canal verificado NetMovies.',
+    sourceUrl:'https://www.youtube.com/watch?v=UsXYF4gTfIM', sourceLabel:'NetMovies — YouTube oficial', nostalgiaTags:['YouTube','dublado','filme completo','NetMovies','ficção científica']
+  },
+  {
+    id:'yt-netmovies-festas-parentes', type:'filme', title:'Sobrevivendo às Festas com os Parentes', year:'Filme completo', genre:'Comédia', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'comedia', freeLegal:true,
+    youtubeId:'1KDJkXNeVG8', thumb:'https://i.ytimg.com/vi/1KDJkXNeVG8/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Comédia completa dublada disponibilizada pelo canal verificado NetMovies.',
+    sourceUrl:'https://www.youtube.com/watch?v=1KDJkXNeVG8', sourceLabel:'NetMovies — YouTube oficial', nostalgiaTags:['YouTube','dublado','filme completo','NetMovies','comédia']
+  },
+  {
+    id:'yt-yugioh-duel-monsters-ptbr', type:'filme', title:'Yu-Gi-Oh! Duel Monsters — PT-BR', year:'2000', genre:'Anime / Ação / Aventura', mediaType:'serie',
+    seriesId:'yugioh-duel-monsters-ptbr', seriesTitle:'Yu-Gi-Oh! Duel Monsters', anime:true, language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubePlaylistId:'PLhIid9p4AHHWvcPC5ls3zghn7_wmHHWFd', youtubePreviewId:'Q2gOVS4WLeo', thumb:'assets/youtube-yugioh.svg', accent:'var(--gold)',
+    desc:'Playlist em português brasileiro vinculada ao canal oficial verificado de Yu-Gi-Oh!, com episódios completos do anime.',
+    sourceUrl:'https://www.youtube.com/playlist?list=PLhIid9p4AHHWvcPC5ls3zghn7_wmHHWFd', sourceLabel:'Yu-Gi-Oh! Português Brasileiro Oficial',
+    classicTv:true, nostalgiaTags:['YouTube','anime','dublado','Yu-Gi-Oh','anos 2000','episódios completos']
+  },
+  {
+    id:'yt-yugioh-gx-ep1-ptbr', type:'filme', title:'Yu-Gi-Oh! GX — O Próximo Rei dos Jogos', year:'Episódio 1', genre:'Anime / Ação', mediaType:'serie',
+    seriesId:'yugioh-gx-ptbr', seriesTitle:'Yu-Gi-Oh! GX', season:1, episode:1, anime:true, language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'1vnyaulvWzQ', thumb:'https://i.ytimg.com/vi/1vnyaulvWzQ/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Primeiro episódio de Yu-Gi-Oh! GX em português do Brasil no canal oficial.',
+    sourceUrl:'https://www.youtube.com/watch?v=1vnyaulvWzQ', sourceLabel:'Yu-Gi-Oh! Português Brasileiro Oficial',
+    nostalgiaTags:['YouTube','anime','dublado','Yu-Gi-Oh GX','anos 2000','episódio completo']
+  },
+  {
+    id:'yt-beyblade-x-ep1', type:'filme', title:'Beyblade X — Episódio 1: X', year:'2024', genre:'Anime / Ação / Esportes', mediaType:'serie',
+    seriesId:'beyblade-x-ptbr', seriesTitle:'Beyblade X', season:1, episode:1, anime:true, language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'HntI77JSiwQ', thumb:'https://i.ytimg.com/vi/HntI77JSiwQ/hqdefault.jpg', accent:'var(--red)',
+    desc:'Episódio completo publicado pelo canal oficial BEYBLADE Português Brasil.',
+    sourceUrl:'https://www.youtube.com/watch?v=HntI77JSiwQ', sourceLabel:'BEYBLADE Português Brasil — Canal Oficial',
+    nostalgiaTags:['YouTube','anime','dublado','Beyblade','episódio completo']
+  },
+  {
+    id:'yt-heman-semente-do-mal', type:'filme', title:'He-Man — A Semente do Mal', year:'Episódio completo', genre:'Animação / Aventura / Fantasia', mediaType:'serie',
+    seriesId:'heman-ptbr-youtube', seriesTitle:'He-Man e os Mestres do Universo', season:1, language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'RmN8u3_tamU', thumb:'https://i.ytimg.com/vi/RmN8u3_tamU/hqdefault.jpg', accent:'var(--orange)',
+    desc:'Episódio completo dublado publicado pelo canal verificado He-Man em Português.',
+    sourceUrl:'https://www.youtube.com/watch?v=RmN8u3_tamU', sourceLabel:'He-Man em Português — canal verificado',
+    classicTv:true, nostalgiaTags:['YouTube','dublado','He-Man','anos 80','desenho clássico','episódio completo']
+  },
+  {
+    id:'yt-heman-jacob-widgets', type:'filme', title:'He-Man — Jacob e os Widgets', year:'Episódio completo', genre:'Animação / Aventura / Fantasia', mediaType:'serie',
+    seriesId:'heman-ptbr-youtube', seriesTitle:'He-Man e os Mestres do Universo', season:1, language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'jZ-qcfkVWEc', thumb:'https://i.ytimg.com/vi/jZ-qcfkVWEc/hqdefault.jpg', accent:'var(--orange)',
+    desc:'Episódio completo dublado publicado pelo canal verificado He-Man em Português.',
+    sourceUrl:'https://www.youtube.com/watch?v=jZ-qcfkVWEc', sourceLabel:'He-Man em Português — canal verificado',
+    classicTv:true, nostalgiaTags:['YouTube','dublado','He-Man','anos 80','desenho clássico','episódio completo']
+  },
+  {
+    id:'yt-heman-compilacao-1h', type:'filme', title:'He-Man — Compilação de 1 Hora', year:'Compilação', genre:'Animação / Aventura', mediaType:'serie',
+    seriesId:'heman-ptbr-youtube', seriesTitle:'He-Man e os Mestres do Universo', language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'Vic_zLZaxxY', thumb:'https://i.ytimg.com/vi/Vic_zLZaxxY/hqdefault.jpg', accent:'var(--orange)',
+    desc:'Compilação dublada de He-Man publicada pelo canal verificado He-Man em Português.',
+    sourceUrl:'https://www.youtube.com/watch?v=Vic_zLZaxxY', sourceLabel:'He-Man em Português — canal verificado',
+    classicTv:true, nostalgiaTags:['YouTube','dublado','He-Man','anos 80','compilação']
+  },
+  {
+    id:'yt-shera-rei-unicornio', type:'filme', title:'She-Ra — O Rei Unicórnio', year:'Episódio completo', genre:'Animação / Aventura / Fantasia', mediaType:'serie',
+    seriesId:'shera-ptbr-youtube', seriesTitle:'She-Ra: A Princesa do Poder', season:1, language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'AB1rdNuJr1M', thumb:'https://i.ytimg.com/vi/AB1rdNuJr1M/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Episódio completo em português publicado pelo canal verificado She-Ra: A Princesa do Poder.',
+    sourceUrl:'https://www.youtube.com/watch?v=AB1rdNuJr1M', sourceLabel:'She-Ra: A Princesa do Poder — canal verificado',
+    classicTv:true, nostalgiaTags:['YouTube','dublado','She-Ra','anos 80','desenho clássico','episódio completo']
+  },
+  {
+    id:'yt-panteracorrosa-disque-p', type:'filme', title:'A Pantera Cor-de-Rosa — Disque P para Pantera', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
+    seriesId:'pantera-cor-de-rosa-ptbr', seriesTitle:'A Pantera Cor-de-Rosa', language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true,
+    youtubeId:'ADxuv3Pn5Aw', thumb:'https://i.ytimg.com/vi/ADxuv3Pn5Aw/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Episódio completo dublado em português disponibilizado no canal A Pantera Cor de Rosa em Português.',
+    sourceUrl:'https://www.youtube.com/watch?v=ADxuv3Pn5Aw', sourceLabel:'A Pantera Cor de Rosa em Português — YouTube',
+    classicTv:true, nostalgiaTags:['YouTube','dublado','Pantera Cor-de-Rosa','desenho clássico','episódio completo']
+  },
+  {
+    id:'yt-panteracorrosa-toureiro', type:'filme', title:'A Pantera Cor-de-Rosa — O Toureiro Cor-de-Rosa', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
+    seriesId:'pantera-cor-de-rosa-ptbr', seriesTitle:'A Pantera Cor-de-Rosa', language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true,
+    youtubeId:'0LjU3-mPMrM', thumb:'https://i.ytimg.com/vi/0LjU3-mPMrM/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Episódio completo dublado em português disponibilizado no canal A Pantera Cor de Rosa em Português.',
+    sourceUrl:'https://www.youtube.com/watch?v=0LjU3-mPMrM', sourceLabel:'A Pantera Cor de Rosa em Português — YouTube',
+    classicTv:true, nostalgiaTags:['YouTube','dublado','Pantera Cor-de-Rosa','desenho clássico','episódio completo']
+  }
+
+  ,
+  {
+    id:'yt-dorama-if-we-were-a-season', type:'filme', title:'If We Were a Season', year:'2017', genre:'Dorama / Romance / Escolar', mediaType:'filme',
+    dorama:true, language:'Coreano • legendas em inglês', portuguese:false, colorContent:true, youtubePt:false, freeLegal:true,
+    youtubeId:'vZ7EMIH0oHw', thumb:'https://i.ytimg.com/vi/vZ7EMIH0oHw/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Especial romântico completo da KBS sobre dois amigos de infância cuja relação muda com a chegada de um novo aluno. Publicação oficial do KBS WORLD TV.',
+    sourceUrl:'https://www.youtube.com/watch?v=vZ7EMIH0oHw', sourceLabel:'KBS WORLD TV — canal oficial verificado',
+    nostalgiaTags:['dorama','k-drama','romance','escolar','YouTube oficial','episódio completo']
+  },
+  {
+    id:'yt-dorama-my-happy-home', type:'filme', title:'My Happy Home', year:'2017', genre:'Dorama / Ficção científica / Romance', mediaType:'filme',
+    dorama:true, language:'Coreano • legendas em inglês', portuguese:false, colorContent:true, youtubePt:false, freeLegal:true,
+    youtubeId:'mF_sBcqdEYI', thumb:'https://i.ytimg.com/vi/mF_sBcqdEYI/hqdefault.jpg', accent:'var(--purple)',
+    desc:'Drama especial completo sobre uma cientista e seu marido ciborgue. Disponibilizado gratuitamente pelo canal oficial KBS WORLD TV.',
+    sourceUrl:'https://www.youtube.com/watch?v=mF_sBcqdEYI', sourceLabel:'KBS WORLD TV — canal oficial verificado',
+    nostalgiaTags:['dorama','k-drama','ficção científica','romance','YouTube oficial','episódio completo']
+  },
+  {
+    id:'yt-dorama-tuna-dolphin', type:'filme', title:'The Tuna and the Dolphin', year:'2018', genre:'Dorama / Comédia romântica', mediaType:'filme',
+    dorama:true, language:'Coreano • legendas em inglês', portuguese:false, colorContent:true, youtubePt:false, freeLegal:true,
+    youtubeId:'65WYszK8A78', thumb:'https://i.ytimg.com/vi/65WYszK8A78/hqdefault.jpg', accent:'var(--blue)',
+    desc:'Comédia romântica curta do KBS Drama Special, completa no canal oficial KBS WORLD TV.',
+    sourceUrl:'https://www.youtube.com/watch?v=65WYszK8A78', sourceLabel:'KBS WORLD TV — canal oficial verificado',
+    nostalgiaTags:['dorama','k-drama','comédia romântica','YouTube oficial','episódio completo']
+  }
 
 ];
+
+// v1.0.15 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
+// O app também busca automaticamente itens PT/dublados do Internet Archive quando os metadados indicam licença aberta ou domínio público.
+// Entradas que servem apenas como “Onde assistir” continuam fora da interface principal.
+const FILMES = FILMES_CATALOGO.filter((item) => {
+  return Boolean(
+    item.archiveId ||
+    item.youtubeId ||
+    item.youtubePlaylistId ||
+    item.videoUrl ||
+    item.directVideoUrl ||
+    item.localVideoUrl
+  );
+});

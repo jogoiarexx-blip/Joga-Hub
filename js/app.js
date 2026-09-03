@@ -25,8 +25,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.0.6';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.0.6-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.0.15';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.0.15-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -124,7 +124,7 @@ function renderHomeDashboard(){
   const tv=movies.filter(i=>i.classicTv).slice(0,10);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.0.6</span><h2>Continue de onde parou</h2><p>Jogos, filmes, séries e desenhos reunidos em uma home mais rápida.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${movies.length}</b> vídeos</span></div></div>
+  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.0.15</span><h2>Continue de onde parou</h2><p>Jogos, filmes, séries e desenhos reunidos em uma home mais rápida.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${movies.length}</b> vídeos</span></div></div>
     ${row('▶ Continue assistindo','Seu progresso salvo aparece aqui.',continuing,'Continuar')}
     ${row('📺 Nostalgia da TV','Clássicos, desenhos e séries que marcaram época.',tv,'Clássico da TV')}
     ${row('🆕 Descobrir agora','Alguns destaques do catálogo para abrir direto.',recentMovies,'Assistir')}
@@ -328,7 +328,7 @@ function renderGenreFilters(){
     return;
   }
   if(activeType === 'filme'){
-    const options=[['todos','🍿 Início'],['gratis','🆓 Séries grátis'],['animes','🍥 Animes'],['luta','🤼 Luta livre'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['classicos-tv','📺 Nostalgia TV'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
+    const options=[['todos','🍿 Início'],['youtube-pt','▶️ YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Séries grátis'],['doramas','🌸 Doramas'],['animes','🍥 Animes'],['luta','🤼 Luta livre'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['classicos-tv','📺 Nostalgia TV'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
     document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
     return;
   }
@@ -355,8 +355,11 @@ function applyFilters(){
   const filtered = ITEMS.filter(i => {
     const searchable = normalize([i.title, i.desc, i.genre, i.category, i.type, i.language, i.sourceLabel, ...(i.nostalgiaTags||[]), TYPES[i.type]?.label, GAME_CATEGORIES[i.category]?.label].join(' '));
     const movieFilter = activeType !== 'filme' || genre === 'todos'
+      || (genre === 'youtube-pt' && i.youtubePt === true)
+      || (genre === 'archive-pt' && i.archiveLicensed === true)
       || (genre === 'gratis' && i.freeLegal)
       || (genre === 'classicos-tv' && i.classicTv)
+      || (genre === 'doramas' && i.dorama)
       || (genre === 'animes' && i.anime)
       || (genre === 'luta' && i.wrestling)
       || (genre === 'acao' && (i.filmGenre === 'acao' || normalize(i.genre||'').includes('acao')))
@@ -427,6 +430,67 @@ function downloadOffline(id, btn){
   });
 }
 
+
+const ARCHIVE_OPEN_DUBBED_ROWS = 200;
+function archiveText(value){
+  if(Array.isArray(value)) return value.join(' ');
+  return String(value ?? '');
+}
+function archiveHasOpenLicense(doc){
+  const license = archiveText(doc.licenseurl).toLowerCase();
+  const rights = archiveText(doc.rights).toLowerCase();
+  return license.includes('creativecommons.org') || /public domain|dom[ií]nio p[uú]blico|creative commons/.test(rights);
+}
+function archiveLooksPortugueseDubbed(doc){
+  const hay = normalize([doc.title, doc.description, doc.subject, doc.language].map(archiveText).join(' '));
+  return /dublad|portugues|pt-br|audio pt|audio portugues/.test(hay);
+}
+async function loadArchiveOpenDubbed(){
+  const query = 'mediatype:(movies) AND (title:(dublado OR portugues OR "pt-br") OR description:(dublado OR portugues OR "pt-br") OR subject:(dublado OR portugues OR "pt-br"))';
+  const params = new URLSearchParams();
+  params.set('q', query);
+  ['identifier','title','description','year','date','language','subject','licenseurl','rights','creator'].forEach(f=>params.append('fl[]',f));
+  params.set('rows', String(ARCHIVE_OPEN_DUBBED_ROWS));
+  params.set('page','1');
+  params.set('output','json');
+  params.set('sort[]','downloads desc');
+  try{
+    const res = await fetch(`https://archive.org/advancedsearch.php?${params.toString()}`, {mode:'cors', cache:'no-store'});
+    if(!res.ok) throw new Error(`Archive HTTP ${res.status}`);
+    const data = await res.json();
+    const docs = data?.response?.docs || [];
+    const existing = new Set(ITEMS.map(i=>i.archiveId || i.id));
+    const additions = docs.filter(d=>d.identifier && archiveHasOpenLicense(d) && archiveLooksPortugueseDubbed(d) && !existing.has(d.identifier)).map((d,idx)=>({
+      id:`archive-open-${d.identifier}`,
+      type:'filme',
+      title:archiveText(d.title).trim() || d.identifier,
+      year:String(d.year || archiveText(d.date).slice(0,4) || 'Archive'),
+      genre:'Internet Archive / Português',
+      mediaType:'filme',
+      language:'Português / dublado conforme metadados do item',
+      portuguese:true,
+      freeLegal:true,
+      archiveLicensed:true,
+      colorContent:true,
+      accent:'var(--gold)',
+      thumb:`https://archive.org/services/img/${encodeURIComponent(d.identifier)}`,
+      desc:(archiveText(d.description).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,360) || 'Conteúdo em português encontrado automaticamente no Internet Archive com indicação de licença aberta ou domínio público.'),
+      archiveId:d.identifier,
+      sourceUrl:`https://archive.org/details/${encodeURIComponent(d.identifier)}`,
+      sourceLabel:'Internet Archive — licença aberta/domínio público',
+      nostalgiaTags:['Internet Archive','português','dublado','licença aberta','domínio público']
+    }));
+    if(additions.length){
+      ITEMS.push(...additions);
+      renderTypeTabs(); renderGenreFilters(); renderFeatured(); renderHomeDashboard(); applyFilters();
+    }
+    document.documentElement.dataset.archivePt = additions.length ? String(additions.length) : '0';
+  }catch(err){
+    console.warn('Archive PT:', err);
+    document.documentElement.dataset.archivePt = 'erro';
+  }
+}
+
 if('serviceWorker' in navigator){
   window.addEventListener('load', async () => {
     try {
@@ -458,6 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTypeTabs();
   renderGenreFilters();
   applyFilters();
+  loadArchiveOpenDubbed();
   const installBtn = document.getElementById('installApp');
   installBtn?.addEventListener('click', async () => {
     if(!deferredInstallPrompt) return;
