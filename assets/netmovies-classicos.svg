@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-label="Clássicos dublados em português">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5b1020"/><stop offset=".55" stop-color="#160d1d"/><stop offset="1" stop-color="#07070d"/></linearGradient>
+    <radialGradient id="r"><stop stop-color="#f4c95d" stop-opacity=".25"/><stop offset="1" stop-color="#f4c95d" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#g)"/>
+  <circle cx="470" cy="180" r="250" fill="url(#r)"/>
+  <g fill="none" stroke="#f4c95d" stroke-width="12" opacity=".9">
+    <circle cx="300" cy="315" r="115"/><circle cx="300" cy="315" r="25"/>
+    <circle cx="300" cy="235" r="24"/><circle cx="380" cy="315" r="24"/><circle cx="300" cy="395" r="24"/><circle cx="220" cy="315" r="24"/>
+    <path d="M388 390c70 32 101 93 107 158"/>
+  </g>
+  <text x="300" y="570" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="54" font-weight="800">CLÁSSICOS</text>
+  <text x="300" y="632" text-anchor="middle" fill="#f4c95d" font-family="Arial,sans-serif" font-size="34" font-weight="700">DUBLADOS</text>
+  <text x="300" y="690" text-anchor="middle" fill="#e8e0e9" font-family="Arial,sans-serif" font-size="25">EM PORTUGUÊS</text>
+  <rect x="145" y="735" width="310" height="58" rx="29" fill="#ffffff14" stroke="#ffffff2b"/>
+  <text x="300" y="774" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="22" font-weight="700">NETMOVIES CLÁSSICOS</text>
+</svg>
