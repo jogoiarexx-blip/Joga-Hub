@@ -1,4 +1,4 @@
-# JogaHub 1.0.5
+# JogaHub 1.0.11
 
 Prateleira de jogos como conteúdo principal e uma aba separada de filmes antigos em domínio público, hospedada como site estático (GitHub Pages).
 
@@ -123,3 +123,47 @@ Os jogos locais foram removidos. Novos jogos devem ser publicados separadamente 
 
 ## Downloads offline (v1.0.5)
 Conteúdos do Internet Archive que oferecem arquivo de vídeo direto podem ser salvos no navegador para reprodução offline. Vídeos do YouTube e páginas externas não são capturados nem baixados pelo JogaHub. Os downloads ficam somente no dispositivo/navegador onde foram feitos e podem ser removidos pela área **Downloads**.
+
+
+## v1.0.7 — Séries grátis legais
+
+- Novo filtro **🆓 Séries grátis**.
+- Catálogo oficial do Mercado Play integrado como atalho dinâmico.
+- Séries verificadas como gratuitas adicionadas ao catálogo: CSI: Miami, Under the Dome, FBI, FBI: Most Wanted, The Rookie, Impuros, The Affair, The Good Wife, Charmed — Jovens Bruxas, Avatar: A Lenda de Aang, The Chosen e Jesus para Crianças.
+- Conteúdo externo gratuito abre na fonte oficial; o JogaHub não copia nem baixa episódios de serviços que não autorizam isso.
+- A disponibilidade pode mudar conforme o catálogo das plataformas.
+
+
+## v1.0.7 — ALF, Luta Livre e Animes
+Adiciona ALF (catálogo oficial PT-BR), WWE Vault/Raw com vídeos oficiais incorporados, BWF Telecatch e uma área de animes com atalhos oficiais para Crunchyroll e Pluto TV.
+
+## v1.0.8 — Baki + gêneros de filmes
+- Baki the Grappler (2001) adicionado como catálogo enquanto não há streaming oficial no Brasil.
+- Novos filtros: Ação, Comédia, Romance, Terror e Ficção científica.
+- Coleções gratuitas legais do Mercado Play e seleção de títulos atuais adicionadas.
+
+
+## v1.0.8 — busca multi-fonte
+Catálogo ampliado com Mercado Play, Plex, Pluto TV, NetMovies/YouTube oficial e Internet Archive. Baki the Grappler clássico permanece apenas como catálogo enquanto não houver fonte oficial completa em PT-BR.
+
+
+## v1.0.11 — séries e animes multifonte
+Busca ampliada em Plex, Pluto TV, Crunchyroll e demais fontes oficiais. ALF atualizado para a oferta gratuita do Plex; novas séries grátis e animes com páginas oficiais adicionados.
+
+
+## v1.0.11 — clássicos encontrados pelo usuário
+
+- Yu Yu Hakusho: catálogo oficial via Crunchyroll.
+- Sakura Card Captors: catálogo legal atual via KoiPlay/Amazon Channel.
+- Phantom Quest Corp.: catálogo sem incorporar upload não autorizado do Archive.
+- Shinzo (Mushrambo): 32 episódios catalogados; sem streaming legal no Brasil no momento.
+- Múmias Vivas: 42 episódios, disponibilidade legal via Oldflix.
+
+Os links do Internet Archive enviados pelo usuário foram verificados, mas não são incorporados quando a autorização de distribuição da obra protegida não está clara.
+
+
+## v1.0.11 — Corrida Maluca
+
+- Adicionada Corrida Maluca ao catálogo de Desenhos / Nostalgia da TV.
+- Fonte externa informada pelo usuário: Internet Archive.
+- Download offline não é habilitado para esse item por não haver autorização clara de redistribuição no upload.
