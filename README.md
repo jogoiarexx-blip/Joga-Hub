@@ -1,4 +1,4 @@
-# JogaHub 1.0.11
+# JogaHub 1.0.15
 
 Prateleira de jogos como conteúdo principal e uma aba separada de filmes antigos em domínio público, hospedada como site estático (GitHub Pages).
 
@@ -147,11 +147,21 @@ Adiciona ALF (catálogo oficial PT-BR), WWE Vault/Raw com vídeos oficiais incor
 Catálogo ampliado com Mercado Play, Plex, Pluto TV, NetMovies/YouTube oficial e Internet Archive. Baki the Grappler clássico permanece apenas como catálogo enquanto não houver fonte oficial completa em PT-BR.
 
 
-## v1.0.11 — séries e animes multifonte
+## v1.0.15 — YouTube PT-BR oficial/licenciado
+
+- Novo filtro **▶️ YouTube PT**.
+- Adicionados filmes completos dublados de canais NetMovies.
+- Adicionados Yu-Gi-Oh! Duel Monsters e GX em português por fonte oficial.
+- Adicionado Beyblade X em português pelo canal oficial.
+- Adicionados episódios/compilações de He-Man e She-Ra em português.
+- Adicionados episódios dublados de A Pantera Cor-de-Rosa.
+- Mantida a regra: o catálogo principal só mostra itens reproduzíveis dentro do JogaHub.
+
+## v1.0.13 — séries e animes multifonte
 Busca ampliada em Plex, Pluto TV, Crunchyroll e demais fontes oficiais. ALF atualizado para a oferta gratuita do Plex; novas séries grátis e animes com páginas oficiais adicionados.
 
 
-## v1.0.11 — clássicos encontrados pelo usuário
+## v1.0.13 — clássicos encontrados pelo usuário
 
 - Yu Yu Hakusho: catálogo oficial via Crunchyroll.
 - Sakura Card Captors: catálogo legal atual via KoiPlay/Amazon Channel.
@@ -162,8 +172,32 @@ Busca ampliada em Plex, Pluto TV, Crunchyroll e demais fontes oficiais. ALF atua
 Os links do Internet Archive enviados pelo usuário foram verificados, mas não são incorporados quando a autorização de distribuição da obra protegida não está clara.
 
 
-## v1.0.11 — Corrida Maluca
+## v1.0.13 — Corrida Maluca
 
 - Adicionada Corrida Maluca ao catálogo de Desenhos / Nostalgia da TV.
 - Fonte externa informada pelo usuário: Internet Archive.
 - Download offline não é habilitado para esse item por não haver autorização clara de redistribuição no upload.
+
+
+## v1.0.13 — catálogo somente reproduzível
+
+- O catálogo principal agora exibe somente conteúdos que podem abrir no player do próprio JogaHub.
+- Itens apenas de catálogo/“Onde assistir” são ocultados automaticamente.
+- A regra é global: novos itens externos sem player interno também não aparecem.
+
+
+## v1.0.13 — Archive PT automático
+- Novo filtro **🏛️ Archive PT**.
+- Busca automática no Internet Archive por vídeos em português/dublados.
+- Só importa automaticamente itens cujos metadados indiquem **Creative Commons, domínio público ou outra marcação aberta equivalente**.
+- Os itens importados usam o player interno do JogaHub (`archiveId`).
+- A busca é atualizada ao abrir o site; a disponibilidade do Archive pode variar.
+- O catálogo principal continua escondendo páginas que servem apenas como “Onde assistir”.
+
+
+## v1.0.15 — Doramas oficiais no player
+- Nova categoria 🌸 Doramas.
+- Adicionados K-dramas completos do canal oficial KBS WORLD TV: If We Were a Season, My Happy Home e The Tuna and the Dolphin.
+- Os títulos são reproduzidos dentro do JogaHub via player oficial do YouTube.
+- Eles estão em coreano com legendas em inglês; não são marcados como dublados em português.
+- KOCOWA/Viki continuam fora do catálogo principal quando não permitem reprodução incorporada no JogaHub.
