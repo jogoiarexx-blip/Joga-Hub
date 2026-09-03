@@ -82,3 +82,14 @@ Os apps Termo Premium, NutriCalc Pro, Iron Training, FORGE V12 e Invest+ agora f
 
 ## Mudança da versão 1.0
 Os jogos locais foram removidos. Novos jogos devem ser publicados separadamente (ex.: GitHub Pages) e adicionados em `js/data-links.js`.
+
+
+## v1.5.1 — filmes clássicos dublados
+- Integração da coleção oficial NetMovies Clássicos.
+- Novos filtros: Português, Coloridos PT-BR e Coleções.
+- Linha especial para conteúdos coloridos em português.
+
+## v1.5.2 — Mr. Bumpy em português
+- Adicionados os episódios/arquivos dublados de Mr. Bumpy encontrados e ainda disponíveis para reprodução incorporada.
+- Mr. Bumpy aparece como série própria e os itens encontrados são agrupados no player.
+- Catálogo deixa claro que a preservação dublada online é incompleta e pode mudar conforme a disponibilidade das fontes.
