@@ -1,28 +1,114 @@
 /* ===================================================================
-   JOGAHUB — FILMES ANTIGOS
+   JOGAHUB — CATÁLOGO DE FILMES, DESENHOS E SÉRIES CLÁSSICAS
 
-   Esta lista usa o player incorporado do Internet Archive.
-   Antes de cadastrar outro filme, confirme na página da obra se o campo
-   "Usage" permite a exibição (por exemplo: Public Domain ou CC0).
+   Conteúdos online podem usar o Internet Archive ou players oficiais
+   incorporáveis, como YouTube. Antes de cadastrar outro título, confirme
+   se a fonte permite incorporação/exibição.
 
-   Para adicionar um filme, copie um objeto e altere:
-   - archiveId: trecho depois de archive.org/details/
-   - sourceUrl: página oficial da obra no Internet Archive
-   - thumb: capa automática gerada pelo Internet Archive
+   Para séries/desenhos use também:
+   mediaType: 'serie', seriesId, seriesTitle, season e episode.
+   Para longa-metragem use mediaType: 'filme'.
    =================================================================== */
 
 const FILMES = [
+
   {
-    id: 'filme-pica-pau-ep1',
+    id: 'mr-bumpy-ptbr-remaster-4k',
     type: 'filme',
-    title: 'Pica-Pau — Episódio 1',
-    year: '',
+    title: 'Mr. Bumpy — Episódio Dublado e Remasterizado',
+    year: '1995 / remaster 2024',
     genre: 'Desenho',
+    mediaType: 'serie',
+    seriesId: 'mr-bumpy-ptbr',
+    seriesTitle: 'Mr. Bumpy',
+    season: 1,
+    episode: 1,
+    language: 'Português (dublado)',
+    portuguese: true,
+    colorContent: true,
+    accent: 'var(--green)',
+    thumb: 'https://i.ytimg.com/vi/-8WQKZLFRaQ/hqdefault.jpg',
+    desc: 'Episódio preservado com dublagem brasileira da Álamo, disponibilizado em versão remasterizada. A coleção dublada de Mr. Bumpy disponível online é incompleta.',
+    youtubeId: '-8WQKZLFRaQ',
+    sourceUrl: 'https://www.youtube.com/watch?v=-8WQKZLFRaQ',
+    sourceLabel: 'YouTube — preservação de TV'
+  },
+  {
+    id: 'mr-bumpy-ptbr-agua-por-favor',
+    type: 'filme',
+    title: 'Mr. Bumpy — Água, por favor',
+    year: '1995',
+    genre: 'Desenho',
+    mediaType: 'serie',
+    seriesId: 'mr-bumpy-ptbr',
+    seriesTitle: 'Mr. Bumpy',
+    season: 1,
+    episode: 2,
+    language: 'Português (dublado)',
+    portuguese: true,
+    colorContent: true,
+    accent: 'var(--green)',
+    thumb: 'https://i.ytimg.com/vi/zyYoGdNiE00/hqdefault.jpg',
+    desc: 'Episódio conhecido como “Água, por favor”, com dublagem brasileira e áudio preservado. Disponibilidade sujeita ao próprio YouTube.',
+    youtubeId: 'zyYoGdNiE00',
+    sourceUrl: 'https://www.youtube.com/watch?v=zyYoGdNiE00',
+    sourceLabel: 'YouTube — arquivo dublado'
+  },
+  {
+    id: 'mr-bumpy-ptbr-arquivo-2009',
+    type: 'filme',
+    title: 'Mr. Bumpy — Episódio Dublado (arquivo raro)',
+    year: '1990s / upload 2009',
+    genre: 'Desenho',
+    mediaType: 'serie',
+    seriesId: 'mr-bumpy-ptbr',
+    seriesTitle: 'Mr. Bumpy',
+    season: 1,
+    episode: 3,
+    language: 'Português (dublado)',
+    portuguese: true,
+    colorContent: true,
+    accent: 'var(--green)',
+    thumb: 'https://i.ytimg.com/vi/1Ug6tdbzkmI/hqdefault.jpg',
+    desc: 'Upload antigo preservando a dublagem brasileira de Mr. Bumpy. Mantido como item separado porque a disponibilidade de episódios dublados é rara e incompleta.',
+    youtubeId: '1Ug6tdbzkmI',
+    sourceUrl: 'https://www.youtube.com/watch?v=1Ug6tdbzkmI',
+    sourceLabel: 'YouTube — arquivo dublado'
+  },
+  {
+    id: 'colecao-netmovies-classicos-dublados',
+    type: 'filme',
+    title: 'Clássicos Dublados — NetMovies',
+    year: 'Oficial',
+    genre: 'Clássicos',
+    mediaType: 'colecao',
+    language: 'Português (dublado)',
+    portuguese: true,
+    colorContent: true,
+    accent: 'var(--red)',
+    thumb: 'assets/netmovies-classicos.svg',
+    desc: 'Coleção oficial do canal verificado NetMovies Clássicos. O canal informa que seus filmes são completos, licenciados e dublados, incluindo vários clássicos coloridos em português.',
+    youtubePlaylistId: 'UUklg72s4SymWVrriqiUgXhw',
+    sourceUrl: 'https://www.youtube.com/@NetMoviesClassicos',
+    sourceLabel: 'NetMovies Clássicos — canal oficial'
+  },
+  {
+    id: 'serie-pica-pau-oficial',
+    type: 'filme',
+    title: 'Pica-Pau — Episódios Completos',
+    year: 'Oficial',
+    genre: 'Desenho',
+    mediaType: 'serie',
+    seriesId: 'pica-pau-oficial',
+    seriesTitle: 'Pica-Pau',
+    season: 0,
     accent: 'var(--gold)',
-    thumb: 'https://archive.org/services/img/OnovoShowoPicaPau',
-    desc: 'Episódio 1 de Pica-Pau, reproduzido pelo player incorporado do Internet Archive.',
-    archiveId: 'OnovoShowoPicaPau',
-    sourceUrl: 'https://archive.org/details/OnovoShowoPicaPau'
+    thumb: 'https://i.ytimg.com/vi/kI6Sonj01QE/hqdefault.jpg',
+    desc: 'Coleção oficial em português do canal Pica-Pau em Português. A playlist é carregada diretamente do YouTube e acompanha os episódios publicados pelo canal.',
+    youtubePlaylistId: 'PLnKM4dFgKAoaEcokWCSbk9qYkLHM_dbR_',
+    youtubePreviewId: 'kI6Sonj01QE',
+    sourceUrl: 'https://www.youtube.com/playlist?list=PLnKM4dFgKAoaEcokWCSbk9qYkLHM_dbR_',
+    sourceLabel: 'YouTube oficial'
   },
   {
     id: 'filme-nosferatu-1922',
@@ -30,6 +116,7 @@ const FILMES = [
     title: 'Nosferatu',
     year: '1922',
     genre: 'Terror',
+    mediaType: 'filme',
     accent: 'var(--purple)',
     thumb: 'https://archive.org/services/img/Nosferatu1922VHS',
     desc: 'Clássico expressionista de F. W. Murnau sobre o misterioso Conde Orlok. Filme mudo com cartelas em inglês.',
@@ -42,6 +129,7 @@ const FILMES = [
     title: 'Jejum de Amor',
     year: '1940',
     genre: 'Comédia',
+    mediaType: 'filme',
     accent: 'var(--pink)',
     thumb: 'https://archive.org/services/img/his_girl_friday',
     desc: 'Comédia acelerada de Howard Hawks com Cary Grant e Rosalind Russell. Áudio original em inglês.',
@@ -54,6 +142,7 @@ const FILMES = [
     title: 'O Fantasma da Ópera',
     year: '1925',
     genre: 'Terror',
+    mediaType: 'filme',
     accent: 'var(--red)',
     thumb: 'https://archive.org/services/img/ThePhantomoftheOpera',
     desc: 'A adaptação clássica estrelada por Lon Chaney, ambientada nos subterrâneos da Ópera de Paris. Filme mudo.',
@@ -66,6 +155,7 @@ const FILMES = [
     title: 'A General',
     year: '1926',
     genre: 'Comédia',
+    mediaType: 'filme',
     accent: 'var(--gold)',
     thumb: 'https://archive.org/services/img/The_General_Buster_Keaton',
     desc: 'Aventura e comédia muda de Buster Keaton em uma perseguição ferroviária durante a Guerra Civil Americana.',

@@ -25,8 +25,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.3.0';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.3.0-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.5.2';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.5.2-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -38,10 +38,21 @@ function isExternalItem(item){
   return !!item?.url && /^https?:\/\//i.test(item.url);
 }
 function itemHref(item){
+  if(item.type === 'filme' && item.youtubePlaylistId){
+    const url = `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(item.youtubePlaylistId)}`;
+    const source = item.sourceUrl || `https://www.youtube.com/playlist?list=${encodeURIComponent(item.youtubePlaylistId)}`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=youtube&playlistId=${encodeURIComponent(item.youtubePlaylistId)}&id=${encodeURIComponent(item.id || '')}`;
+  }
+  if(item.type === 'filme' && item.youtubeId){
+    const start = Number(item.startSeconds)||0;
+    const url = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(item.youtubeId)}${start?`?start=${start}`:''}`;
+    const source = item.sourceUrl || `https://www.youtube.com/watch?v=${encodeURIComponent(item.youtubeId)}${start?`&t=${start}s`:''}`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=youtube&youtubeId=${encodeURIComponent(item.youtubeId)}&start=${start}&id=${encodeURIComponent(item.id || '')}`;
+  }
   if(item.type === 'filme' && item.archiveId){
     const url = `https://archive.org/embed/${encodeURIComponent(item.archiveId)}`;
     const source = item.sourceUrl || `https://archive.org/details/${encodeURIComponent(item.archiveId)}`;
-    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&archiveId=${encodeURIComponent(item.archiveId)}&id=${encodeURIComponent(item.id || '')}`;
   }
   if(isExternalItem(item)){
     if(item.embed === true){
@@ -52,7 +63,7 @@ function itemHref(item){
   return item.path || '#';
 }
 function itemLinkAttrs(item){
-  if(item.type === 'filme' && item.archiveId) return '';
+  if(item.type === 'filme' && (item.archiveId || item.youtubePlaylistId || item.youtubeId)) return '';
   return isExternalItem(item) && item.embed !== true ? ' target="_blank" rel="noopener noreferrer"' : '';
 }
 function installGameHref(item){
@@ -86,6 +97,18 @@ function renderFeatured(){
   const img = document.getElementById('featuredImg');
   img.hidden = true;
 }
+function movieProgress(item){
+  if(item.type !== 'filme' || !item.archiveId) return null;
+  try {
+    const p = JSON.parse(localStorage.getItem(`jogahub.movie.progress.${item.archiveId}`) || 'null');
+    if(!p || !p.duration || p.time < 20 || p.finished || p.time >= p.duration - 25) return null;
+    return p;
+  } catch { return null; }
+}
+function formatMovieProgress(p){
+  const pct = Math.max(0, Math.min(100, (p.time / p.duration) * 100));
+  return `<div class="movie-progress"><span style="width:${pct.toFixed(1)}%"></span></div><small class="movie-progress-label">▶ continuar assistindo · ${Math.round(pct)}%</small>`;
+}
 function cardHTML(item){
   const meta = TYPES[item.type] || TYPES.jogo;
   const favorites = loadFavorites();
@@ -93,9 +116,10 @@ function cardHTML(item){
   const thumb = item.thumb
     ? `<div class="card-thumb"><img src="${escapeHTML(item.thumb)}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy"></div>`
     : `<div class="card-thumb card-thumb-placeholder"><span>${meta.icon}</span></div>`;
-  const onlineBadge = (isExternalItem(item) || item.archiveId) ? `<span class="online-badge">🌐 online</span>` : '';
+  const onlineBadge = (isExternalItem(item) || item.archiveId || item.youtubePlaylistId || item.youtubeId) ? `<span class="online-badge">🌐 online</span>` : '';
   const yearBadge = item.year ? `<span class="year-badge">${escapeHTML(item.year)}</span>` : '';
-  const progressHTML = '';
+  const progress = movieProgress(item);
+  const progressHTML = progress ? formatMovieProgress(progress) : '';
   return `
     <article class="card" style="--accent:${item.accent}" data-id="${escapeHTML(item.id)}">
       <button class="favorite-btn${isFav?' active':''}" type="button" data-favorite="${escapeHTML(item.id)}" aria-label="${isFav?'Remover dos':'Adicionar aos'} favoritos" aria-pressed="${isFav}">♥</button>
@@ -104,8 +128,8 @@ function cardHTML(item){
         <div class="card-tags"><span class="tag"><span class="tag-icon">${meta.icon}</span>${escapeHTML(item.genre)}</span>${yearBadge}${onlineBadge}</div>
         <h2>${escapeHTML(item.title)}</h2>
         <p>${escapeHTML(item.desc)}</p>
-        
-        <span class="play">▶ ${(isExternalItem(item) || item.archiveId) ? meta.action + ' online' : meta.action}</span>
+        ${progressHTML}
+        <span class="play">▶ ${(isExternalItem(item) || item.archiveId || item.youtubePlaylistId || item.youtubeId) ? meta.action + ' online' : meta.action}</span>
       </a>
       <div class="card-extra-actions">
         ${isExternalItem(item) && item.installable === true ? `<a class="install-game-btn" href="${escapeHTML(installGameHref(item))}" aria-label="Instalar ${escapeHTML(item.title)}">📲 instalar jogo</a>` : ''}
@@ -113,6 +137,67 @@ function cardHTML(item){
       </div>
     </article>`;
 }
+function movieKindLabel(item){
+  if(item.mediaType === 'serie') return item.episode ? `S${item.season || 1}:E${item.episode}` : 'Série';
+  if(item.mediaType === 'colecao') return 'Coleção';
+  return 'Filme';
+}
+function movieCardHTML(item, compact=false){
+  const favorites = loadFavorites();
+  const isFav = favorites.has(item.id);
+  const p = movieProgress(item);
+  const pct = p ? Math.max(0, Math.min(100, (p.time/p.duration)*100)) : 0;
+  return `<article class="stream-card${compact?' compact':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
+    <a class="stream-poster" href="${escapeHTML(itemHref(item))}" aria-label="Assistir ${escapeHTML(item.title)}">
+      <img src="${escapeHTML(item.thumb || '')}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy">
+      <span class="stream-play">▶</span>
+      ${p?`<span class="stream-progress"><i style="width:${pct.toFixed(1)}%"></i></span>`:''}
+    </a>
+    <div class="stream-card-copy">
+      <div class="stream-card-title"><b>${escapeHTML(item.seriesTitle || item.title)}</b><button class="favorite-btn stream-fav${isFav?' active':''}" type="button" data-favorite="${escapeHTML(item.id)}" aria-label="${isFav?'Remover da':'Adicionar à'} Minha Lista" aria-pressed="${isFav}">♥</button></div>
+      <span>${escapeHTML(movieKindLabel(item))}${item.year ? ` • ${escapeHTML(item.year)}` : ''} • ${escapeHTML(item.genre || '')}</span>
+      ${item.seriesTitle && item.title !== item.seriesTitle ? `<small>${escapeHTML(item.title)}</small>` : ''}
+    </div>
+  </article>`;
+}
+function renderMovieHub(list){
+  const grid=document.getElementById('games');
+  const favorites=loadFavorites();
+  const allMovies=ITEMS.filter(i=>i.type==='filme');
+  const visibleIds=new Set(list.map(i=>i.id));
+  const pool=allMovies.filter(i=>visibleIds.has(i.id));
+  const continuing=pool.filter(movieProgress);
+  const favs=pool.filter(i=>favorites.has(i.id));
+  const series=pool.filter(i=>i.mediaType==='serie');
+  const films=pool.filter(i=>i.mediaType!=='serie' && i.mediaType!=='colecao');
+  const collections=pool.filter(i=>i.mediaType==='colecao');
+  const portuguese=pool.filter(i=>i.portuguese || /portugu/i.test(i.language || ''));
+  const colorPt=pool.filter(i=>i.colorContent && (i.portuguese || /portugu/i.test(i.language || '')));
+  const featured=(continuing[0] || series[0] || pool[0] || null);
+  if(!featured){grid.innerHTML='';return;}
+  const heroP=movieProgress(featured); const heroPct=heroP?Math.round(heroP.time/heroP.duration*100):0;
+  const section=(title,subtitle,items)=> items.length ? `<section class="stream-row"><div class="stream-row-head"><div><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:''}</div><span>${items.length}</span></div><div class="stream-track">${items.map(i=>movieCardHTML(i)).join('')}</div></section>` : '';
+  grid.innerHTML=`<div class="movie-hub">
+    <section class="stream-hero" style="--hero-image:url('${escapeHTML(featured.thumb || '')}')">
+      <div class="stream-hero-art"></div><div class="stream-hero-shade"></div>
+      <div class="stream-hero-copy"><span class="stream-eyebrow">${featured.mediaType==='serie'?'📺 SÉRIE CLÁSSICA':'🎬 CINEMA CLÁSSICO'}</span>
+        <h1>${escapeHTML(featured.seriesTitle || featured.title)}</h1>
+        <p>${escapeHTML(featured.desc || '')}</p>
+        <div class="stream-hero-meta"><span>${escapeHTML(featured.genre||'')}</span>${featured.year?`<span>${escapeHTML(featured.year)}</span>`:''}<span>${escapeHTML(movieKindLabel(featured))}</span></div>
+        <div class="stream-hero-actions"><a class="stream-primary" href="${escapeHTML(itemHref(featured))}">▶ ${heroP?'Continuar '+heroPct+'%':'Assistir agora'}</a><button type="button" class="stream-secondary" data-favorite="${escapeHTML(featured.id)}">♥ Minha Lista</button></div>
+      </div>
+    </section>
+    ${section('Continuar assistindo','Retome exatamente de onde você parou.',continuing)}
+    ${section('Minha Lista','Seus favoritos ficam reunidos aqui.',favs)}
+    ${section('Coloridos em português','Clássicos dublados e coleções oficiais com títulos coloridos.',colorPt)}
+    ${section('Em português','Conteúdos dublados ou originalmente em português.',portuguese)}
+    ${section('Coleções oficiais','Catálogos licenciados incorporados de fontes oficiais.',collections)}
+    ${section('Desenhos e séries','Episódios organizados por série e temporada.',series)}
+    ${section('Filmes clássicos','Longas disponíveis no catálogo.',films)}
+    ${section('Todo o catálogo','Tudo disponível na área de filmes.',pool)}
+  </div>`;
+}
+
 function renderItems(list){
   const grid = document.getElementById('games');
   const empty = document.getElementById('emptyState');
@@ -159,6 +244,11 @@ function renderGenreFilters(){
     }).join('');
     return;
   }
+  if(activeType === 'filme'){
+    const options=[['todos','🍿 Início'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
+    document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
+    return;
+  }
   const genres = ['todos', ...new Set(pool.map(i => i.genre))];
   document.getElementById('filters').innerHTML = genres.map((g,i) =>
     `<button class="filter-btn${i===0?' active':''}" data-genre="${escapeHTML(g)}" type="button">${escapeHTML(g)}</button>`
@@ -180,9 +270,17 @@ function applyFilters(){
   const activeBtn = document.querySelector('.filter-btn.active');
   const genre = activeBtn ? activeBtn.dataset.genre : 'todos';
   const filtered = ITEMS.filter(i => {
-    const searchable = normalize([i.title, i.desc, i.genre, i.category, i.type, TYPES[i.type]?.label, GAME_CATEGORIES[i.category]?.label].join(' '));
+    const searchable = normalize([i.title, i.desc, i.genre, i.category, i.type, i.language, i.sourceLabel, TYPES[i.type]?.label, GAME_CATEGORIES[i.category]?.label].join(' '));
+    const movieFilter = activeType !== 'filme' || genre === 'todos'
+      || (genre === 'portugues' && (i.portuguese || /portugu/i.test(i.language || '')))
+      || (genre === 'coloridos' && i.colorContent && (i.portuguese || /portugu/i.test(i.language || '')))
+      || (genre === 'series' && i.mediaType === 'serie')
+      || (genre === 'filmes' && i.mediaType !== 'serie' && i.mediaType !== 'colecao')
+      || (genre === 'colecoes' && i.mediaType === 'colecao')
+      || (genre === 'favoritos' && loadFavorites().has(i.id))
+      || (genre === 'continuar' && !!movieProgress(i));
     return (activeType === 'todos' || i.type === activeType)
-      && (genre === 'todos' || (activeType === 'jogo' ? (i.category || 'outros') === genre : i.genre === genre))
+      && (activeType === 'filme' ? movieFilter : (genre === 'todos' || (activeType === 'jogo' ? (i.category || 'outros') === genre : i.genre === genre)))
       && (!term || searchable.includes(term));
   });
   renderItems(sortByTypeOrder(filtered));
@@ -190,7 +288,7 @@ function applyFilters(){
   if(movieNotice) movieNotice.hidden = activeType !== 'filme';
   const search = document.getElementById('search');
   if(search) search.placeholder = activeType === 'filme'
-    ? 'buscar filme por título, ano ou gênero...'
+    ? 'buscar filme, série, episódio ou gênero...'
     : 'buscar jogo por título, gênero ou descrição...';
   const empty = document.getElementById('emptyState');
   if(empty) empty.textContent = activeType === 'filme'
