@@ -25,8 +25,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.0.24';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.0.24-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.0.25';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.0.25-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -124,7 +124,7 @@ function renderHomeDashboard(){
   const tv=movies.filter(i=>i.classicTv).slice(0,10);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.0.24</span><h2>Continue de onde parou</h2><p>Jogos, filmes, séries e desenhos reunidos em uma home mais rápida.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${movies.length}</b> vídeos</span></div></div>
+  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.0.25</span><h2>Continue de onde parou</h2><p>Jogos, filmes, séries e desenhos reunidos em uma home mais rápida.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${movies.length}</b> vídeos</span></div></div>
     ${row('▶ Continue assistindo','Seu progresso salvo aparece aqui.',continuing,'Continuar')}
     ${row('📺 Nostalgia da TV','Clássicos, desenhos e séries que marcaram época.',tv,'Clássico da TV')}
     ${row('🆕 Descobrir agora','Alguns destaques do catálogo para abrir direto.',recentMovies,'Assistir')}

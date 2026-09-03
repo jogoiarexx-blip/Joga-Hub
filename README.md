@@ -1,4 +1,4 @@
-# JogaHub 1.0.24
+# JogaHub 1.0.25
 
 ## v1.0.23 — Jackie Chan + catálogo sem repetição
 
