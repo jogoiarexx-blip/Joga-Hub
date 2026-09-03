@@ -1,5 +1,5 @@
-const SHELL = 'jogahub-1.0.2';
-const CONTENT = 'jogahub-1.0.2-content';
+const SHELL = 'jogahub-1.0.5';
+const CONTENT = 'jogahub-1.0.5-content';
 const SHELL_FILES = [
   './', './index.html', './css/style.css?v=101', './js/data-jogos.js?v=40',
   './js/data-links.js?v=40', './js/data-filmes.js?v=101', './js/offline-assets.js?v=40', './js/app.js?v=101',
@@ -16,7 +16,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async()=>{
     const names=await caches.keys();
-    await Promise.all(names.filter(n=>(n.startsWith('nexora-')||n.startsWith('linkora-')||n.startsWith('jogahub-')) && n!==SHELL && n!==CONTENT).map(n=>caches.delete(n)));
+    await Promise.all(names.filter(n=>(n.startsWith('nexora-')||n.startsWith('linkora-')||n.startsWith('jogahub-')) && n!==SHELL && n!==CONTENT && n!=='jogahub-offline-media-v1').map(n=>caches.delete(n)));
     await self.clients.claim();
   })());
 });

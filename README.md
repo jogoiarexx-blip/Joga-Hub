@@ -1,4 +1,4 @@
-# JogaHub 1.0.2
+# JogaHub 1.0.5
 
 Prateleira de jogos como conteúdo principal e uma aba separada de filmes antigos em domínio público, hospedada como site estático (GitHub Pages).
 
@@ -105,10 +105,21 @@ Os jogos locais foram removidos. Novos jogos devem ser publicados separadamente 
 - Melhorias de layout e controles para celular.
 
 
-## v1.0.2 — Clássicos da TV
+## v1.0.5 — Clássicos da TV
 - Novo filtro **📺 Clássicos da TV**.
 - Linha dedicada na área de streaming.
 - Busca reconhece termos nostálgicos como TV anos 90, Sessão da Tarde e Cinema em Casa.
 - Adicionado **Era uma Vez no Oeste (1968)** via NetMovies Clássicos oficial/licenciado.
 - Mr. Bumpy, Pica-Pau e a coleção NetMovies agora também aparecem na área de Clássicos da TV.
 - Títulos sem fonte oficial incorporável não são cadastrados como reprodução para evitar links quebrados ou cópias não autorizadas.
+
+
+## v1.0.5 — Séries clássicas de catálogo
+- Adicionadas **O Mundo Perdido (1999)** e **A Feiticeira (1964)**.
+- Séries sem player incorporável aparecem com **Onde assistir**, sem usar uploads não oficiais.
+- O Mundo Perdido: 3 temporadas / 66 episódios catalogados.
+- A Feiticeira: 8 temporadas / 254 episódios catalogados.
+
+
+## Downloads offline (v1.0.5)
+Conteúdos do Internet Archive que oferecem arquivo de vídeo direto podem ser salvos no navegador para reprodução offline. Vídeos do YouTube e páginas externas não são capturados nem baixados pelo JogaHub. Os downloads ficam somente no dispositivo/navegador onde foram feitos e podem ser removidos pela área **Downloads**.
