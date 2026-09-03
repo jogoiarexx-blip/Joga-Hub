@@ -1025,11 +1025,172 @@ const FILMES_CATALOGO = [
     sourceUrl:'https://www.youtube.com/watch?v=65WYszK8A78', sourceLabel:'KBS WORLD TV — canal oficial verificado',
     nostalgiaTags:['dorama','k-drama','comédia romântica','YouTube oficial','episódio completo']
   }
+  ,
+  {
+    id:'yt-peppa-casa-subterranea', type:'filme', title:'Peppa Pig — A Casa Subterrânea', year:'2025', genre:'Animação / Infantil', mediaType:'serie',
+    seriesId:'peppa-pig-ptbr', seriesTitle:'Peppa Pig', kids:true, language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'RYEiy9fbTmk', thumb:'https://i.ytimg.com/vi/RYEiy9fbTmk/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Episódios completos de Peppa Pig publicados pelo canal oficial em Português Brasil.',
+    sourceUrl:'https://www.youtube.com/watch?v=RYEiy9fbTmk', sourceLabel:'Peppa Pig em Português Brasil — canal oficial',
+    nostalgiaTags:['YouTube','infantil','dublado','Peppa Pig','episódios completos']
+  },
+  {
+    id:'yt-mrbean-animado-competicao', type:'filme', title:'Mr Bean Animado — A Grande Competição', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
+    seriesId:'mr-bean-animado-pt', seriesTitle:'Mr Bean Animado', kids:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'08S8eHq-T9g', thumb:'https://i.ytimg.com/vi/08S8eHq-T9g/hqdefault.jpg', accent:'var(--green)',
+    desc:'Episódio completo publicado pelo canal oficial Mr Bean em Português.',
+    sourceUrl:'https://www.youtube.com/watch?v=08S8eHq-T9g', sourceLabel:'Mr Bean em Português — canal oficial',
+    classicTv:true, nostalgiaTags:['YouTube','Mr Bean','desenho','comédia','episódio completo']
+  },
+  {
+    id:'yt-mrbean-animado-acorde', type:'filme', title:'Mr Bean Animado — Acorde Mr Bean!', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
+    seriesId:'mr-bean-animado-pt', seriesTitle:'Mr Bean Animado', kids:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'wGbv01-9smQ', thumb:'https://i.ytimg.com/vi/wGbv01-9smQ/hqdefault.jpg', accent:'var(--green)',
+    desc:'Episódio completo publicado pelo canal oficial Mr Bean em Português.',
+    sourceUrl:'https://www.youtube.com/watch?v=wGbv01-9smQ', sourceLabel:'Mr Bean em Português — canal oficial',
+    classicTv:true, nostalgiaTags:['YouTube','Mr Bean','desenho','comédia','episódio completo']
+  },
+  {
+    id:'yt-netmovies-horror-entre-nos', type:'filme', title:'O Horror Entre Nós', year:'Filme completo', genre:'Terror', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'terror', freeLegal:true,
+    youtubeId:'H6xio03z7_w', thumb:'https://i.ytimg.com/vi/H6xio03z7_w/hqdefault.jpg', accent:'var(--red)',
+    desc:'Filme de terror completo e dublado publicado pelo canal verificado NetMovies.',
+    sourceUrl:'https://www.youtube.com/watch?v=H6xio03z7_w', sourceLabel:'NetMovies — YouTube oficial',
+    nostalgiaTags:['YouTube','dublado','filme completo','NetMovies','terror']
+  }
+
+  ,
+  {
+    id:'archive-yu-yu-hakusho-720p', type:'filme', title:'Yu Yu Hakusho — Arquivo PT-BR', year:'1992', genre:'Anime / Ação', mediaType:'serie',
+    seriesId:'yu-yu-hakusho-archive', seriesTitle:'Yu Yu Hakusho', anime:true, language:'Português (dublado)', portuguese:true, colorContent:true, archivePt:true, rightsUnclear:true,
+    archiveId:'yu-yu-hakusho-720p', thumb:'https://archive.org/services/img/yu-yu-hakusho-720p', accent:'var(--gold)',
+    desc:'Coleção pública encontrada no Internet Archive com episódios de Yu Yu Hakusho em português. Direitos do upload não estão claramente indicados nos metadados.',
+    sourceUrl:'https://archive.org/details/yu-yu-hakusho-720p', sourceLabel:'Internet Archive — publicação pública; direitos não verificados',
+    classicTv:true, nostalgiaTags:['Archive','Yu Yu Hakusho','anime','dublado','anos 90']
+  },
+  {
+    id:'archive-sakura-cardcaptors-globo', type:'filme', title:'Sakura Card Captors — Globo', year:'1998', genre:'Anime / Fantasia', mediaType:'serie',
+    seriesId:'sakura-cardcaptors-archive', seriesTitle:'Sakura Card Captors', anime:true, language:'Português (dublado)', portuguese:true, colorContent:true, archivePt:true, rightsUnclear:true,
+    archiveId:'sakura-cardcaptors-globo', thumb:'https://archive.org/services/img/sakura-cardcaptors-globo', accent:'var(--pink)',
+    desc:'Arquivo público do Internet Archive identificado como Sakura Card Captors em versão exibida no Brasil. Direitos do upload não estão claramente indicados.',
+    sourceUrl:'https://archive.org/details/sakura-cardcaptors-globo', sourceLabel:'Internet Archive — publicação pública; direitos não verificados',
+    classicTv:true, nostalgiaTags:['Archive','Sakura','anime','dublado','Globo','anos 2000']
+  },
+  {
+    id:'archive-phantom-quest-corp', type:'filme', title:'Phantom Quest Corp. — Arquivo PT', year:'1994', genre:'Anime / Sobrenatural / Comédia', mediaType:'serie',
+    seriesId:'phantom-quest-corp-archive', seriesTitle:'Phantom Quest Corp.', anime:true, language:'Português / conforme arquivo', portuguese:true, colorContent:true, archivePt:true, rightsUnclear:true,
+    archiveId:'phantom-carism-corp-madhouse', thumb:'https://archive.org/services/img/phantom-carism-corp-madhouse', accent:'var(--purple)',
+    desc:'OVA/anime preservado em publicação pública do Internet Archive. Direitos do upload não estão claramente indicados.',
+    sourceUrl:'https://archive.org/details/phantom-carism-corp-madhouse', sourceLabel:'Internet Archive — publicação pública; direitos não verificados',
+    nostalgiaTags:['Archive','Phantom Quest Corp','anime','OVA','anos 90']
+  },
+  {
+    id:'archive-corrida-maluca', type:'filme', title:'Corrida Maluca — Arquivo em Português', year:'1968', genre:'Animação / Comédia', mediaType:'serie',
+    seriesId:'corrida-maluca-archive', seriesTitle:'Corrida Maluca', language:'Português / conforme arquivo', portuguese:true, colorContent:true, archivePt:true, rightsUnclear:true,
+    archiveId:'corrida.-maluca', thumb:'https://archive.org/services/img/corrida.-maluca', accent:'var(--gold)',
+    desc:'Publicação pública de Corrida Maluca no Internet Archive. Direitos do upload não estão claramente indicados.',
+    sourceUrl:'https://archive.org/details/corrida.-maluca', sourceLabel:'Internet Archive — publicação pública; direitos não verificados',
+    classicTv:true, nostalgiaTags:['Archive','Corrida Maluca','desenho clássico','anos 60','dublado']
+  },
+  {
+    id:'yt-pokemon-horizontes-t1e2', type:'filme', title:'Pokémon Horizontes — T1E2', year:'Episódio completo', genre:'Anime / Aventura', mediaType:'serie',
+    seriesId:'pokemon-horizontes-oficial', seriesTitle:'Pokémon: Horizontes', season:1, episode:2, anime:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'R--INUiUisY', thumb:'https://i.ytimg.com/vi/R--INUiUisY/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Episódio completo publicado pelo Canal Oficial da Pokémon em Português.', sourceUrl:'https://www.youtube.com/watch?v=R--INUiUisY', sourceLabel:'Pokémon Oficial em Português — YouTube',
+    nostalgiaTags:['Pokémon','anime','YouTube','episódio completo','português']
+  },
+  {
+    id:'yt-pokemon-horizontes-t2e1', type:'filme', title:'Pokémon Horizontes: A Busca por Laqua — T2E1', year:'Episódio completo', genre:'Anime / Aventura', mediaType:'serie',
+    seriesId:'pokemon-horizontes-oficial', seriesTitle:'Pokémon: Horizontes', season:2, episode:1, anime:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'dcy4Ku-mEwQ', thumb:'https://i.ytimg.com/vi/dcy4Ku-mEwQ/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Episódio completo publicado pelo Canal Oficial da Pokémon em Português.', sourceUrl:'https://www.youtube.com/watch?v=dcy4Ku-mEwQ', sourceLabel:'Pokémon Oficial em Português — YouTube',
+    nostalgiaTags:['Pokémon','anime','YouTube','episódio completo','português']
+  },
+  {
+    id:'yt-pokemon-horizontes-t2e2', type:'filme', title:'Pokémon Horizontes: A Busca por Laqua — T2E2', year:'Episódio completo', genre:'Anime / Aventura', mediaType:'serie',
+    seriesId:'pokemon-horizontes-oficial', seriesTitle:'Pokémon: Horizontes', season:2, episode:2, anime:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'hhc_eoDXBcY', thumb:'https://i.ytimg.com/vi/hhc_eoDXBcY/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Episódio completo publicado pelo Canal Oficial da Pokémon em Português.', sourceUrl:'https://www.youtube.com/watch?v=hhc_eoDXBcY', sourceLabel:'Pokémon Oficial em Português — YouTube',
+    nostalgiaTags:['Pokémon','anime','YouTube','episódio completo','português']
+  },
+  {
+    id:'yt-pokemon-geracoes-ep1', type:'filme', title:'Pokémon Gerações — Episódio 1: A Aventura', year:'2017', genre:'Anime / Aventura', mediaType:'serie',
+    seriesId:'pokemon-geracoes-oficial', seriesTitle:'Pokémon Gerações', season:1, episode:1, anime:true, language:'Português do Brasil', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'Hxe1BfAdHWI', thumb:'https://i.ytimg.com/vi/Hxe1BfAdHWI/hqdefault.jpg', accent:'var(--red)',
+    desc:'Curta completo em português do Brasil publicado pelo canal oficial Pokémon.', sourceUrl:'https://www.youtube.com/watch?v=Hxe1BfAdHWI', sourceLabel:'Pokémon Oficial em Português — YouTube',
+    nostalgiaTags:['Pokémon','anime','YouTube','português']
+  },
+  {
+    id:'yt-pokemon-evolucoes-ep8', type:'filme', title:'Pokémon Evoluções — Episódio 8: A Descoberta', year:'2021', genre:'Anime / Aventura', mediaType:'serie',
+    seriesId:'pokemon-evolucoes-oficial', seriesTitle:'Pokémon Evoluções', season:1, episode:8, anime:true, language:'Português', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'zkorI6jNaEo', thumb:'https://i.ytimg.com/vi/zkorI6jNaEo/hqdefault.jpg', accent:'var(--purple)',
+    desc:'Episódio completo publicado pelo canal oficial Pokémon em português.', sourceUrl:'https://www.youtube.com/watch?v=zkorI6jNaEo', sourceLabel:'Pokémon Oficial em Português — YouTube',
+    nostalgiaTags:['Pokémon','anime','YouTube','português']
+  },
+  {
+    id:'yt-heman-tio-gorpo', type:'filme', title:'He-Man — O Tio Favorito do Gorpo', year:'Episódio completo', genre:'Animação / Aventura / Fantasia', mediaType:'serie',
+    seriesId:'heman-ptbr-youtube', seriesTitle:'He-Man e os Mestres do Universo', language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'VRD7yAayNGo', thumb:'https://i.ytimg.com/vi/VRD7yAayNGo/hqdefault.jpg', accent:'var(--orange)',
+    desc:'Episódio completo dublado publicado pelo canal verificado He-Man em Português.', sourceUrl:'https://www.youtube.com/watch?v=VRD7yAayNGo', sourceLabel:'He-Man em Português — YouTube verificado',
+    classicTv:true, nostalgiaTags:['He-Man','anos 80','desenho clássico','dublado']
+  },
+  {
+    id:'yt-shera-maior-magias', type:'filme', title:'She-Ra — A Maior das Magias', year:'Episódio completo', genre:'Animação / Aventura / Fantasia', mediaType:'serie',
+    seriesId:'shera-ptbr-youtube', seriesTitle:'She-Ra: A Princesa do Poder', language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'kCA1o4s5tqk', thumb:'https://i.ytimg.com/vi/kCA1o4s5tqk/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Episódio completo dublado publicado pelo canal verificado She-Ra: A Princesa do Poder.', sourceUrl:'https://www.youtube.com/watch?v=kCA1o4s5tqk', sourceLabel:'She-Ra em Português — YouTube verificado',
+    classicTv:true, nostalgiaTags:['She-Ra','anos 80','desenho clássico','dublado']
+  },
+  {
+    id:'yt-monica-toy-t4-completa', type:'filme', title:'Mônica Toy — 4ª Temporada Completa', year:'2016', genre:'Animação / Comédia', mediaType:'serie',
+    seriesId:'monica-toy-oficial', seriesTitle:'Mônica Toy', season:4, kids:true, language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'jxM-cJiZsF8', thumb:'https://i.ytimg.com/vi/jxM-cJiZsF8/hqdefault.jpg', accent:'var(--red)',
+    desc:'4ª temporada completa com 26 episódios e especial, publicada pelo canal oficial Turma da Mônica.', sourceUrl:'https://www.youtube.com/watch?v=jxM-cJiZsF8', sourceLabel:'Turma da Mônica — canal oficial verificado',
+    classicTv:true, nostalgiaTags:['Turma da Mônica','Mônica Toy','Brasil','infantil','temporada completa']
+  },
+  {
+    id:'yt-turma-monica-cine-gibi-1', type:'filme', title:'Cine Gibi 1 — O Filme', year:'2004', genre:'Animação / Comédia / Família', mediaType:'filme',
+    kids:true, language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'7m-oXqZ1s3I', thumb:'https://i.ytimg.com/vi/7m-oXqZ1s3I/hqdefault.jpg', accent:'var(--red)',
+    desc:'Filme completo da Turma da Mônica publicado pelo canal oficial da Mauricio de Sousa Produções.', sourceUrl:'https://www.youtube.com/watch?v=7m-oXqZ1s3I', sourceLabel:'Turma da Mônica — canal oficial verificado',
+    classicTv:true, nostalgiaTags:['Turma da Mônica','Cine Gibi','filme completo','Brasil','infantil']
+  },
+  {
+    id:'yt-netmovies-tnt', type:'filme', title:'TNT', year:'Filme completo', genre:'Ação', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'acao', freeLegal:true,
+    youtubeId:'fx55hBuG8_A', thumb:'https://i.ytimg.com/vi/fx55hBuG8_A/hqdefault.jpg', accent:'var(--red)',
+    desc:'Filme de ação completo dublado publicado pelo canal verificado NetMovies.', sourceUrl:'https://www.youtube.com/watch?v=fx55hBuG8_A', sourceLabel:'NetMovies — YouTube oficial',
+    nostalgiaTags:['NetMovies','ação','filme completo','dublado']
+  },
+  {
+    id:'yt-netmovies-primeiras-historias-amor', type:'filme', title:'As Primeiras Histórias de Amor', year:'2018', genre:'Romance', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, filmGenre:'romance', freeLegal:true,
+    youtubeId:'DGbui7iuT6c', thumb:'https://i.ytimg.com/vi/DGbui7iuT6c/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Filme completo de romance dublado e gratuito publicado pelo canal verificado NetMovies.', sourceUrl:'https://www.youtube.com/watch?v=DGbui7iuT6c', sourceLabel:'NetMovies — YouTube oficial',
+    nostalgiaTags:['NetMovies','romance','filme completo','dublado']
+  },
+  {
+    id:'yt-drama-sera-isso-amor-ep1', type:'filme', title:'Será Isso Amor — Episódio 1', year:'2026', genre:'Drama / Romance / Comédia romântica', mediaType:'serie',
+    seriesId:'sera-isso-amor-youtube', seriesTitle:'Será Isso Amor', season:1, episode:1, dorama:true, language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, rightsUnclear:true,
+    youtubeId:'A4mzSjSl3ks', thumb:'https://i.ytimg.com/vi/A4mzSjSl3ks/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Episódio completo em versão estendida e dublagem em português, publicado publicamente no canal DramaBox em Português. Direitos/licenciamento do canal não foram confirmados de forma independente.',
+    sourceUrl:'https://www.youtube.com/watch?v=A4mzSjSl3ks', sourceLabel:'DramaBox em Português — publicação pública; direitos não verificados',
+    nostalgiaTags:['drama','série turca','dublado','romance','YouTube']
+  },
+  {
+    id:'yt-drama-amor-sem-limites-final', type:'filme', title:'Amor Sem Limites — 8ª Temporada / Final', year:'2026', genre:'Drama / Romance / Ação', mediaType:'serie',
+    seriesId:'amor-sem-limites-youtube', seriesTitle:'Amor Sem Limites', season:8, dorama:true, language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, rightsUnclear:true,
+    youtubeId:'wTwga8RRSLI', thumb:'https://i.ytimg.com/vi/wTwga8RRSLI/hqdefault.jpg', accent:'var(--red)',
+    desc:'Compilação pública com episódios da 8ª temporada em dublagem portuguesa, publicada no canal DramaBox em Português. Direitos/licenciamento do canal não foram confirmados de forma independente.',
+    sourceUrl:'https://www.youtube.com/watch?v=wTwga8RRSLI', sourceLabel:'DramaBox em Português — publicação pública; direitos não verificados',
+    nostalgiaTags:['drama','série turca','dublado','romance','YouTube']
+  }
+
 
 ];
 
-// v1.0.15 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
-// O app também busca automaticamente itens PT/dublados do Internet Archive quando os metadados indicam licença aberta ou domínio público.
+// v1.0.17 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
+// O app também busca automaticamente itens PT/dublados publicados no Internet Archive. Itens sem licença clara podem aparecer; apenas sinais explícitos de upload não autorizado são filtrados.
 // Entradas que servem apenas como “Onde assistir” continuam fora da interface principal.
 const FILMES = FILMES_CATALOGO.filter((item) => {
   return Boolean(
