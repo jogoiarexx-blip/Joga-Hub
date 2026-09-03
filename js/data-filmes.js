@@ -31,7 +31,9 @@ const FILMES = [
     desc: 'Episódio preservado com dublagem brasileira da Álamo, disponibilizado em versão remasterizada. A coleção dublada de Mr. Bumpy disponível online é incompleta.',
     youtubeId: '-8WQKZLFRaQ',
     sourceUrl: 'https://www.youtube.com/watch?v=-8WQKZLFRaQ',
-    sourceLabel: 'YouTube — preservação de TV'
+    sourceLabel: 'YouTube — preservação de TV',
+    classicTv: true,
+    nostalgiaTags: ['TV anos 90', 'desenho clássico', 'dublado']
   },
   {
     id: 'mr-bumpy-ptbr-agua-por-favor',
@@ -52,7 +54,9 @@ const FILMES = [
     desc: 'Episódio conhecido como “Água, por favor”, com dublagem brasileira e áudio preservado. Disponibilidade sujeita ao próprio YouTube.',
     youtubeId: 'zyYoGdNiE00',
     sourceUrl: 'https://www.youtube.com/watch?v=zyYoGdNiE00',
-    sourceLabel: 'YouTube — arquivo dublado'
+    sourceLabel: 'YouTube — arquivo dublado',
+    classicTv: true,
+    nostalgiaTags: ['TV anos 90', 'desenho clássico', 'dublado']
   },
   {
     id: 'mr-bumpy-ptbr-arquivo-2009',
@@ -73,7 +77,9 @@ const FILMES = [
     desc: 'Upload antigo preservando a dublagem brasileira de Mr. Bumpy. Mantido como item separado porque a disponibilidade de episódios dublados é rara e incompleta.',
     youtubeId: '1Ug6tdbzkmI',
     sourceUrl: 'https://www.youtube.com/watch?v=1Ug6tdbzkmI',
-    sourceLabel: 'YouTube — arquivo dublado'
+    sourceLabel: 'YouTube — arquivo dublado',
+    classicTv: true,
+    nostalgiaTags: ['TV anos 90', 'desenho clássico', 'dublado']
   },
   {
     id: 'colecao-netmovies-classicos-dublados',
@@ -90,7 +96,9 @@ const FILMES = [
     desc: 'Coleção oficial do canal verificado NetMovies Clássicos. O canal informa que seus filmes são completos, licenciados e dublados, incluindo vários clássicos coloridos em português.',
     youtubePlaylistId: 'UUklg72s4SymWVrriqiUgXhw',
     sourceUrl: 'https://www.youtube.com/@NetMoviesClassicos',
-    sourceLabel: 'NetMovies Clássicos — canal oficial'
+    sourceLabel: 'NetMovies Clássicos — canal oficial',
+    classicTv: true,
+    nostalgiaTags: ['clássicos da TV', 'sessão da tarde', 'cinema em casa', 'dublado']
   },
   {
     id: 'serie-pica-pau-oficial',
@@ -108,7 +116,28 @@ const FILMES = [
     youtubePlaylistId: 'PLnKM4dFgKAoaEcokWCSbk9qYkLHM_dbR_',
     youtubePreviewId: 'kI6Sonj01QE',
     sourceUrl: 'https://www.youtube.com/playlist?list=PLnKM4dFgKAoaEcokWCSbk9qYkLHM_dbR_',
-    sourceLabel: 'YouTube oficial'
+    sourceLabel: 'YouTube oficial',
+    classicTv: true,
+    nostalgiaTags: ['desenho clássico', 'TV', 'família']
+  },
+  {
+    id: 'filme-era-uma-vez-no-oeste-1968',
+    type: 'filme',
+    title: 'Era uma Vez no Oeste',
+    year: '1968',
+    genre: 'Faroeste',
+    mediaType: 'filme',
+    language: 'Português (dublado)',
+    portuguese: true,
+    colorContent: true,
+    classicTv: true,
+    nostalgiaTags: ['clássicos da TV', 'faroeste', 'filme antigo', 'dublado'],
+    accent: 'var(--gold)',
+    thumb: 'https://i.ytimg.com/vi/RUyP_4OJ59o/hqdefault.jpg',
+    desc: 'Faroeste clássico de Sergio Leone, disponível completo no canal oficial e verificado NetMovies Clássicos.',
+    youtubeId: 'RUyP_4OJ59o',
+    sourceUrl: 'https://www.youtube.com/watch?v=RUyP_4OJ59o',
+    sourceLabel: 'NetMovies Clássicos — oficial/licenciado'
   },
   {
     id: 'filme-nosferatu-1922',

@@ -4,7 +4,7 @@ const TYPES = {
   jogo:  { label: 'Jogos',  action: 'jogar', icon: '🎮', singular: 'jogo' },
   filme: { label: 'Filmes Antigos', action: 'assistir', icon: '🎞️', singular: 'filme' }
 };
-const TYPE_ORDER = ['jogo', 'filme'];
+const TYPE_ORDER = ['todos', 'jogo', 'filme'];
 const GAME_CATEGORIES = {
   arcade: {label:'Arcade', icon:'🕹️', order:1},
   acao: {label:'Ação', icon:'💥', order:2},
@@ -25,8 +25,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.5.2';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.5.2-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.0.2';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.0.2-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -76,38 +76,36 @@ function loadFavorites(){
 }
 function saveFavorites(set){ localStorage.setItem(FAVORITES_KEY, JSON.stringify([...set])); }
 function renderFeatured(){
-  const onlineGames = ITEMS.filter(item => item.type === 'jogo' && isExternalItem(item));
-  const item = onlineGames[0] || ITEMS[0] || null;
-  const totalGames = ITEMS.filter(item => item.type === 'jogo').length;
-  const featuredTag = document.getElementById('featuredTag');
-  if(featuredTag) featuredTag.textContent = onlineGames.length ? 'jogo em destaque' : 'central gamer';
-  document.getElementById('featuredTitle').textContent = 'JogaHub';
-  document.getElementById('featuredDesc').textContent = `Uma home 100% focada em games para abrir e organizar seus jogos por links. ${totalGames} ${totalGames === 1 ? 'jogo disponível' : 'jogos disponíveis'} no catálogo.`;
-  document.getElementById('featuredAction').textContent = item ? `jogar ${item.title} →` : 'explorar jogos →';
-  const link = document.getElementById('featuredLink');
-  if(item){
-    link.href = itemHref(item);
-    if(isExternalItem(item) && item.embed !== true){ link.target='_blank'; link.rel='noopener noreferrer'; }
-    else { link.removeAttribute('target'); link.removeAttribute('rel'); }
-  } else {
-    link.href = '#games';
-    link.removeAttribute('target');
-    link.removeAttribute('rel');
-  }
-  const img = document.getElementById('featuredImg');
-  img.hidden = true;
+  const games=ITEMS.filter(i=>i.type==='jogo'), movies=ITEMS.filter(i=>i.type==='filme');
+  const item=activeType==='filme'?(movies.find(movieProgress)||movies[0]):activeType==='jogo'?games[0]:(movies.find(movieProgress)||games[0]||movies[0]);
+  const tag=document.getElementById('featuredTag'),title=document.getElementById('featuredTitle'),desc=document.getElementById('featuredDesc'),action=document.getElementById('featuredAction'),link=document.getElementById('featuredLink');
+  if(activeType==='filme'){tag.textContent='filmes & séries';title.textContent=item?.seriesTitle||item?.title||'Filmes & TV';desc.textContent=item?.desc||'Clássicos, desenhos e séries reunidos em uma experiência de streaming.';action.textContent=item?'assistir agora →':'explorar catálogo →';}
+  else if(activeType==='jogo'){tag.textContent='jogos';title.textContent='JogaHub Games';desc.textContent=`${games.length} jogos organizados por gênero, favoritos e acesso rápido.`;action.textContent=item?`jogar ${item.title} →`:'explorar jogos →';}
+  else{tag.textContent='sua central de entretenimento';title.textContent='JogaHub';desc.textContent=`Jogos, filmes, séries e desenhos em um só lugar. ${games.length} jogos e ${movies.length} conteúdos para assistir.`;action.textContent=item?.type==='filme'?'continuar assistindo →':'começar agora →';}
+  if(item){link.href=itemHref(item);if(isExternalItem(item)&&item.embed!==true){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
+  document.getElementById('featuredImg').hidden=true;
 }
 function movieProgress(item){
-  if(item.type !== 'filme' || !item.archiveId) return null;
+  if(item.type !== 'filme') return null;
   try {
-    const p = JSON.parse(localStorage.getItem(`jogahub.movie.progress.${item.archiveId}`) || 'null');
-    if(!p || !p.duration || p.time < 20 || p.finished || p.time >= p.duration - 25) return null;
+    const key = item.archiveId || item.id;
+    const p = JSON.parse(localStorage.getItem(`jogahub.movie.progress.${key}`) || 'null');
+    if(!p || !p.duration || p.time < 20 || p.finished || p.time >= p.duration - 20) return null;
     return p;
   } catch { return null; }
 }
 function formatMovieProgress(p){
   const pct = Math.max(0, Math.min(100, (p.time / p.duration) * 100));
   return `<div class="movie-progress"><span style="width:${pct.toFixed(1)}%"></span></div><small class="movie-progress-label">▶ continuar assistindo · ${Math.round(pct)}%</small>`;
+}
+function movieWatchState(item){
+  try{
+    const key=item.archiveId || item.id;
+    const p=JSON.parse(localStorage.getItem(`jogahub.movie.progress.${key}`)||'null');
+    if(p?.finished) return {label:'✓ assistido', finished:true, pct:100};
+    if(p?.duration && p.time>20) return {label:`▶ ${Math.round(p.time/p.duration*100)}%`, finished:false, pct:Math.round(p.time/p.duration*100)};
+  }catch{}
+  return null;
 }
 function cardHTML(item){
   const meta = TYPES[item.type] || TYPES.jogo;
@@ -146,11 +144,13 @@ function movieCardHTML(item, compact=false){
   const favorites = loadFavorites();
   const isFav = favorites.has(item.id);
   const p = movieProgress(item);
+  const state = movieWatchState(item);
   const pct = p ? Math.max(0, Math.min(100, (p.time/p.duration)*100)) : 0;
   return `<article class="stream-card${compact?' compact':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
     <a class="stream-poster" href="${escapeHTML(itemHref(item))}" aria-label="Assistir ${escapeHTML(item.title)}">
       <img src="${escapeHTML(item.thumb || '')}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy">
       <span class="stream-play">▶</span>
+      ${state?`<span class="stream-state${state.finished?' watched':''}">${state.label}</span>`:''}
       ${p?`<span class="stream-progress"><i style="width:${pct.toFixed(1)}%"></i></span>`:''}
     </a>
     <div class="stream-card-copy">
@@ -158,6 +158,18 @@ function movieCardHTML(item, compact=false){
       <span>${escapeHTML(movieKindLabel(item))}${item.year ? ` • ${escapeHTML(item.year)}` : ''} • ${escapeHTML(item.genre || '')}</span>
       ${item.seriesTitle && item.title !== item.seriesTitle ? `<small>${escapeHTML(item.title)}</small>` : ''}
     </div>
+  </article>`;
+}
+function seriesCardHTML(group){
+  const first=group.items[0], seasons=[...new Set(group.items.map(i=>i.season||1))];
+  const next=group.items.find(i=>!movieWatchState(i)?.finished) || first;
+  const watched=group.items.filter(i=>movieWatchState(i)?.finished).length;
+  return `<article class="stream-card series-summary" style="--accent:${first.accent || 'var(--gold)'}">
+    <a class="stream-poster" href="${escapeHTML(itemHref(next))}" aria-label="Abrir ${escapeHTML(group.title)}">
+      <img src="${escapeHTML(first.thumb || '')}" alt="Capa de ${escapeHTML(group.title)}" loading="lazy"><span class="stream-play">▶</span>
+      <span class="series-count">${group.items.length} ep.</span>
+    </a>
+    <div class="stream-card-copy"><div class="stream-card-title"><b>${escapeHTML(group.title)}</b></div><span>${seasons.length} ${seasons.length===1?'temporada':'temporadas'} • ${group.items.length} episódios</span><small>${watched?`${watched}/${group.items.length} assistidos`:'Começar série'}</small></div>
   </article>`;
 }
 function renderMovieHub(list){
@@ -169,14 +181,17 @@ function renderMovieHub(list){
   const continuing=pool.filter(movieProgress);
   const favs=pool.filter(i=>favorites.has(i.id));
   const series=pool.filter(i=>i.mediaType==='serie');
+  const groupedSeries=[...new Map(series.filter(i=>i.seriesId).map(i=>[i.seriesId,null])).keys()].map(id=>{const items=series.filter(i=>i.seriesId===id).sort((a,b)=>(a.season||1)-(b.season||1)||(a.episode||0)-(b.episode||0));return {id,title:items[0]?.seriesTitle||items[0]?.title||id,items};});
   const films=pool.filter(i=>i.mediaType!=='serie' && i.mediaType!=='colecao');
   const collections=pool.filter(i=>i.mediaType==='colecao');
   const portuguese=pool.filter(i=>i.portuguese || /portugu/i.test(i.language || ''));
   const colorPt=pool.filter(i=>i.colorContent && (i.portuguese || /portugu/i.test(i.language || '')));
+  const classicTv=pool.filter(i=>i.classicTv);
   const featured=(continuing[0] || series[0] || pool[0] || null);
   if(!featured){grid.innerHTML='';return;}
   const heroP=movieProgress(featured); const heroPct=heroP?Math.round(heroP.time/heroP.duration*100):0;
   const section=(title,subtitle,items)=> items.length ? `<section class="stream-row"><div class="stream-row-head"><div><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:''}</div><span>${items.length}</span></div><div class="stream-track">${items.map(i=>movieCardHTML(i)).join('')}</div></section>` : '';
+  const seriesSection=groupedSeries.length?`<section class="stream-row"><div class="stream-row-head"><div><h2>Desenhos e séries</h2><p>Temporadas e episódios reunidos por série.</p></div><span>${groupedSeries.length}</span></div><div class="stream-track">${groupedSeries.map(seriesCardHTML).join('')}</div></section>`:'';
   grid.innerHTML=`<div class="movie-hub">
     <section class="stream-hero" style="--hero-image:url('${escapeHTML(featured.thumb || '')}')">
       <div class="stream-hero-art"></div><div class="stream-hero-shade"></div>
@@ -189,10 +204,11 @@ function renderMovieHub(list){
     </section>
     ${section('Continuar assistindo','Retome exatamente de onde você parou.',continuing)}
     ${section('Minha Lista','Seus favoritos ficam reunidos aqui.',favs)}
+    ${section('📺 Clássicos da TV','Filmes, séries e desenhos nostálgicos com fonte incorporável.',classicTv)}
     ${section('Coloridos em português','Clássicos dublados e coleções oficiais com títulos coloridos.',colorPt)}
     ${section('Em português','Conteúdos dublados ou originalmente em português.',portuguese)}
     ${section('Coleções oficiais','Catálogos licenciados incorporados de fontes oficiais.',collections)}
-    ${section('Desenhos e séries','Episódios organizados por série e temporada.',series)}
+    ${seriesSection}
     ${section('Filmes clássicos','Longas disponíveis no catálogo.',films)}
     ${section('Todo o catálogo','Tudo disponível na área de filmes.',pool)}
   </div>`;
@@ -200,6 +216,13 @@ function renderMovieHub(list){
 
 function renderItems(list){
   const grid = document.getElementById('games');
+  if(activeType === 'filme'){
+    renderMovieHub(list);
+    const empty=document.getElementById('emptyState'),meta=document.getElementById('resultsMeta');
+    empty.style.display=list.length?'none':'block';
+    meta.textContent=list.length?`${list.length} ${list.length===1?'conteúdo encontrado':'conteúdos encontrados'}`:'';
+    return;
+  }
   const empty = document.getElementById('emptyState');
   const meta = document.getElementById('resultsMeta');
   if(activeType === 'jogo'){
@@ -225,13 +248,9 @@ function renderItems(list){
   meta.textContent = list.length ? `${list.length} ${list.length === 1 ? typeMeta.singular + ' encontrado' : typeMeta.label.toLowerCase() + ' encontrados'}` : '';
 }
 function renderTypeTabs(){
-  const tabsEl = document.getElementById('typeTabs');
-  if(!tabsEl) return;
-  tabsEl.innerHTML = TYPE_ORDER.filter(type => ITEMS.some(item => item.type === type)).map(type => {
-    const meta = TYPES[type];
-    const count = ITEMS.filter(item => item.type === type).length;
-    return `<button class="type-btn${type === activeType ? ' active' : ''}" data-type="${escapeHTML(type)}" type="button" aria-pressed="${type === activeType}">${meta.icon} ${escapeHTML(meta.label)} <span>${count}</span></button>`;
-  }).join('');
+  const tabsEl=document.getElementById('typeTabs');if(!tabsEl)return;
+  const tabs=[['todos','⌂ Início',ITEMS.length],['jogo','🎮 Jogos',ITEMS.filter(i=>i.type==='jogo').length],['filme','🎬 Filmes & TV',ITEMS.filter(i=>i.type==='filme').length]];
+  tabsEl.innerHTML=tabs.map(([type,label,count])=>`<button class="type-btn${type===activeType?' active':''}" data-type="${type}" type="button" aria-pressed="${type===activeType}">${label} <span>${count}</span></button>`).join('');
 }
 function renderGenreFilters(){
   const pool = activeType === 'todos' ? ITEMS : ITEMS.filter(i => i.type === activeType);
@@ -245,7 +264,7 @@ function renderGenreFilters(){
     return;
   }
   if(activeType === 'filme'){
-    const options=[['todos','🍿 Início'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
+    const options=[['todos','🍿 Início'],['classicos-tv','📺 Clássicos da TV'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
     document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
     return;
   }
@@ -270,8 +289,9 @@ function applyFilters(){
   const activeBtn = document.querySelector('.filter-btn.active');
   const genre = activeBtn ? activeBtn.dataset.genre : 'todos';
   const filtered = ITEMS.filter(i => {
-    const searchable = normalize([i.title, i.desc, i.genre, i.category, i.type, i.language, i.sourceLabel, TYPES[i.type]?.label, GAME_CATEGORIES[i.category]?.label].join(' '));
+    const searchable = normalize([i.title, i.desc, i.genre, i.category, i.type, i.language, i.sourceLabel, ...(i.nostalgiaTags||[]), TYPES[i.type]?.label, GAME_CATEGORIES[i.category]?.label].join(' '));
     const movieFilter = activeType !== 'filme' || genre === 'todos'
+      || (genre === 'classicos-tv' && i.classicTv)
       || (genre === 'portugues' && (i.portuguese || /portugu/i.test(i.language || '')))
       || (genre === 'coloridos' && i.colorContent && (i.portuguese || /portugu/i.test(i.language || '')))
       || (genre === 'series' && i.mediaType === 'serie')
@@ -287,7 +307,7 @@ function applyFilters(){
   const movieNotice = document.getElementById('movieNotice');
   if(movieNotice) movieNotice.hidden = activeType !== 'filme';
   const search = document.getElementById('search');
-  if(search) search.placeholder = activeType === 'filme'
+  if(search) search.placeholder = activeType === 'todos' ? 'buscar jogos, filmes, séries e desenhos...' : activeType === 'filme'
     ? 'buscar filme, série, episódio ou gênero...'
     : 'buscar jogo por título, gênero ou descrição...';
   const empty = document.getElementById('emptyState');
@@ -306,6 +326,12 @@ function toggleFavorite(id, button){
   applyFilters();
 }
 
+function syncNavigation(){
+  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===activeType));
+  document.querySelectorAll('.type-btn').forEach(b=>{const on=b.dataset.type===activeType;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+}
+function setView(view){activeType=view||'todos';renderTypeTabs();renderGenreFilters();renderFeatured();syncNavigation();applyFilters();window.scrollTo({top:0,behavior:'smooth'});}
+function showFavorites(){const fav=loadFavorites();activeType='todos';renderFeatured();syncNavigation();const list=ITEMS.filter(i=>fav.has(i.id));renderItems(list);document.getElementById('resultsMeta').textContent=list.length?`${list.length} itens na Minha Lista`:'Sua lista ainda está vazia.';}
 function downloadOffline(id, btn){
   if(!('serviceWorker' in navigator) || !OFFLINE_ASSETS[id]){
     alert('O download offline precisa ser usado pelo site publicado em HTTPS.');
@@ -344,7 +370,7 @@ window.addEventListener('appinstalled', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  activeType = 'jogo';
+  activeType = 'todos';
   renderFeatured();
   const continueSection = document.getElementById('continueSection');
   if(continueSection) continueSection.hidden = true;
@@ -376,12 +402,16 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Não foi possível concluir o download. Verifique a internet e tente novamente.');
     }
   });
+  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+  document.querySelectorAll('[data-action="search"]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('search')?.focus();document.querySelector('.controls')?.scrollIntoView({behavior:'smooth',block:'center'});}));
+  document.querySelectorAll('[data-action="favorites"]').forEach(b=>b.addEventListener('click',showFavorites));
+  syncNavigation();
   document.getElementById('search').addEventListener('input', applyFilters);
   document.getElementById('typeTabs').addEventListener('click', e => {
     const btn=e.target.closest('.type-btn'); if(!btn) return;
     activeType=btn.dataset.type;
     document.querySelectorAll('.type-btn').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
-    renderGenreFilters(); applyFilters();
+    renderGenreFilters(); renderFeatured(); syncNavigation(); applyFilters();
   });
   document.getElementById('filters').addEventListener('click', e => {
     const btn=e.target.closest('.filter-btn'); if(!btn) return;
