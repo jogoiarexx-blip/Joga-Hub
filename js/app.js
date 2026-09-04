@@ -1,10 +1,12 @@
 /* JOGAHUB — home, busca, favoritos e progresso de leitura */
 
 const TYPES = {
-  jogo:  { label: 'Jogos',  action: 'jogar', icon: '🎮', singular: 'jogo' },
-  filme: { label: 'Filmes Antigos', action: 'assistir', icon: '🎞️', singular: 'filme' }
+  jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
+  filme: { label: 'Filmes', action: 'assistir', icon: '🎬', singular: 'filme' },
+  serie: { label: 'Séries', action: 'assistir', icon: '📺', singular: 'série' },
+  anime: { label: 'Animes', action: 'assistir', icon: '🍥', singular: 'anime' }
 };
-const TYPE_ORDER = ['todos', 'jogo', 'filme'];
+const TYPE_ORDER = ['todos', 'jogo', 'filme', 'serie', 'anime'];
 const GAME_CATEGORIES = {
   arcade: {label:'Arcade', icon:'🕹️', order:1},
   acao: {label:'Ação', icon:'💥', order:2},
@@ -25,10 +27,25 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.0.25';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.0.25-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.1.1';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.1.1-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
+
+
+function contentView(item){
+  if(item?.type === 'jogo') return 'jogo';
+  if(item?.type === 'filme'){
+    if(item.anime === true || /anime/i.test(String(item.genre||''))) return 'anime';
+    if(item.mediaType === 'serie') return 'serie';
+    return 'filme';
+  }
+  return item?.type || 'filme';
+}
+function itemsForView(view){
+  if(view === 'todos') return ITEMS;
+  return ITEMS.filter(i => contentView(i) === view);
+}
 
 const MEDIA_CACHE = 'jogahub-offline-media-v1';
 const MEDIA_REGISTRY_KEY = 'jogahub.offline.media.registry';
@@ -112,38 +129,71 @@ function itemDecade(item){
   if(y<2010) return '2000';
   return '2010+';
 }
+function imdbRating(item){
+  if(!item || item.type !== 'filme') return 0;
+  const direct=Number(item.imdbRating);
+  if(Number.isFinite(direct) && direct>0) return direct;
+  const map=window.JOGAHUB_IMDB || {};
+  const keys=[item.seriesTitle,item.title].filter(Boolean);
+  for(const key of keys){
+    const value=Number(map[key]);
+    if(Number.isFinite(value) && value>0) return value;
+  }
+  return 0;
+}
+function imdbBadge(item, extraClass=''){
+  const rating=imdbRating(item);
+  return rating ? `<span class="imdb-badge${extraClass?' '+extraClass:''}" title="Nota IMDb">⭐ IMDb ${rating.toFixed(1)}</span>` : '';
+}
+function sortMoviesByImdb(items){
+  return [...items].sort((a,b)=>{
+    const diff=imdbRating(b)-imdbRating(a);
+    if(diff) return diff;
+    return String(a.seriesTitle||a.title||'').localeCompare(String(b.seriesTitle||b.title||''),'pt-BR');
+  });
+}
+
 function homeTile(item, label=''){
   const p=movieProgress(item), state=item.type==='filme'?movieWatchState(item):null;
   const meta=item.type==='filme'?(item.seriesTitle||item.title):item.title;
   return `<a class="home-tile" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)}>
     <div class="home-tile-art">${item.thumb?`<img src="${escapeHTML(item.thumb)}" alt="${escapeHTML(meta)}" loading="lazy">`:`<span>${item.type==='filme'?'🎬':'🎮'}</span>`}<i>${item.type==='filme'?(isCatalogExternal(item)?'↗':'▶'):'🎮'}</i>${p?`<b style="width:${Math.round(p.time/p.duration*100)}%"></b>`:''}</div>
-    <small>${escapeHTML(label|| (item.type==='filme'?'Assistir':'Jogar'))}</small><strong>${escapeHTML(meta)}</strong>${state?`<em>${escapeHTML(state.label)}</em>`:''}
+    <small>${escapeHTML(label|| (item.type==='filme'?'Assistir':'Jogar'))}</small><strong>${escapeHTML(meta)}</strong>${item.type==='filme'&&imdbRating(item)?`<em class="home-imdb">⭐ IMDb ${imdbRating(item).toFixed(1)}</em>`:(state?`<em>${escapeHTML(state.label)}</em>`:'')}
   </a>`;
 }
 function renderHomeDashboard(){
   const box=document.getElementById('homeDashboard'); if(!box) return;
   if(activeType!=='todos'){box.hidden=true;box.innerHTML='';return;}
-  const games=ITEMS.filter(i=>i.type==='jogo'); const movies=ITEMS.filter(i=>i.type==='filme');
-  const continuing=movies.filter(movieProgress).slice(0,8);
-  const recentMovies=[...movies].sort((a,b)=>(Number(b.year)||0)-(Number(a.year)||0)).slice(0,10);
-  const tv=movies.filter(i=>i.classicTv).slice(0,10);
+  const games=itemsForView('jogo');
+  const films=sortMoviesByImdb(itemsForView('filme'));
+  const series=sortMoviesByImdb(itemsForView('serie'));
+  const anime=sortMoviesByImdb(itemsForView('anime'));
+  const media=[...films,...series,...anime];
+  const topMovies=sortMoviesByImdb(media).filter(i=>imdbRating(i)>0).slice(0,12);
+  const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.0.25</span><h2>Continue de onde parou</h2><p>Jogos, filmes, séries e desenhos reunidos em uma home mais rápida.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${movies.length}</b> vídeos</span></div></div>
+  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.1</span><h2>Jogos primeiro. Conteúdo separado por categoria.</h2><p>A Home começa pelos jogos, depois mostra filmes, séries e animes em áreas próprias.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+    ${row('🎮 Jogos','Os jogos do JogaHub continuam em primeiro lugar.',games.slice(0,14),'Jogar')}
+    ${row('🎬 Filmes','Filmes separados das séries e animes, priorizando melhor nota IMDb.',films.slice(0,14),'Assistir')}
+    ${row('📺 Séries','Séries em uma área própria, sem misturar com filmes.',series.slice(0,14),'Assistir')}
+    ${row('🍥 Animes','Animes separados para ficar mais fácil encontrar o que assistir.',anime.slice(0,14),'Assistir')}
+    ${row('⭐ Melhores no IMDb','Os títulos mais bem avaliados entre filmes, séries e animes.',topMovies,'IMDb')}
     ${row('▶ Continue assistindo','Seu progresso salvo aparece aqui.',continuing,'Continuar')}
-    ${row('📺 Nostalgia da TV','Clássicos, desenhos e séries que marcaram época.',tv,'Clássico da TV')}
-    ${row('🆕 Descobrir agora','Alguns destaques do catálogo para abrir direto.',recentMovies,'Assistir')}
-    ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
-    ${row('🎮 Continue jogando','Acesso rápido aos jogos do JogaHub.',games.slice(0,10),'Jogar')}`;
+    ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}`;
   box.hidden=false;
 }
 function renderFeatured(){
-  const games=ITEMS.filter(i=>i.type==='jogo'), movies=ITEMS.filter(i=>i.type==='filme');
-  const item=activeType==='filme'?(movies.find(movieProgress)||movies[0]):activeType==='jogo'?games[0]:(movies.find(movieProgress)||games[0]||movies[0]);
+  const games=itemsForView('jogo'), films=itemsForView('filme'), series=itemsForView('serie'), anime=itemsForView('anime');
+  const mediaByView={filme:films,serie:series,anime:anime};
+  const media=mediaByView[activeType] || [];
+  const item=['filme','serie','anime'].includes(activeType)?(media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):activeType==='jogo'?games[0]:(games[0]||films[0]||series[0]||anime[0]);
   const tag=document.getElementById('featuredTag'),title=document.getElementById('featuredTitle'),desc=document.getElementById('featuredDesc'),action=document.getElementById('featuredAction'),link=document.getElementById('featuredLink');
-  if(activeType==='filme'){tag.textContent='filmes & séries';title.textContent=item?.seriesTitle||item?.title||'Filmes & TV';desc.textContent=item?.desc||'Clássicos, desenhos e séries reunidos em uma experiência de streaming.';action.textContent=item?'assistir agora →':'explorar catálogo →';}
+  if(activeType==='filme'){tag.textContent='filmes';title.textContent=item?.title||'Filmes';desc.textContent=item?.desc||'Filmes organizados em uma categoria própria.';action.textContent=item?'assistir agora →':'explorar filmes →';}
+  else if(activeType==='serie'){tag.textContent='séries';title.textContent=item?.seriesTitle||item?.title||'Séries';desc.textContent=item?.desc||'Séries separadas dos filmes e animes.';action.textContent=item?'assistir série →':'explorar séries →';}
+  else if(activeType==='anime'){tag.textContent='animes';title.textContent=item?.seriesTitle||item?.title||'Animes';desc.textContent=item?.desc||'Animes reunidos em uma categoria própria.';action.textContent=item?'assistir anime →':'explorar animes →';}
   else if(activeType==='jogo'){tag.textContent='jogos';title.textContent='JogaHub Games';desc.textContent=`${games.length} jogos organizados por gênero, favoritos e acesso rápido.`;action.textContent=item?`jogar ${item.title} →`:'explorar jogos →';}
-  else{tag.textContent='sua central de entretenimento';title.textContent='JogaHub';desc.textContent=`Jogos, filmes, séries e desenhos em um só lugar. ${games.length} jogos e ${movies.length} conteúdos para assistir.`;action.textContent=item?.type==='filme'?'continuar assistindo →':'começar agora →';}
+  else{tag.textContent='sua central de entretenimento';title.textContent='JogaHub';desc.textContent=`Jogos primeiro, depois filmes, séries e animes em abas separadas.`;action.textContent='começar agora →';}
   if(item){link.href=itemHref(item);if(isCatalogExternal(item)||(isExternalItem(item)&&item.embed!==true)){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
   document.getElementById('featuredImg').hidden=true;
 }
@@ -212,12 +262,12 @@ function movieCardHTML(item, compact=false){
     <a class="stream-poster" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)} aria-label="${isCatalogExternal(item)?'Onde assistir':'Assistir'} ${escapeHTML(item.title)}">
       <img src="${escapeHTML(item.thumb || '')}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy">
       <span class="stream-play">${isCatalogExternal(item)?'↗':'▶'}</span>
-      ${state?`<span class="stream-state${state.finished?' watched':''}">${state.label}</span>`:''}
+      ${imdbBadge(item,'poster-imdb')}${state?`<span class="stream-state${state.finished?' watched':''}">${state.label}</span>`:''}
       ${p?`<span class="stream-progress"><i style="width:${pct.toFixed(1)}%"></i></span>`:''}
     </a>
     <div class="stream-card-copy">
       <div class="stream-card-title"><b>${escapeHTML(item.seriesTitle || item.title)}</b><button class="favorite-btn stream-fav${isFav?' active':''}" type="button" data-favorite="${escapeHTML(item.id)}" aria-label="${isFav?'Remover da':'Adicionar à'} Minha Lista" aria-pressed="${isFav}">♥</button></div>
-      <span>${escapeHTML(movieKindLabel(item))}${item.year ? ` • ${escapeHTML(item.year)}` : ''} • ${escapeHTML(item.genre || '')}</span>
+      <span>${escapeHTML(movieKindLabel(item))}${item.year ? ` • ${escapeHTML(item.year)}` : ''} • ${escapeHTML(item.genre || '')}</span>${imdbBadge(item,'copy-imdb')}
       ${item.seriesTitle && item.title !== item.seriesTitle ? `<small>${escapeHTML(item.title)}</small>` : ''}
     </div>
   </article>`;
@@ -256,9 +306,9 @@ function renderMovieHub(list){
   const grid=document.getElementById('games');
   const favorites=loadFavorites();
   const visibleIds=new Set(list.map(i=>i.id));
-  const pool=uniqueMedia(ITEMS.filter(i=>i.type==='filme' && visibleIds.has(i.id)));
+  const pool=sortMoviesByImdb(uniqueMedia(ITEMS.filter(i=>i.type==='filme' && visibleIds.has(i.id))));
   const activeGenre=document.querySelector('.filter-btn.active')?.dataset.genre || 'todos';
-  const featured=(pool.find(movieProgress) || pool.find(i=>i.jackieChan) || pool[0] || null);
+  const featured=(pool.find(movieProgress) || pool.find(i=>imdbRating(i)>0) || pool.find(i=>i.jackieChan) || pool[0] || null);
   if(!featured){grid.innerHTML='';return;}
 
   const heroP=movieProgress(featured); const heroPct=heroP?Math.round(heroP.time/heroP.duration*100):0;
@@ -282,11 +332,13 @@ function renderMovieHub(list){
   }else{
     const continuing=take(pool.filter(movieProgress),14);
     const favs=take(pool.filter(i=>favorites.has(i.id)),14);
+    const topImdb=take(pool.filter(i=>imdbRating(i)>0),20);
     const jackie=take(pool.filter(i=>i.jackieChan),24);
     const classicTv=take(pool.filter(i=>i.classicTv),20);
 
     rows+=section('Continuar assistindo','Retome exatamente de onde você parou.',continuing);
     rows+=section('Minha Lista','Seus favoritos, sem repetir o que já está acima.',favs);
+    rows+=section('⭐ Melhores no IMDb','Ranking do catálogo pela nota IMDb, da maior para a menor.',topImdb);
     rows+=section('🥋 Jackie Chan','Filmes anteriores a 2000 e As Aventuras de Jackie Chan encontrados em fontes reproduzíveis.',jackie);
     rows+=section('📺 Nostalgia da TV','Desenhos, séries e clássicos que ainda não apareceram nas seções anteriores.',classicTv);
 
@@ -314,7 +366,7 @@ function renderMovieHub(list){
       <div class="stream-hero-copy"><span class="stream-eyebrow">${featured.jackieChan?'🥋 JACKIE CHAN':featured.mediaType==='serie'?'📺 SÉRIE / DESENHO':'🎬 FILME'}</span>
         <h1>${escapeHTML(featured.seriesTitle || featured.title)}</h1>
         <p>${escapeHTML(featured.desc || '')}</p>
-        <div class="stream-hero-meta"><span>${escapeHTML(featured.genre||'')}</span>${featured.year?`<span>${escapeHTML(featured.year)}</span>`:''}<span>${escapeHTML(movieKindLabel(featured))}</span></div>
+        <div class="stream-hero-meta"><span>${escapeHTML(featured.genre||'')}</span>${featured.year?`<span>${escapeHTML(featured.year)}</span>`:''}<span>${escapeHTML(movieKindLabel(featured))}</span>${imdbBadge(featured,'hero-imdb')}</div>
         <div class="stream-hero-actions"><a class="stream-primary" href="${escapeHTML(itemHref(featured))}"${itemLinkAttrs(featured)}>▶ ${heroP?'Continuar '+heroPct+'%':'Assistir agora'}</a><button type="button" class="stream-secondary" data-favorite="${escapeHTML(featured.id)}">♥ Minha Lista</button></div>
       </div>
     </section>
@@ -324,7 +376,7 @@ function renderMovieHub(list){
 
 function renderItems(list){
   const grid = document.getElementById('games');
-  if(activeType === 'filme'){
+  if(['filme','serie','anime'].includes(activeType)){
     renderMovieHub(list);
     const empty=document.getElementById('emptyState'),meta=document.getElementById('resultsMeta');
     empty.style.display=list.length?'none':'block';
@@ -357,7 +409,14 @@ function renderItems(list){
 }
 function renderTypeTabs(){
   const tabsEl=document.getElementById('typeTabs');if(!tabsEl)return;
-  const tabs=[['todos','⌂ Início',ITEMS.length],['jogo','🎮 Jogos',ITEMS.filter(i=>i.type==='jogo').length],['filme','🎬 Filmes & TV',ITEMS.filter(i=>i.type==='filme').length],['tv','📺 TV ao Vivo',(typeof LIVE_TV_CHANNELS!=='undefined'?LIVE_TV_CHANNELS.length:0)]];
+  const tabs=[
+    ['todos','⌂ Início',ITEMS.length],
+    ['jogo','🎮 Jogos',itemsForView('jogo').length],
+    ['filme','🎬 Filmes',itemsForView('filme').length],
+    ['serie','📺 Séries',itemsForView('serie').length],
+    ['anime','🍥 Animes',itemsForView('anime').length],
+    ['tv','📡 TV ao Vivo',(typeof LIVE_TV_CHANNELS!=='undefined'?LIVE_TV_CHANNELS.length:0)]
+  ];
   tabsEl.innerHTML=tabs.map(([type,label,count])=>`<button class="type-btn${type===activeType?' active':''}" data-type="${type}" type="button" aria-pressed="${type===activeType}">${label} <span>${count}</span></button>`).join('');
 }
 
@@ -479,7 +538,7 @@ function renderLiveTv(){
 setInterval(()=>{ if(getYouTubeApiKey()) refreshDynamicLives(true); },30*60*1000);
 
 function renderGenreFilters(){
-  const pool = activeType === 'todos' ? ITEMS : ITEMS.filter(i => i.type === activeType);
+  const pool = itemsForView(activeType);
   if(activeType === 'jogo'){
     const categories = [...new Set(pool.map(i => i.category || 'outros'))]
       .sort((a,b)=>(GAME_CATEGORIES[a]?.order||99)-(GAME_CATEGORIES[b]?.order||99));
@@ -490,8 +549,8 @@ function renderGenreFilters(){
     return;
   }
   if(activeType === 'tv'){ document.getElementById('filters').innerHTML=''; return; }
-  if(activeType === 'filme'){
-    const options=[['todos','🍿 Início'],['jackie','🥋 Jackie Chan'],['youtube-pt','▶️ YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Séries grátis'],['doramas','🌸 Doramas'],['infantil','🧸 Infantil'],['animes','🍥 Animes'],['luta','🤼 Luta livre'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['classicos-tv','📺 Nostalgia TV'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['coloridos','🌈 Coloridos PT-BR'],['series','📺 Séries/Desenhos'],['filmes','🎬 Filmes'],['colecoes','📚 Coleções'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
+  if(['filme','serie','anime'].includes(activeType)){
+    const options=[['todos','🍿 Todos'],['youtube-pt','▶️ YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Grátis'],['infantil','🧸 Infantil'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
     document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
     return;
   }
@@ -526,7 +585,7 @@ function applyFilters(){
   const genre = activeBtn ? activeBtn.dataset.genre : 'todos';
   const filtered = ITEMS.filter(i => {
     const searchable = normalize([i.title, i.desc, i.genre, i.category, i.type, i.language, i.sourceLabel, ...(i.nostalgiaTags||[]), TYPES[i.type]?.label, GAME_CATEGORIES[i.category]?.label].join(' '));
-    const movieFilter = activeType !== 'filme' || genre === 'todos'
+    const movieFilter = !['filme','serie','anime'].includes(activeType) || genre === 'todos'
       || (genre === 'jackie' && i.jackieChan === true)
       || (genre === 'youtube-pt' && i.youtubePt === true)
       || (genre === 'archive-pt' && i.archiveLicensed === true)
@@ -552,21 +611,19 @@ function applyFilters(){
       || (genre === 'colecoes' && i.mediaType === 'colecao')
       || (genre === 'favoritos' && loadFavorites().has(i.id))
       || (genre === 'continuar' && !!movieProgress(i));
-    return (activeType === 'todos' || i.type === activeType)
-      && (activeType === 'filme' ? movieFilter : (genre === 'todos' || (activeType === 'jogo' ? (i.category || 'outros') === genre : i.genre === genre)))
+    return (activeType === 'todos' || contentView(i) === activeType)
+      && (['filme','serie','anime'].includes(activeType) ? movieFilter : (genre === 'todos' || (activeType === 'jogo' ? (i.category || 'outros') === genre : i.genre === genre)))
       && (!term || searchable.includes(term));
   });
   renderItems(sortByTypeOrder(filtered));
   const movieNotice = document.getElementById('movieNotice');
-  if(movieNotice) movieNotice.hidden = activeType !== 'filme';
+  if(movieNotice) movieNotice.hidden = !['filme','serie','anime'].includes(activeType);
   const search = document.getElementById('search');
-  if(search) search.placeholder = activeType === 'todos' ? 'buscar jogos, filmes, séries e desenhos...' : activeType === 'filme'
-    ? 'buscar filme, série, episódio ou gênero...'
+  if(search) search.placeholder = activeType === 'todos' ? 'buscar jogos, filmes, séries e animes...' : activeType === 'filme'
+    ? 'buscar filme ou gênero...' : activeType === 'serie' ? 'buscar série, episódio ou gênero...' : activeType === 'anime' ? 'buscar anime ou gênero...'
     : 'buscar jogo por título, gênero ou descrição...';
   const empty = document.getElementById('emptyState');
-  if(empty) empty.textContent = activeType === 'filme'
-    ? 'nenhum filme encontrado com esse filtro.'
-    : 'nenhum jogo encontrado com esse filtro.';
+  if(empty) empty.textContent = activeType === 'filme' ? 'nenhum filme encontrado com esse filtro.' : activeType === 'serie' ? 'nenhuma série encontrada com esse filtro.' : activeType === 'anime' ? 'nenhum anime encontrado com esse filtro.' : 'nenhum jogo encontrado com esse filtro.';
 }
 function toggleFavorite(id, button){
   const favorites = loadFavorites();

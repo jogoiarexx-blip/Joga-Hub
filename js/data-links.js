@@ -35,6 +35,20 @@
 
 const LINK_ITEMS = [
   {
+    id: 'rampage',
+    type: 'jogo',
+    title: 'Rampage',
+    genre: 'Ação / Arcade',
+    category: 'acao',
+    accent: 'var(--brand-orange)',
+    thumb: 'assets/thumb-rampage.webp',
+    hero: 'assets/hero-rampage.webp',
+    desc: 'Rampage: Monster Destruction — destrua a cidade, enfrente inimigos, evolua o monstro e cause o máximo de destruição.',
+    url: 'https://jogoiarexx-blip.github.io/Rampage/',
+    installable: true,
+    embed: false
+  },
+  {
     id: 'as-aventuras-de-joao-e-crist',
     type: 'jogo',
     title: 'As Aventuras de João e Crist',
@@ -87,6 +101,20 @@ const LINK_ITEMS = [
     hero: 'assets/hero-ruptura.webp',
     desc: 'Ruptura — jogo hospedado externamente no GitHub Pages.',
     url: 'https://jogoiarexx-blip.github.io/Ruptura/',
+    embed: false
+  },
+  {
+    id: 'forbidden-duel-memories',
+    type: 'jogo',
+    title: 'Forbidden Duel Memories',
+    genre: 'Cartas / Estratégia',
+    category: 'cartas',
+    accent: 'var(--brand-purple)',
+    thumb: 'assets/thumb-forbidden-duel-memories.webp',
+    hero: 'assets/hero-forbidden-duel-memories.webp',
+    desc: 'Forbidden Duel Memories — Ancient Card Battle. Monte seu deck, faça fusões, enfrente duelistas e entre em batalhas de cartas com temática egípcia.',
+    url: 'https://jogoiarexx-blip.github.io/Forbiden-memories/',
+    installable: true,
     embed: false
   }
 ];
