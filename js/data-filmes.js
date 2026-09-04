@@ -1248,6 +1248,24 @@ const FILMES_CATALOGO = [
     desc:'Segundo filme adicionado pelo usuário via Google Drive. A reprodução funciona dentro do JogaHub quando o arquivo está compartilhado para qualquer pessoa com o link.',
     sourceUrl:'https://drive.google.com/file/d/1-uqoL5e8wjgF7E4gTXDRku54SA4Fs6Kz/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Google Drive','filme','português']
   },
+  {
+    id:'drive-filme-1b6i7h8r', type:'filme', title:'Filme do Google Drive 3', year:'', genre:'Filme', mediaType:'filme',
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf',
+    thumb:'https://drive.google.com/thumbnail?id=1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf&sz=w1000', accent:'var(--gold)',
+    desc:'Filme adicionado pelo usuário via Google Drive. A reprodução funciona dentro do JogaHub quando o arquivo está compartilhado para qualquer pessoa com o link.',
+    sourceUrl:'https://drive.google.com/file/d/1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Google Drive','filme','português']
+  }
+,
+  {
+    id:'archive-pole-position-completo', type:'filme', title:'Pole Position — Temporada Completa', year:'1984', genre:'Animação / Aventura / Corrida', mediaType:'serie',
+    seriesId:'pole-position-archive', seriesTitle:'Pole Position', season:1, episode:1, episodeCount:13, archivePlaylist:true,
+    episodeTitles:['O Código','O Desaparecimento de Pandora','A Galinha que Sabia Demais','Estranhos no Gelo','A Corrida','Os Quadros Cortados','O Rapto de Faísca','Disque M para Mágica','O Caso do Ursinho','Pega Ladrão!','O Segredo','O Quebra-Cabeça','O Maremoto'],
+    language:'Português (dublado)', portuguese:true, colorContent:true, classicTv:true, rightsUnclear:true,
+    archiveId:'t-1-e-1-ocdigo', thumb:'https://archive.org/services/img/t-1-e-1-ocdigo', accent:'var(--gold)',
+    desc:'Pole Position dublado em português. O player do JogaHub lê automaticamente todos os vídeos disponíveis dentro deste item do Internet Archive e monta a lista de episódios.',
+    sourceUrl:'https://archive.org/details/t-1-e-1-ocdigo', sourceLabel:'Internet Archive — publicação pública; direitos não verificados',
+    nostalgiaTags:['Pole Position','desenho clássico','anos 80','corrida','dublado','TV']
+  }
 
 ];
 

@@ -116,5 +116,19 @@ const LINK_ITEMS = [
     url: 'https://jogoiarexx-blip.github.io/Forbiden-memories/',
     installable: true,
     embed: false
+  },
+  {
+    id: 'noite-amaldicoada',
+    type: 'jogo',
+    title: 'Noite Amaldiçoada',
+    genre: 'Survival / Roguelite',
+    category: 'survival',
+    accent: 'var(--brand-purple)',
+    thumb: 'assets/thumb-noite-amaldicoada.webp',
+    hero: 'assets/hero-noite-amaldicoada.webp',
+    desc: 'Noite Amaldiçoada — roguelite de sobrevivência no Castelo das Seis Noites. Sobreviva às seis noites, evolua suas armas, encontre Fragmentos Eternos e destrua os senhores da maldição.',
+    url: 'https://jogoiarexx-blip.github.io/noite-amaldi-oada/',
+    installable: true,
+    embed: false
   }
 ];
