@@ -88,19 +88,5 @@ const LINK_ITEMS = [
     desc: 'Ruptura — jogo hospedado externamente no GitHub Pages.',
     url: 'https://jogoiarexx-blip.github.io/Ruptura/',
     embed: false
-  },
-  {
-    id: 'navinha-arcade',
-    type: 'jogo',
-    title: 'Navinha Arcade',
-    genre: 'Shoot ’em up / Arcade',
-    category: 'shoot-em-up',
-    accent: 'var(--brand-blue)',
-    thumb: 'assets/thumb-navinha-arcade.webp',
-    hero: 'assets/hero-navinha-arcade.webp',
-    desc: 'Navinha Arcade — jogo hospedado externamente no GitHub Pages.',
-    url: 'https://jogoiarexx-blip.github.io/navinha-arcade/',
-    installable: true,
-    embed: false
   }
 ];

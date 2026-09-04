@@ -1213,51 +1213,45 @@ const FILMES_CATALOGO = [
     nostalgiaTags:['Jackie Chan','desenho','anos 2000','dublado','TV']
   },
   {
-    id:'yt-jackie-drunken-master-1978', type:'filme', title:'Drunken Master', year:'1978', genre:'Ação / Artes marciais / Comédia', mediaType:'filme',
-    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
-    youtubeId:'hCCpjX5v5gY', thumb:'https://i.ytimg.com/vi/hCCpjX5v5gY/hqdefault.jpg', accent:'var(--gold)',
-    desc:'Longa completo de Jackie Chan (1978) disponibilizado publicamente pelo canal verificado Sony Pictures Entertainment India.',
-    sourceUrl:'https://www.youtube.com/watch?v=hCCpjX5v5gY', sourceLabel:'Sony Pictures Entertainment India — YouTube verificado', nostalgiaTags:['Jackie Chan','kung fu','1978']
+    id:'yt-jackie-city-hunter-1993-ptbr', type:'filme', title:'City Hunter — O Caçador de Encrencas', year:'1993', genre:'Ação / Comédia / Artes marciais', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, jackieChan:true, filmGenre:'acao', rightsUnclear:true,
+    youtubeId:'-Y9aR3fCiwQ', thumb:'https://i.ytimg.com/vi/-Y9aR3fCiwQ/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Versão pública dublada em português de City Hunter (1993), com Jackie Chan. A publicação está disponível no YouTube; os direitos do upload não foram confirmados de forma independente.',
+    sourceUrl:'https://www.youtube.com/watch?v=-Y9aR3fCiwQ', sourceLabel:'YouTube — publicação pública; direitos não verificados', nostalgiaTags:['Jackie Chan','1993','dublado','City Hunter']
   },
   {
-    id:'yt-jackie-winners-sinners-1983', type:'filme', title:'Winners and Sinners', year:'1983', genre:'Ação / Comédia / Artes marciais', mediaType:'filme',
-    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
-    youtubeId:'y57iuGqeSjk', thumb:'https://i.ytimg.com/vi/y57iuGqeSjk/hqdefault.jpg', accent:'var(--gold)',
-    desc:'Filme completo de 1983 com Jackie Chan, publicado pelo canal verificado Shout! Studios.',
-    sourceUrl:'https://www.youtube.com/watch?v=y57iuGqeSjk', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1983','comédia','ação']
+    id:'yt-jackie-operacao-condor-1991-ptbr', type:'filme', title:'Operação Condor', year:'1991', genre:'Ação / Aventura / Artes marciais', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, jackieChan:true, filmGenre:'acao', rightsUnclear:true,
+    youtubeId:'9NKEEqSBW2c', thumb:'https://i.ytimg.com/vi/9NKEEqSBW2c/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Filme de Jackie Chan anterior a 2000 encontrado publicamente em versão dublada em português no YouTube.',
+    sourceUrl:'https://www.youtube.com/watch?v=9NKEEqSBW2c', sourceLabel:'YouTube — publicação pública; direitos não verificados', nostalgiaTags:['Jackie Chan','1991','dublado','Operação Condor']
   },
   {
-    id:'yt-jackie-wheels-meals-1984', type:'filme', title:'Wheels on Meals', year:'1984', genre:'Ação / Comédia / Artes marciais', mediaType:'filme',
-    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
-    youtubeId:'nPdH4s_GIvQ', thumb:'https://i.ytimg.com/vi/nPdH4s_GIvQ/hqdefault.jpg', accent:'var(--gold)',
-    desc:'Filme completo de 1984 com Jackie Chan, Sammo Hung e Yuen Biao, publicado gratuitamente no YouTube.',
-    sourceUrl:'https://www.youtube.com/watch?v=nPdH4s_GIvQ', sourceLabel:'YouTube — publicação pública', nostalgiaTags:['Jackie Chan','1984','Sammo Hung','ação']
+    id:'yt-jackie-quem-sou-eu-1998-ptbr', type:'filme', title:'Quem Sou Eu?', year:'1998', genre:'Ação / Aventura / Artes marciais', mediaType:'filme',
+    language:'Português (dublado)', portuguese:true, colorContent:true, jackieChan:true, filmGenre:'acao', rightsUnclear:true,
+    youtubeId:'0qYsVBUCCV4', thumb:'https://i.ytimg.com/vi/0qYsVBUCCV4/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Filme de Jackie Chan de 1998 encontrado publicamente em versão dublada em português no YouTube.',
+    sourceUrl:'https://www.youtube.com/watch?v=0qYsVBUCCV4', sourceLabel:'YouTube — publicação pública; direitos não verificados', nostalgiaTags:['Jackie Chan','1998','dublado','Quem Sou Eu']
+  },
+
+  {
+    id:'drive-filme-1cywxvml', type:'filme', title:'Os Pilantras', year:'', genre:'Filme', mediaType:'filme',
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1cyWxvMlPaaeBge6sTxWHTu2sSNHOxdRo',
+    thumb:'https://drive.google.com/thumbnail?id=1cyWxvMlPaaeBge6sTxWHTu2sSNHOxdRo&sz=w1000', accent:'var(--gold)',
+    desc:'Filme adicionado pelo usuário via Google Drive. A reprodução funciona dentro do JogaHub quando o arquivo está compartilhado para qualquer pessoa com o link.',
+    sourceUrl:'https://drive.google.com/file/d/1cyWxvMlPaaeBge6sTxWHTu2sSNHOxdRo/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Google Drive','filme','português']
   },
   {
-    id:'yt-jackie-protector-1985', type:'filme', title:'The Protector', year:'1985', genre:'Ação / Policial / Artes marciais', mediaType:'filme',
-    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
-    youtubeId:'d4zAkiajuZc', thumb:'https://i.ytimg.com/vi/d4zAkiajuZc/hqdefault.jpg', accent:'var(--gold)',
-    desc:'Filme completo de 1985 estrelado por Jackie Chan, publicado pelo canal verificado Shout! Studios.',
-    sourceUrl:'https://www.youtube.com/watch?v=d4zAkiajuZc', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1985','policial']
-  },
-  {
-    id:'yt-jackie-city-hunter-1993', type:'filme', title:'City Hunter', year:'1993', genre:'Ação / Comédia / Artes marciais', mediaType:'filme',
-    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
-    youtubeId:'8SxjZ5_92zE', thumb:'https://i.ytimg.com/vi/8SxjZ5_92zE/hqdefault.jpg', accent:'var(--gold)',
-    desc:'Filme completo de 1993 estrelado por Jackie Chan, publicado pelo canal verificado Shout! Studios.',
-    sourceUrl:'https://www.youtube.com/watch?v=8SxjZ5_92zE', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1993','City Hunter']
-  },
-  {
-    id:'yt-jackie-crime-story-1993', type:'filme', title:'Crime Story', year:'1993', genre:'Ação / Policial / Drama', mediaType:'filme',
-    language:'Áudio conforme publicação', colorContent:true, jackieChan:true, filmGenre:'acao', freeLegal:true,
-    youtubeId:'TpEL8DTI_Hs', thumb:'https://i.ytimg.com/vi/TpEL8DTI_Hs/hqdefault.jpg', accent:'var(--gold)',
-    desc:'Filme completo de 1993 estrelado por Jackie Chan, publicado pelo canal verificado Shout! Studios.',
-    sourceUrl:'https://www.youtube.com/watch?v=TpEL8DTI_Hs', sourceLabel:'Shout! Studios — YouTube verificado', nostalgiaTags:['Jackie Chan','1993','policial','drama']
+    id:'drive-filme-1uqol5e8', type:'filme', title:'Gintama', year:'', genre:'Anime', mediaType:'filme',
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1-uqoL5e8wjgF7E4gTXDRku54SA4Fs6Kz',
+    thumb:'https://drive.google.com/thumbnail?id=1-uqoL5e8wjgF7E4gTXDRku54SA4Fs6Kz&sz=w1000', accent:'var(--gold)',
+    desc:'Segundo filme adicionado pelo usuário via Google Drive. A reprodução funciona dentro do JogaHub quando o arquivo está compartilhado para qualquer pessoa com o link.',
+    sourceUrl:'https://drive.google.com/file/d/1-uqoL5e8wjgF7E4gTXDRku54SA4Fs6Kz/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Google Drive','filme','português']
   },
 
 ];
 
-// v1.0.23 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
+// v1.0.25 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
 // O app também busca automaticamente itens PT/dublados publicados no Internet Archive. Itens sem licença clara podem aparecer; apenas sinais explícitos de upload não autorizado são filtrados.
 // Entradas que servem apenas como “Onde assistir” continuam fora da interface principal.
 const FILMES = FILMES_CATALOGO.filter((item) => {
@@ -1267,6 +1261,7 @@ const FILMES = FILMES_CATALOGO.filter((item) => {
     item.youtubePlaylistId ||
     item.videoUrl ||
     item.directVideoUrl ||
-    item.localVideoUrl
+    item.localVideoUrl ||
+    item.driveFileId
   );
 });

@@ -1,4 +1,12 @@
-# JogaHub 1.0.25
+# JogaHub 1.0.27
+
+## v1.0.27 — Instalador + Jackie Chan em português
+
+- Novo `instalar.html`: tela própria para instalar o JogaHub como PWA no Android, iPhone/iPad e PC.
+- O botão **Instalar app** agora fica sempre visível; se o navegador não liberar o prompt automático, abre o guia de instalação.
+- Removidos do catálogo Jackie Chan os filmes fixos que estavam somente em outro idioma.
+- Adicionados em português/dublados: **City Hunter — O Caçador de Encrencas (1993)**, **Operação Condor (1991)** e **Quem Sou Eu? (1998)**.
+- A busca automática do YouTube para Jackie Chan agora exige sinais de `dublado`, `português`, `PT-BR` ou `Brasil`, evitando importar novamente versões estrangeiras.
 
 ## v1.0.23 — Jackie Chan + catálogo sem repetição
 
@@ -244,3 +252,8 @@ Os links do Internet Archive enviados pelo usuário foram verificados, mas não 
 - Verificação ao abrir a aba e a cada 30 minutos; botão **Atualizar** permite checagem manual.
 - Sem chave ou se a API falhar, permanece o vídeo oficial de reserva.
 - Para GitHub Pages, restrinja a chave por **HTTP referrers** ao endereço do seu site e restrinja a API somente a **YouTube Data API v3**.
+
+## v1.0.27 — Filme via Google Drive
+- Suporte a arquivos de vídeo compartilhados pelo Google Drive usando o player `preview`.
+- Adicionado o arquivo `1cyWxvMlPaaeBge6sTxWHTu2sSNHOxdRo` ao catálogo.
+- O arquivo precisa estar compartilhado como “Qualquer pessoa com o link”.

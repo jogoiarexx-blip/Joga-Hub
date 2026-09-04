@@ -74,6 +74,11 @@ function itemHref(item){
     const source = item.sourceUrl || `https://archive.org/details/${encodeURIComponent(item.archiveId)}`;
     return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&archiveId=${encodeURIComponent(item.archiveId)}&id=${encodeURIComponent(item.id || '')}`;
   }
+  if(item.type === 'filme' && item.driveFileId){
+    const url = `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/preview`;
+    const source = item.sourceUrl || `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/view`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=iframe&id=${encodeURIComponent(item.id || '')}`;
+  }
   if(isExternalItem(item)){
     if(item.embed === true){
       return `link-player.html?url=${encodeURIComponent(item.url)}&title=${encodeURIComponent(item.title || '')}`;
@@ -83,7 +88,7 @@ function itemHref(item){
   return item.path || '#';
 }
 function itemLinkAttrs(item){
-  if(item.type === 'filme' && (item.archiveId || item.youtubePlaylistId || item.youtubeId)) return '';
+  if(item.type === 'filme' && (item.archiveId || item.youtubePlaylistId || item.youtubeId || item.driveFileId)) return '';
   return (isCatalogExternal(item) || (isExternalItem(item) && item.embed !== true)) ? ' target="_blank" rel="noopener noreferrer"' : '';
 }
 function movieActionLabel(item){
@@ -171,7 +176,7 @@ function cardHTML(item){
   const thumb = item.thumb
     ? `<div class="card-thumb"><img src="${escapeHTML(item.thumb)}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy"></div>`
     : `<div class="card-thumb card-thumb-placeholder"><span>${meta.icon}</span></div>`;
-  const onlineBadge = (isExternalItem(item) || item.archiveId || item.youtubePlaylistId || item.youtubeId) ? `<span class="online-badge">🌐 online</span>` : '';
+  const onlineBadge = (isExternalItem(item) || item.archiveId || item.youtubePlaylistId || item.youtubeId || item.driveFileId) ? `<span class="online-badge">🌐 online</span>` : '';
   const yearBadge = item.year ? `<span class="year-badge">${escapeHTML(item.year)}</span>` : '';
   const progress = movieProgress(item);
   const progressHTML = progress ? formatMovieProgress(progress) : '';
@@ -184,7 +189,7 @@ function cardHTML(item){
         <h2>${escapeHTML(item.title)}</h2>
         <p>${escapeHTML(item.desc)}</p>
         ${progressHTML}
-        <span class="play">▶ ${(isExternalItem(item) || item.archiveId || item.youtubePlaylistId || item.youtubeId) ? meta.action + ' online' : meta.action}</span>
+        <span class="play">▶ ${(isExternalItem(item) || item.archiveId || item.youtubePlaylistId || item.youtubeId || item.driveFileId) ? meta.action + ' online' : meta.action}</span>
       </a>
       <div class="card-extra-actions">
         ${isExternalItem(item) && item.installable === true ? `<a class="install-game-btn" href="${escapeHTML(installGameHref(item))}" aria-label="Instalar ${escapeHTML(item.title)}">📲 instalar jogo</a>` : ''}
@@ -238,6 +243,7 @@ function mediaIdentity(item){
   if(item.youtubeId) return `yt:${item.youtubeId}`;
   if(item.youtubePlaylistId) return `ytp:${item.youtubePlaylistId}`;
   if(item.archiveId) return `ia:${item.archiveId}`;
+  if(item.driveFileId) return `gdrive:${item.driveFileId}`;
   if(item.directVideoUrl || item.videoUrl || item.localVideoUrl) return `vid:${item.directVideoUrl || item.videoUrl || item.localVideoUrl}`;
   const base=normalize(item.seriesTitle || item.title || item.id).replace(/\b(19|20)\d{2}\b/g,'').replace(/\s+/g,' ').trim();
   return item.mediaType==='serie' ? `series:${base}:s${item.season||1}:e${item.episode||0}` : `${item.mediaType||'item'}:${base}`;
@@ -739,7 +745,7 @@ async function loadYouTubeJackieChanDiscoveries(){
   // Usa a mesma chave opcional já configurada para lives. Uma única busca economiza cota.
   if(!getYouTubeApiKey()) return;
   try{
-    const data=await youtubeApi('search',{part:'snippet',q:'Jackie Chan full movie',type:'video',videoEmbeddable:'true',maxResults:'25',safeSearch:'moderate'});
+    const data=await youtubeApi('search',{part:'snippet',q:'Jackie Chan filme completo dublado português',type:'video',videoEmbeddable:'true',maxResults:'25',safeSearch:'moderate'});
     const known=[
       ['mr nice guy','Mr. Nice Guy',1997],['rumble in the bronx','Rumble in the Bronx',1995],['police story 3','Police Story 3',1992],['supercop','Supercop',1992],
       ['police story 2','Police Story 2',1988],['police story','Police Story',1985],['project a 2','Project A 2',1987],['project a','Project A',1983],
@@ -751,9 +757,12 @@ async function loadYouTubeJackieChanDiscoveries(){
     for(const r of data.items||[]){
       const vid=r.id?.videoId;if(!vid||existingIds.has(vid))continue;
       const title=normalize(r.snippet?.title||'');
+      const desc=normalize(r.snippet?.description||'');
+      const ptHint=/dublad|portugu|pt-br|brasil/.test(title+' '+desc);
+      if(!ptHint) continue;
       const match=known.find(([needle])=>title.includes(needle));
       if(!match)continue;
-      additions.push({id:`jackie-youtube-auto-${vid}`,type:'filme',title:match[1],year:String(match[2]),genre:'Ação / Artes marciais',mediaType:'filme',jackieChan:true,filmGenre:'acao',colorContent:true,rightsUnclear:true,
+      additions.push({id:`jackie-youtube-auto-${vid}`,type:'filme',title:match[1],year:String(match[2]),genre:'Ação / Artes marciais',mediaType:'filme',jackieChan:true,portuguese:true,language:'Português (dublado)',filmGenre:'acao',colorContent:true,rightsUnclear:true,
         youtubeId:vid,thumb:r.snippet?.thumbnails?.high?.url||`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,accent:'var(--gold)',
         desc:`Filme de Jackie Chan anterior a 2000 encontrado publicamente no YouTube (${r.snippet?.channelTitle||'canal público'}).`,
         sourceUrl:`https://www.youtube.com/watch?v=${vid}`,sourceLabel:`YouTube — ${r.snippet?.channelTitle||'publicação pública'}; direitos não verificados`,nostalgiaTags:['Jackie Chan','YouTube','filme anterior a 2000']});
@@ -778,7 +787,7 @@ window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstallPrompt = e;
   const b = document.getElementById('installApp');
-  if(b) b.hidden = false;
+  if(b){ b.hidden = false; b.textContent='⬇ Instalar app'; }
 });
 window.addEventListener('appinstalled', () => {
   const b = document.getElementById('installApp');
@@ -800,12 +809,20 @@ document.addEventListener('DOMContentLoaded', () => {
   loadArchiveJackieChan();
   loadYouTubeJackieChanDiscoveries();
   const installBtn = document.getElementById('installApp');
+  if(installBtn) installBtn.hidden = false;
   installBtn?.addEventListener('click', async () => {
-    if(!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
-    deferredInstallPrompt = null;
-    installBtn.hidden = true;
+    if(deferredInstallPrompt){
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installBtn.textContent='✓ Instalado';
+      return;
+    }
+    if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){
+      alert('O JogaHub já está instalado neste aparelho.');
+      return;
+    }
+    location.href='instalar.html';
   });
   navigator.serviceWorker?.addEventListener('message', e => {
     const d = e.data || {};
