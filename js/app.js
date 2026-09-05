@@ -28,8 +28,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.1.8';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.1.8-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.1.11';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.1.11-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -175,7 +175,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.8</span><h2>Jogos primeiro. Conteúdo separado por categoria e imagens otimizadas.</h2><p>A Home começa pelos jogos, depois mostra filmes, séries e animes em áreas próprias.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.11</span><h2>Jogos primeiro. Conteúdo separado por categoria e imagens otimizadas.</h2><p>A Home começa pelos jogos, depois mostra filmes, séries e animes em áreas próprias.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('🎮 Jogos','Os jogos do JogaHub continuam em primeiro lugar.',games.slice(0,14),'Jogar')}
     ${row('🎬 Filmes','Filmes separados das séries e animes, priorizando melhor nota IMDb.',films.slice(0,14),'Assistir')}
     ${row('📺 Séries','Séries em uma área própria, sem misturar com filmes.',series.slice(0,14),'Assistir')}
@@ -190,15 +190,19 @@ function renderFeatured(){
   const games=itemsForView('jogo'), films=itemsForView('filme'), series=itemsForView('serie'), anime=itemsForView('anime');
   const mediaByView={filme:films,serie:series,anime:anime};
   const media=mediaByView[activeType] || [];
-  const item=['filme','serie','anime'].includes(activeType)?(media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):activeType==='jogo'?games[0]:activeType==='emulador'?itemsForView('emulador')[0]:(games[0]||films[0]||series[0]||anime[0]||itemsForView('emulador')[0]);
+  const homeFeatured=ITEMS.find(i=>i.featuredHome===true);
+  const seriesFeatured=series.find(i=>i.featuredSeries===true);
+  const item=activeType==='todos'?(homeFeatured||games[0]||films[0]||series[0]||anime[0]||itemsForView('emulador')[0]):activeType==='serie'?(seriesFeatured||media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):['filme','anime'].includes(activeType)?(media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):activeType==='jogo'?games[0]:activeType==='emulador'?itemsForView('emulador')[0]:null;
   const tag=document.getElementById('featuredTag'),title=document.getElementById('featuredTitle'),desc=document.getElementById('featuredDesc'),action=document.getElementById('featuredAction'),link=document.getElementById('featuredLink');
   if(activeType==='filme'){tag.textContent='filmes';title.textContent=item?.title||'Filmes';desc.textContent=item?.desc||'Filmes organizados em uma categoria própria.';action.textContent=item?'assistir agora →':'explorar filmes →';}
   else if(activeType==='serie'){tag.textContent='séries';title.textContent=item?.seriesTitle||item?.title||'Séries';desc.textContent=item?.desc||'Séries separadas dos filmes e animes.';action.textContent=item?'assistir série →':'explorar séries →';}
   else if(activeType==='anime'){tag.textContent='animes';title.textContent=item?.seriesTitle||item?.title||'Animes';desc.textContent=item?.desc||'Animes reunidos em uma categoria própria.';action.textContent=item?'assistir anime →':'explorar animes →';}
   else if(activeType==='jogo'){tag.textContent='jogos';title.textContent='JogaHub Games';desc.textContent=`${games.length} jogos organizados por gênero, favoritos e acesso rápido.`;action.textContent=item?`jogar ${item.title} →`:'explorar jogos →';}
   else if(activeType==='emulador'){tag.textContent='emulador';title.textContent=item?.title||'Emuladores';desc.textContent=item?.desc||'Emuladores disponíveis no JogaHub.';action.textContent=item?'abrir emulador →':'explorar emuladores →';}
-  else{tag.textContent='sua central de entretenimento';title.textContent='JogaHub';desc.textContent=`Jogos primeiro, depois filmes, séries e animes em abas separadas.`;action.textContent='começar agora →';}
+  else{tag.textContent=item?.featuredHome?'destaque da semana':'sua central de entretenimento';title.textContent=item?.seriesTitle||item?.title||'JogaHub';desc.textContent=item?.desc||`Jogos primeiro, depois filmes, séries e animes em abas separadas.`;action.textContent=item?'assistir agora →':'começar agora →';}
   if(item){link.href=itemHref(item);if(isCatalogExternal(item)||(isExternalItem(item)&&item.embed!==true)){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
+  const heroAsset=item?.hero||item?.thumb||'';
+  if(link) link.style.setProperty('--featured-bg', heroAsset?`url("${heroAsset.replace(/"/g,'\"')}")`:'url("assets/banner-games.webp")');
   document.getElementById('featuredImg').hidden=true;
 }
 function movieProgress(item){

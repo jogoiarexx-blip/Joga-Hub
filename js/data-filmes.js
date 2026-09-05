@@ -1249,11 +1249,12 @@ const FILMES_CATALOGO = [
     sourceUrl:'https://drive.google.com/file/d/1-uqoL5e8wjgF7E4gTXDRku54SA4Fs6Kz/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Google Drive','filme','português']
   },
   {
-    id:'drive-filme-1b6i7h8r', type:'filme', title:'Filme do Google Drive 3', year:'', genre:'Filme', mediaType:'filme',
+    id:'drive-retro-anime-tv', type:'filme', title:'Retro Anime TV', year:'', genre:'Anime / Retrô', mediaType:'serie',
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf',
-    thumb:'https://drive.google.com/thumbnail?id=1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf&sz=w1000', accent:'var(--gold)',
-    desc:'Filme adicionado pelo usuário via Google Drive. A reprodução funciona dentro do JogaHub quando o arquivo está compartilhado para qualquer pessoa com o link.',
-    sourceUrl:'https://drive.google.com/file/d/1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Google Drive','filme','português']
+    seriesId:'retro-anime-tv-drive', seriesTitle:'Retro Anime TV', season:1, episode:1, seasonCount:1, episodeCount:1,
+    thumb:'https://drive.google.com/thumbnail?id=1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf&sz=w1000', accent:'var(--purple)',
+    desc:'Retro Anime TV — conteúdo retrô de anime adicionado via Google Drive. A reprodução funciona dentro do JogaHub quando o arquivo está compartilhado para qualquer pessoa com o link.',
+    sourceUrl:'https://drive.google.com/file/d/1b6i7h8rVY_hdcMI3FQrOiluRmOtAlfnf/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Retro Anime TV','anime','retrô','Google Drive']
   }
 ,
   {
