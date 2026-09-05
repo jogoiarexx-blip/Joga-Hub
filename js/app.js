@@ -29,8 +29,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.1.21';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.1.21-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.1';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.1-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -247,17 +247,27 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.21</span><h2>Sua biblioteca de entretenimento em um só lugar.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação organizados para você encontrar tudo com rapidez.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
-    ${row('🎮 Jogos','Os jogos do JogaHub continuam em primeiro lugar.',games.slice(0,14),'Jogar')}
-    ${row('🎬 Filmes','Filmes separados das séries e animes, priorizando melhor nota IMDb.',films.slice(0,14),'Assistir')}
-    ${row('📺 Séries','Séries em uma área própria, sem misturar com filmes.',series.slice(0,14),'Assistir')}
-    ${row('📱 Doramas Curtos Dublados','Minidramas verticais dublados em português, publicados por fontes oficiais.',shortDramas.slice(0,14),'Assistir')}
-    ${row('🍥 Animes','Animes separados para ficar mais fácil encontrar o que assistir.',anime.slice(0,14),'Assistir')}
-    ${row('⭐ Melhores no IMDb','Os títulos mais bem avaliados entre filmes, séries e animes.',topMovies,'IMDb')}
-    ${row('▶ Continue assistindo','Seu progresso salvo aparece aqui.',continuing,'Continuar')}
-    ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}`;
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.1</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+    ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
+    ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
+    ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}
+    ${row('📺 Séries','Séries organizadas em uma área própria.',series.slice(0,14),'Assistir')}
+    ${row('🎬 Filmes','Filmes priorizados pela avaliação IMDb.',films.slice(0,14),'Assistir')}
+    ${row('⭐ Melhores no IMDb','Os títulos mais bem avaliados do catálogo.',topMovies,'IMDb')}
+    ${row('📱 Doramas Curtos Dublados','Minidramas verticais dublados em português.',shortDramas.slice(0,14),'Assistir')}
+    ${row('🍥 Animes','Animes separados para encontrar mais rápido.',anime.slice(0,14),'Assistir')}`;
   box.hidden=false;
 }
+const CATEGORY_HERO_ASSETS = {
+  jogo:'assets/banner-cat-jogos.webp',
+  filme:'assets/banner-cat-filmes.webp',
+  serie:'assets/banner-cat-series.webp',
+  anime:'assets/banner-cat-animes.webp',
+  tv:'assets/banner-cat-tv.webp',
+  emulador:'assets/banner-cat-emuladores.webp',
+  radio:'assets/banner-cat-radios.webp'
+};
+
 function renderFeatured(){
   const games=itemsForView('jogo'), films=itemsForView('filme'), series=itemsForView('serie'), anime=itemsForView('anime');
   const mediaByView={filme:films,serie:series,anime:anime};
@@ -270,10 +280,13 @@ function renderFeatured(){
   else if(activeType==='serie'){tag.textContent='séries';title.textContent=item?.seriesTitle||item?.title||'Séries';desc.textContent=item?.desc||'Séries separadas dos filmes e animes.';action.textContent=item?'assistir série →':'explorar séries →';}
   else if(activeType==='anime'){tag.textContent='animes';title.textContent=item?.seriesTitle||item?.title||'Animes';desc.textContent=item?.desc||'Animes reunidos em uma categoria própria.';action.textContent=item?'assistir anime →':'explorar animes →';}
   else if(activeType==='jogo'){tag.textContent='jogos';title.textContent='JogaHub Games';desc.textContent=`${games.length} jogos organizados por gênero, favoritos e acesso rápido.`;action.textContent=item?`jogar ${item.title} →`:'explorar jogos →';}
-  else if(activeType==='emulador'){tag.textContent='emulador';title.textContent=item?.title||'Emuladores';desc.textContent=item?.desc||'Emuladores disponíveis no JogaHub.';action.textContent=item?'abrir emulador →':'explorar emuladores →';}
+  else if(activeType==='emulador'){tag.textContent='emuladores';title.textContent='Emuladores';desc.textContent='Reviva clássicos com os emuladores integrados ao JogaHub.';action.textContent='abrir emuladores →';}
+  else if(activeType==='tv'){tag.textContent='transmissões oficiais';title.textContent='TV ao Vivo';desc.textContent='Canais oficiais e transmissões ao vivo reunidos em uma interface única.';action.textContent='ver canais →';}
+  else if(activeType==='radio'){tag.textContent='áudio ao vivo';title.textContent='Rádios Online';desc.textContent='Estações brasileiras ao vivo com busca, volume e reprodução contínua.';action.textContent='ouvir rádios →';}
   else{tag.textContent=item?.featuredHome?'destaque da semana':'sua central de entretenimento';title.textContent=item?.seriesTitle||item?.title||'JogaHub';desc.textContent=item?.desc||`Jogos primeiro, depois filmes, séries e animes em abas separadas.`;action.textContent=item?'assistir agora →':'começar agora →';}
   if(item){link.href=itemHref(item);if(isCatalogExternal(item)||(isExternalItem(item)&&item.embed!==true)){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
-  const heroAsset=item?.hero||item?.thumb||'';
+  const categoryHero=CATEGORY_HERO_ASSETS[activeType]||'';
+  const heroAsset=activeType==='todos'?(item?.hero||item?.thumb||''):categoryHero;
   if(link) link.style.setProperty('--featured-bg', heroAsset?`url("${heroAsset.replace(/"/g,'\"')}")`:'url("assets/banner-games.webp")');
   document.getElementById('featuredImg').hidden=true;
 }
@@ -609,20 +622,15 @@ function renderLiveTv(){
   const meta=document.getElementById('resultsMeta');
   const empty=document.getElementById('emptyState');
   const channels=(typeof LIVE_TV_CHANNELS!=='undefined'?LIVE_TV_CHANNELS:[]);
-  const hasKey=!!getYouTubeApiKey();
   grid.innerHTML=`<section class="live-tv-wrap">
-    <div class="live-tv-hero"><div><span class="eyebrow">Sinal oficial</span><h2>📺 TV ao Vivo</h2><p>O JogaHub verifica automaticamente ge tv e CazéTV no YouTube e troca o player quando encontra uma transmissão ativa.</p></div><div class="live-tv-hero-actions"><span class="live-tv-badge">AUTO LIVE</span><button id="refreshLives" class="live-tv-refresh" type="button">↻ Atualizar</button></div></div>
-    <div class="youtube-api-box ${hasKey?'configured':''}"><div><strong>🔑 Detecção automática do YouTube</strong><p>${hasKey?'API configurada neste aparelho. A verificação ocorre ao abrir e a cada 30 minutos.':'Cole aqui uma chave da YouTube Data API v3 restrita ao seu domínio GitHub Pages.'}</p><small id="liveLastCheck"></small></div><form id="youtubeApiForm"><input id="youtubeApiKey" type="password" autocomplete="off" placeholder="AIza..." value="${hasKey?'••••••••••••••••':''}" aria-label="Chave da YouTube Data API"><button type="submit">Salvar e testar</button><button id="clearYoutubeApi" type="button" class="secondary">Remover</button></form><p id="youtubeApiMsg" class="api-msg"></p></div>
+    <div class="live-tv-hero"><div><span class="eyebrow">Sinais oficiais</span><h2>📺 TV ao Vivo</h2><p>Canais oficiais com fontes revisadas para funcionar melhor no GitHub Pages. Se um canal mudar o endereço da transmissão, use o botão fonte para abrir a página oficial.</p></div><div class="live-tv-hero-actions"><span class="live-tv-badge">OFICIAL</span></div></div>
     <div id="liveTvGrid" class="live-tv-grid"></div>
-    <p class="live-tv-note">Sem chave, os canais continuam mostrando o conteúdo oficial de reserva. Com a API configurada, ge tv e CazéTV recebem selo <strong>● AO VIVO</strong> e o player troca para a live atual. A chave fica salva apenas no navegador deste aparelho.</p>
+    <p class="live-tv-note">A disponibilidade pode mudar por direitos de exibição, região ou alterações feitas pela própria emissora. O JogaHub usa apenas fontes oficiais e mantém um link de fallback para cada canal.</p>
   </section>`;
-  paintLiveTvCards(); bindLiveTvControls(); refreshDynamicLives(false);
+  paintLiveTvCards();
   if(meta) meta.textContent=`${channels.length} canais disponíveis na aba TV`;
-  if(empty) empty.style.display='none';
+  if(empty) empty.hidden=channels.length>0;
 }
-
-// Revalida as transmissões dinâmicas a cada 30 minutos enquanto o site estiver aberto.
-setInterval(()=>{ if(getYouTubeApiKey()) refreshDynamicLives(true); },30*60*1000);
 
 function renderGenreFilters(){
   const pool = itemsForView(activeType);
@@ -742,7 +750,7 @@ function syncNavigation(){
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===activeType));
   document.querySelectorAll('.type-btn').forEach(b=>{const on=b.dataset.type===activeType;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
 }
-function setView(view){activeType=view||'todos';if(activeType==='radio'&&!radioFeatureEnabled())activeType='todos';renderTypeTabs();renderGenreFilters();if(!['tv','radio'].includes(activeType)){renderFeatured();renderHomeDashboard();}else{const b=document.getElementById('banner');if(b)b.hidden=true;const h=document.getElementById('homeDashboard');if(h)h.hidden=true;}syncNavigation();applyFilters();if(!['tv','radio'].includes(activeType)){const b=document.getElementById('banner');if(b)b.hidden=false;}window.scrollTo({top:0,behavior:'smooth'});}
+function setView(view){activeType=view||'todos';if(activeType==='radio'&&!radioFeatureEnabled())activeType='todos';renderTypeTabs();renderGenreFilters();renderFeatured();if(!['tv','radio'].includes(activeType)){renderHomeDashboard();}else{const h=document.getElementById('homeDashboard');if(h)h.hidden=true;}const b=document.getElementById('banner');if(b)b.hidden=false;syncNavigation();applyFilters();window.scrollTo({top:0,behavior:'smooth'});}
 function showFavorites(){const fav=loadFavorites();activeType='todos';renderFeatured();syncNavigation();const list=ITEMS.filter(i=>fav.has(i.id));renderItems(list);document.getElementById('resultsMeta').textContent=list.length?`${list.length} itens na Minha Lista`:'Sua lista ainda está vazia.';}
 function downloadOffline(id, btn){
   if(!('serviceWorker' in navigator) || !OFFLINE_ASSETS[id]){
@@ -997,6 +1005,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+  document.getElementById('homeDashboard')?.addEventListener('click',e=>{const b=e.target.closest('[data-home-view]');if(b)setView(b.dataset.homeView);});
+  window.addEventListener('keydown',e=>{
+    const tag=(e.target?.tagName||'').toLowerCase();
+    const typing=['input','textarea','select'].includes(tag)||e.target?.isContentEditable;
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){
+      e.preventDefault();
+      const search=document.getElementById('search');search?.focus();search?.select();document.querySelector('.controls')?.scrollIntoView({behavior:'smooth',block:'center'});
+    }else if(e.key==='/'&&!typing){
+      e.preventDefault();const search=document.getElementById('search');search?.focus();search?.select();
+    }else if(e.key==='Escape'){
+      const sm=document.getElementById('settingsModal'),dm=document.getElementById('downloadsModal');if(sm&&!sm.hidden)sm.hidden=true;if(dm&&!dm.hidden)dm.hidden=true;
+    }
+  });
   document.querySelectorAll('[data-action="search"]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('search')?.focus();document.querySelector('.controls')?.scrollIntoView({behavior:'smooth',block:'center'});}));
   document.querySelectorAll('[data-action="favorites"]').forEach(b=>b.addEventListener('click',showFavorites));
   document.querySelectorAll('[data-action="downloads"]').forEach(b=>b.addEventListener('click',showDownloads));

@@ -1253,7 +1253,7 @@ const FILMES_CATALOGO = [
     id:'drive-breaking-bad-s1e1', type:'filme', title:'T1:E1 — Piloto', year:'2008', genre:'Drama / Crime', mediaType:'serie',
     seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:1, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1Y_C0dwlleSjf2Xa4g2QA7_hYLnKI1Sdj',
-    thumb:'assets/serie-breaking-bad-s1.webp', hero:'assets/hero-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5, featuredHome:true, featuredSeries:true,
+    thumb:'assets/serie-breaking-bad-s1.webp', hero:'assets/banner-breaking-bad.webp', accent:'var(--green)', imdbRating:9.5, featuredHome:true, featuredSeries:true,
     desc:'Breaking Bad — Temporada 1, Episódio 1: Piloto.',
     sourceUrl:'https://drive.google.com/file/d/1Y_C0dwlleSjf2Xa4g2QA7_hYLnKI1Sdj/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','1ª temporada','episódio 1','crime','drama']
   },

@@ -8,38 +8,27 @@ const LIVE_TV_CHANNELS = [
     site: 'https://culturaplay.tvcultura.com.br/channels/14-01-tv-cultura-ao-vivo'
   },
   {
-    id: 'sbt-ao-vivo',
-    name: 'SBT',
-    category: 'TV aberta / Entretenimento',
-    embed: 'https://www.youtube.com/embed/Y-M5QKKCmdA?autoplay=0&rel=0',
-    source: 'SBT — transmissão oficial',
-    site: 'https://www.sbt.com.br/ao-vivo?video=Y-M5QKKCmdA'
+    id: 'sbt-central-24h',
+    name: 'SBT Central',
+    category: 'TV aberta regional / sinal oficial 24h',
+    embed: 'https://www.youtube.com/embed/INtLcsYlcZ4?autoplay=0&rel=0',
+    source: 'SBT Central — transmissão oficial 24 horas',
+    site: 'https://www.youtube.com/watch?v=INtLcsYlcZ4'
   },
   {
     id: 'record-news',
     name: 'Record News',
-    category: 'Notícias / sinal oficial 24h',
-    embed: 'https://www.youtube.com/embed/saz29dZJR04?autoplay=0&rel=0',
-    source: 'Record News — canal oficial',
-    site: 'https://www.youtube.com/watch?v=saz29dZJR04'
-  }
-
-  ,{
-    id: 'getv-oficial',
-    name: 'ge tv',
-    category: 'Esportes / eventos e transmissões',
-    embed: 'https://www.youtube.com/embed/WUeYit6Yxpk?autoplay=0&rel=0',
-    youtubeLive: { seedVideoId: 'WUeYit6Yxpk', autoDetect: true },
-    source: 'ge tv — canal oficial verificado',
-    site: 'https://www.youtube.com/@getv'
+    category: 'Notícias / sinal oficial ao vivo',
+    embed: 'https://www.youtube.com/embed/Wpq6VRLWtM8?autoplay=0&rel=0',
+    source: 'Record News — transmissão oficial ao vivo',
+    site: 'https://www.youtube.com/watch?v=Wpq6VRLWtM8'
   },
   {
-    id: 'cazetv-oficial',
-    name: 'CazéTV',
-    category: 'Esportes / eventos e transmissões',
-    embed: 'https://www.youtube.com/embed/LdRzppe58RY?autoplay=0&rel=0',
-    youtubeLive: { seedVideoId: 'LdRzppe58RY', autoDetect: true },
-    source: 'CazéTV — canal oficial verificado',
-    site: 'https://www.youtube.com/@CazeTV'
+    id: 'tv-brasil',
+    name: 'TV Brasil',
+    category: 'TV pública / programação ao vivo na web',
+    embed: 'https://www.youtube.com/embed/live_stream?channel=UCSv9d0kQegylHWpP83jWSQg&autoplay=0&rel=0',
+    source: 'TV Brasil / EBC — canal oficial',
+    site: 'https://tvbrasil.ebc.com.br/webtv/'
   }
 ];

@@ -735,3 +735,32 @@ footer{max-width:var(--content);margin:0 auto;border-top:1px solid var(--border)
 }
 @media(max-width:390px){.main-grid,.game-category-grid{grid-template-columns:1fr}.home-track{grid-auto-columns:78vw}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* ===== JogaHub 1.2.0 — Premium Product UI ===== */
+:root{
+  --surface-glass:rgba(12,18,29,.78);
+  --surface-elevated:rgba(18,26,40,.92);
+  --accent-glow:rgba(39,199,245,.18);
+  --premium-line:rgba(255,255,255,.075);
+}
+body{background:radial-gradient(900px 520px at 8% -4%,rgba(39,199,245,.12),transparent 62%),radial-gradient(900px 560px at 94% 2%,rgba(122,92,255,.10),transparent 58%),#070b12}
+.site-header{background:linear-gradient(180deg,rgba(7,11,18,.94),rgba(7,11,18,.82));border-bottom-color:var(--premium-line)}
+.topbar{max-width:1380px}
+.brand-button{position:relative}.brand-button:after{content:"";position:absolute;inset:auto 8px -9px;height:2px;border-radius:99px;background:linear-gradient(90deg,var(--brand-blue),transparent);opacity:.45}
+.nav-link{position:relative;font-family:var(--font-body);font-size:12px;font-weight:650;letter-spacing:-.01em;padding:9px 11px}
+.nav-link.active{background:rgba(255,255,255,.065);box-shadow:none}.nav-link.active:after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:99px;background:linear-gradient(90deg,var(--brand-blue),#8c77ff)}
+.header-search{transition:transform .15s ease,border-color .15s ease,background .15s ease}.header-search:hover{transform:translateY(-1px)}
+.featured-banner{border:1px solid var(--premium-line);box-shadow:0 28px 80px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.035)}
+.featured-banner:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 25%)}
+.featured-copy h1{letter-spacing:-.045em;line-height:.98}.featured-copy p{max-width:650px;line-height:1.65}
+.home-dashboard{gap:32px}.premium-welcome{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(17,26,41,.94),rgba(10,16,27,.88))}.premium-welcome:before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-130px;top:-170px;background:radial-gradient(circle,rgba(39,199,245,.16),transparent 66%);pointer-events:none}.premium-welcome>div{position:relative;z-index:1}
+.home-quick-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.home-quick-actions button{border:1px solid var(--premium-line);background:rgba(255,255,255,.045);color:#eaf4fb;border-radius:999px;padding:9px 13px;font:650 11px var(--font-body);cursor:pointer;transition:.16s}.home-quick-actions button:hover{background:rgba(39,199,245,.11);border-color:rgba(39,199,245,.28);transform:translateY(-1px)}
+.home-row-head h2,.stream-row-head h2{letter-spacing:-.025em}.home-row-head p,.stream-row-head p{line-height:1.5}
+.home-tile,.stream-card{transition:transform .18s ease,filter .18s ease}.home-tile:hover,.stream-card:hover{transform:translateY(-4px)}.home-tile-art,.stream-poster{box-shadow:0 14px 34px rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.07)}
+.home-tile-art:after,.stream-poster:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px rgba(255,255,255,.06);pointer-events:none}
+.controls{position:relative}.search-wrap:after{content:"Ctrl K";font:600 9px var(--font-mono);color:#687589;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);padding:4px 6px;border-radius:6px;margin-left:auto}.search-wrap:focus-within:after{display:none}
+.filter-btn,.type-btn{font-family:var(--font-body);font-weight:650;letter-spacing:-.01em}
+.settings-panel,.downloads-panel{box-shadow:0 30px 100px rgba(0,0,0,.5);border:1px solid var(--premium-line);background:rgba(10,15,24,.96);backdrop-filter:blur(24px)}
+footer{opacity:.82}
+@media(max-width:820px){.search-wrap:after{content:"/"}.premium-welcome{padding:20px}.home-quick-actions{width:100%}.home-quick-actions button{flex:1;min-width:calc(50% - 5px)}.home-dashboard{gap:26px}.featured-banner{box-shadow:0 18px 48px rgba(0,0,0,.30)}}
+@media(max-width:520px){.premium-welcome:before{width:260px;height:260px}.home-stats span{background:rgba(255,255,255,.035)}.home-quick-actions button{padding:10px 8px}}

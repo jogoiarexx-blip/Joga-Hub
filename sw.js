@@ -1,9 +1,9 @@
-const SHELL = 'jogahub-1.1.21';
-const CONTENT = 'jogahub-1.1.21-content';
+const SHELL = 'jogahub-1.2.1';
+const CONTENT = 'jogahub-1.2.1-content';
 const SHELL_FILES = [
   './', './index.html', './instalar.html', './css/style.css?v=131', './js/data-jogos.js?v=40',
   './js/data-links.js?v=41', './js/data-filmes.js?v=129', './js/imdb-ratings.js?v=1', './js/data-tv.js?v=124', './js/offline-assets.js?v=40', './js/app.js?v=131',
-  './link-player.html', './install-game.html', './assets/favicon.png', './assets/logo.png', './assets/banner-games.webp', './assets/serie-breaking-bad-s1.webp', './assets/hero-breaking-bad-s1.webp',
+  './link-player.html', './install-game.html', './assets/favicon.png', './assets/logo.png', './assets/banner-games.webp', './assets/banner-breaking-bad.webp', './assets/banner-cat-jogos.webp', './assets/banner-cat-filmes.webp', './assets/banner-cat-series.webp', './assets/banner-cat-animes.webp', './assets/banner-cat-tv.webp', './assets/banner-cat-emuladores.webp', './assets/banner-cat-radios.webp', './assets/serie-breaking-bad-s1.webp', './assets/hero-breaking-bad-s1.webp',
   './assets/thumb-jogos-destaque.webp', './assets/thumb-crash-fan-game.webp', './assets/hero-crash-fan-game.webp', './assets/thumb-joao-crist.webp', './assets/hero-joao-crist.webp', './assets/thumb-zeco-lendas-da-ilha.webp', './assets/hero-zeco-lendas-da-ilha.webp', './assets/thumb-ruptura.webp', './assets/hero-ruptura.webp', './assets/icon-192.png', './assets/icon-512.png', './manifest.webmanifest?v=124'
 ];
 self.addEventListener('install', event => {
