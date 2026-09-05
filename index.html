@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#08080f">
-<title>JogaHub 1.1.14</title>
+<meta name="theme-color" content="#070a10">
+<title>JogaHub 1.1.21</title>
 <meta name="description" content="JogaHub — jogos, filmes clássicos e desenhos em fontes online incorporadas.">
-<link rel="stylesheet" href="css/style.css?v=130">
+<link rel="stylesheet" href="css/style.css?v=132">
 <link rel="icon" href="assets/favicon.png">
 <link rel="manifest" href="manifest.webmanifest?v=124">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
@@ -16,7 +16,7 @@
 <script defer src="js/imdb-ratings.js?v=1"></script>
 <script defer src="js/data-tv.js?v=124"></script>
 <script defer src="js/offline-assets.js?v=40"></script>
-<script defer src="js/app.js?v=130"></script>
+<script defer src="js/app.js?v=132"></script>
 </head>
 <body>
 
@@ -31,10 +31,11 @@
       <button class="nav-link" data-view="anime" type="button">🍥 Animes</button>
       <button class="nav-link" data-view="tv" type="button">📡 TV ao Vivo</button>
       <button class="nav-link" data-view="emulador" type="button">🕹️ Emulador</button>
+      <button class="nav-link radio-nav-link" data-view="radio" type="button">📻 Rádios</button>
       <button class="nav-link" data-action="favorites" type="button">♥ Minha Lista</button>
       <button class="nav-link" data-action="downloads" type="button">⬇ Downloads</button>
     </nav>
-    <div class="header-actions"><button class="header-search" data-action="search" type="button" aria-label="Buscar">⌕</button><button id="installApp" class="install-app" type="button">⬇ Instalar app</button></div>
+    <div class="header-actions"><button class="header-search" data-action="search" type="button" aria-label="Buscar">⌕</button><button class="header-search" data-action="settings" type="button" aria-label="Configurações">⚙</button><button id="installApp" class="install-app" type="button">⬇ Instalar app</button></div>
   </div>
 </header>
 
@@ -76,7 +77,21 @@
   <img class="brand-mark" src="assets/icon-512.png" alt="JogaHub">
   <p>feito por <span>Luis Paulo Alves</span> &middot; amante de jogos e jogador que quer levar entretenimento para que todos possam aproveitar</p>
 </footer>
-<nav class="mobile-nav" aria-label="Navegação mobile"><button class="active" data-view="todos" type="button"><b>⌂</b><span>Início</span></button><button data-view="jogo" type="button"><b>🎮</b><span>Jogos</span></button><button data-view="filme" type="button"><b>🎬</b><span>Filmes</span></button><button data-view="serie" type="button"><b>📺</b><span>Séries</span></button><button data-view="anime" type="button"><b>🍥</b><span>Animes</span></button><button data-view="tv" type="button"><b>📡</b><span>TV</span></button><button data-view="emulador" type="button"><b>🕹️</b><span>Emulador</span></button></nav>
+<nav class="mobile-nav" aria-label="Navegação mobile"><button class="active" data-view="todos" type="button"><b>⌂</b><span>Início</span></button><button data-view="jogo" type="button"><b>🎮</b><span>Jogos</span></button><button data-view="filme" type="button"><b>🎬</b><span>Filmes</span></button><button data-view="serie" type="button"><b>📺</b><span>Séries</span></button><button data-view="anime" type="button"><b>🍥</b><span>Animes</span></button><button data-view="tv" type="button"><b>📡</b><span>TV</span></button><button data-view="emulador" type="button"><b>🕹️</b><span>Emulador</span></button><button class="radio-mobile-link" data-view="radio" type="button"><b>📻</b><span>Rádios</span></button></nav>
+
+<div id="settingsModal" class="settings-modal" hidden>
+  <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="settings-head"><div><span class="eyebrow">JogaHub</span><h2 id="settingsTitle">⚙ Configurações</h2></div><button id="closeSettings" class="downloads-close" type="button">✕</button></div>
+    <label class="setting-row"><div><strong>📻 Rádios Online</strong><small>Mostra ou oculta a aba de rádios e permite ouvir estações enquanto navega pelo JogaHub.</small></div><input id="radioFeatureToggle" type="checkbox" checked></label>
+  </section>
+</div>
+
+<div id="radioDock" class="radio-dock" hidden>
+  <div class="radio-dock-copy"><span>📻 tocando agora</span><strong id="radioDockName">Rádio</strong></div>
+  <button id="radioDockPlay" type="button" aria-label="Pausar ou continuar">⏸</button>
+  <input id="radioDockVolume" type="range" min="0" max="100" value="70" aria-label="Volume da rádio">
+  <button id="radioDockStop" type="button" aria-label="Parar rádio">■</button>
+</div>
 
 <div id="downloadsModal" class="downloads-modal" hidden>
   <section class="downloads-panel" role="dialog" aria-modal="true" aria-labelledby="downloadsTitle">

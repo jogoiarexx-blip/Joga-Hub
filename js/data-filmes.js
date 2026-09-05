@@ -1004,14 +1004,6 @@ const FILMES_CATALOGO = [
     classicTv:true, nostalgiaTags:['YouTube','dublado','She-Ra','anos 80','desenho clássico','episódio completo']
   },
   {
-    id:'yt-panteracorrosa-disque-p', type:'filme', title:'A Pantera Cor-de-Rosa — Disque P para Pantera', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
-    seriesId:'pantera-cor-de-rosa-ptbr', seriesTitle:'A Pantera Cor-de-Rosa', language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true,
-    youtubeId:'ADxuv3Pn5Aw', thumb:'https://i.ytimg.com/vi/ADxuv3Pn5Aw/hqdefault.jpg', accent:'var(--pink)',
-    desc:'Episódio completo dublado em português disponibilizado no canal A Pantera Cor de Rosa em Português.',
-    sourceUrl:'https://www.youtube.com/watch?v=ADxuv3Pn5Aw', sourceLabel:'A Pantera Cor de Rosa em Português — YouTube',
-    classicTv:true, nostalgiaTags:['YouTube','dublado','Pantera Cor-de-Rosa','desenho clássico','episódio completo']
-  },
-  {
     id:'yt-panteracorrosa-toureiro', type:'filme', title:'A Pantera Cor-de-Rosa — O Toureiro Cor-de-Rosa', year:'Episódio completo', genre:'Animação / Comédia', mediaType:'serie',
     seriesId:'pantera-cor-de-rosa-ptbr', seriesTitle:'A Pantera Cor-de-Rosa', language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true,
     youtubeId:'0LjU3-mPMrM', thumb:'https://i.ytimg.com/vi/0LjU3-mPMrM/hqdefault.jpg', accent:'var(--pink)',
@@ -1259,7 +1251,7 @@ const FILMES_CATALOGO = [
 ,
   {
     id:'drive-breaking-bad-s1e1', type:'filme', title:'T1:E1 — Piloto', year:'2008', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:1, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:1, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1Y_C0dwlleSjf2Xa4g2QA7_hYLnKI1Sdj',
     thumb:'assets/serie-breaking-bad-s1.webp', hero:'assets/hero-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5, featuredHome:true, featuredSeries:true,
     desc:'Breaking Bad — Temporada 1, Episódio 1: Piloto.',
@@ -1267,7 +1259,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s1e2', type:'filme', title:'T1:E2 — Ressurreição', year:'2008', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:2, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:2, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1JxKHYqXvpwmnLVkNQ4eY8Tod7cLoy5-E',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 1, Episódio 2: Ressurreição.',
@@ -1275,7 +1267,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s1e3', type:'filme', title:'T1:E3 — Dúvida', year:'2008', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:3, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:3, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1xsSzCds15oKm3OFgwql2PQGJQsr-Y2B6',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 1, Episódio 3: Dúvida.',
@@ -1283,7 +1275,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s1e4', type:'filme', title:'T1:E4 — Homem com Câncer', year:'2008', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:4, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:4, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1BauLdx7Aq7c2zgJlaqZhDjzxiFtrj2fM',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 1, Episódio 4: Homem com Câncer.',
@@ -1291,7 +1283,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s1e5', type:'filme', title:'T1:E5 — Matéria Cinzenta', year:'2008', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:5, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:5, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1CS2GOuWrAvRLg5yUhJnn5LNAtJy0fsek',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 1, Episódio 5: Matéria Cinzenta.',
@@ -1299,7 +1291,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s1e6', type:'filme', title:'T1:E6 — O Grande Blefe', year:'2008', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:6, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:6, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1rDmHf3nBS7G8FkgusClXwTA_LHJqIfdx',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 1, Episódio 6: O Grande Blefe.',
@@ -1307,7 +1299,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s1e7', type:'filme', title:'T1:E7 — Um Trato Sem Dificuldades', year:'2008', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:7, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:1, episode:7, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1PnQmJZcOtOMNSiXRT5MgXebawUYkTaUk',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 1, Episódio 7: Um Trato Sem Dificuldades.',
@@ -1315,7 +1307,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e1', type:'filme', title:'T2:E1 — Seven Thirty-Seven', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:1, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:1, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1p3KUUSRN9OpoVlSnQ8YHppEOWRBoFHmP', subtitleDriveFileId:'10U9QK-OVJ2FbjT7m6JyaQRFuQdIMtyD7',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 1: Seven Thirty-Seven.',
@@ -1323,7 +1315,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e2', type:'filme', title:'T2:E2 — Grilled', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:2, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:2, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'18RXnWYt_sTHes8pvPaANsWOQH1scxew_', subtitleDriveFileId:'13CZkfOGUBl8Z3iFp_Qm40d-w22R9c9d_',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 2: Grilled.',
@@ -1331,7 +1323,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e3', type:'filme', title:'T2:E3 — Bit by a Dead Bee', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:3, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:3, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1bpHtLyPvVAk6Klss-f-9AQJPz1K_L6PW', subtitleDriveFileId:'1DdEN-dPket9413KoHOn5TOP40s3cqRPC',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 3: Bit by a Dead Bee.',
@@ -1339,7 +1331,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e4', type:'filme', title:'T2:E4 — Down', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:4, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:4, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1aHn1udMyGVJa35rS9P8o0aG2DH_cazec', subtitleDriveFileId:'1qjlrIBjQNBNrLawEhGi2LGAan0fC5rGy',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 4: Down.',
@@ -1347,7 +1339,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e5', type:'filme', title:'T2:E5 — Breakage', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:5, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:5, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1LBm5dATVpv4jExSDxWAvAdNrGHhXfoaC', subtitleDriveFileId:'1gLjVmrLG4EEGWKbwnKXPmadRpV7aPVY_',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 5: Breakage.',
@@ -1355,7 +1347,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e6', type:'filme', title:'T2:E6 — Peekaboo', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:6, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:6, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1-_ff9SVA_4urhsyq7ItJG3PykoWDxqRr', subtitleDriveFileId:'1n_kKDnl0F8ohGrCdfObZo6zSVznIhVVi',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 6: Peekaboo.',
@@ -1363,7 +1355,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e7', type:'filme', title:'T2:E7 — Negro y Azul', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:7, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:7, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'189n0fpQ4JL_JfbQda2k8SGmw03cWUrtd', subtitleDriveFileId:'1Y1X0j9SYevvzAI0DbNpzd5yopfHe77RW',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 7: Negro y Azul.',
@@ -1371,7 +1363,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e8', type:'filme', title:'T2:E8 — Better Call Saul', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:8, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:8, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'128cykK4jdC8VKNwp-V5ksr3Mcg8JZY3z', subtitleDriveFileId:'1VtGAvrql7UcmsmRgQgC9xa2rVoUoOI0m',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 8: Better Call Saul.',
@@ -1379,7 +1371,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e9', type:'filme', title:'T2:E9 — 4 Days Out', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:9, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:9, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1pq29R4r7lpk2W_Q6AsLtdjT5yXoNF1xt', subtitleDriveFileId:'1PFOzHIC_QmW1EleDG6elQyJhoVINRBLe',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 9: 4 Days Out.',
@@ -1387,7 +1379,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e10', type:'filme', title:'T2:E10 — Over', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:10, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:10, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1s13GRD4zspEfZwSdbKh6H2vfqyWOso0R', subtitleDriveFileId:'1L1ktt5SYsCTvIl6Q4lA0OKW_jAKQd3Hg',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 10: Over.',
@@ -1395,7 +1387,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e11', type:'filme', title:'T2:E11 — Mandala', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:11, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:11, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1qd0yWo_8NkkcCkhk-wPZbL6fCymGRhfM', subtitleDriveFileId:'1e2U2tThAZMzu9OgDrAz99Xt7g0k7HFg_',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 11: Mandala.',
@@ -1403,7 +1395,7 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e12', type:'filme', title:'T2:E12 — Phoenix', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:12, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:12, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1-IYJsvl3yw7npmM5AblwTD-eYa9nEqEP', subtitleDriveFileId:'1cUnhLRVaNSVTCtrOhhuqnIt6EqYEg2V9',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 12: Phoenix.',
@@ -1411,13 +1403,305 @@ const FILMES_CATALOGO = [
   },
   {
     id:'drive-breaking-bad-s2e13', type:'filme', title:'T2:E13 — ABQ', year:'2009', genre:'Drama / Crime', mediaType:'serie',
-    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:13, seasonCount:2, episodeCount:20,
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:2, episode:13, seasonCount:5, episodeCount:54,
     language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1X8mDL6UzuZsrUSrGHQ-LHpLpTOq2nySs', subtitleDriveFileId:'1G1Yog-FvFd6U7nebUGDtq-0TxIkUSKiG',
     thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
     desc:'Breaking Bad — Temporada 2, Episódio 13: ABQ.',
     sourceUrl:'https://drive.google.com/file/d/1X8mDL6UzuZsrUSrGHQ-LHpLpTOq2nySs/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','2ª temporada','episódio 13','crime','drama']
   }
 ,
+  {
+    id:'drive-breaking-bad-s3e1', type:'filme', title:'T3:E1 — No Mas', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:1, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1vhftFAObhfYly9N57jjcrUZnU8EEIS4H', subtitleDriveFileId:'12qCCwDK-YnRdE0pBMOrnguhASVRtEMX1',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 1: No Mas.',
+    sourceUrl:'https://drive.google.com/file/d/1vhftFAObhfYly9N57jjcrUZnU8EEIS4H/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 1','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e2', type:'filme', title:'T3:E2 — Caballo Sin Nombre', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:2, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1uBBcnJIq3TgCdgwxmu-457MIL49rRFVC', subtitleDriveFileId:'1FTlnERvN1V4Z6tr_jaPrEqkWKTboqWzR',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 2: Caballo Sin Nombre.',
+    sourceUrl:'https://drive.google.com/file/d/1uBBcnJIq3TgCdgwxmu-457MIL49rRFVC/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 2','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e3', type:'filme', title:'T3:E3 — I.F.T', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:3, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'121qPstbTQwyYgHpD8aAnXA9BUkojMvef', subtitleDriveFileId:'1XtrQDBZFuTIC3lw_xbD1Nval2li1dX9x',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 3: I.F.T.',
+    sourceUrl:'https://drive.google.com/file/d/121qPstbTQwyYgHpD8aAnXA9BUkojMvef/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 3','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e4', type:'filme', title:'T3:E4 — Green Light', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:4, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1gPUSakReK6H-NDS5FDJPUOA7voZeCXk2', subtitleDriveFileId:'1av4VwaLqbq8rYvGcfSOxo012pEY2O3W5',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 4: Green Light.',
+    sourceUrl:'https://drive.google.com/file/d/1gPUSakReK6H-NDS5FDJPUOA7voZeCXk2/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 4','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e5', type:'filme', title:'T3:E5 — Mas', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:5, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1RPgVZKMuMzoIYSkvwPX1PnWew-43lPCE', subtitleDriveFileId:'1PfkgddwFCv-JDfrdTmaZ5h6P9HkVbeFO',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 5: Mas.',
+    sourceUrl:'https://drive.google.com/file/d/1RPgVZKMuMzoIYSkvwPX1PnWew-43lPCE/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 5','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e6', type:'filme', title:'T3:E6 — Sunset', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:6, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1wgpP7QYLqWX9eXRv7zR5-B-_OKrLIi93', subtitleDriveFileId:'1FxbIdR1vgojgs4LXJ8ROYysTXDslQfVV',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 6: Sunset.',
+    sourceUrl:'https://drive.google.com/file/d/1wgpP7QYLqWX9eXRv7zR5-B-_OKrLIi93/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 6','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e7', type:'filme', title:'T3:E7 — One Minute', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:7, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1gpbPWhuy_GFbUzTOrRpQIRgn5BDJJz11', subtitleDriveFileId:'1JEoybfgzPG4e_S6iw6GSKQ1B77_B6bfo',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 7: One Minute.',
+    sourceUrl:'https://drive.google.com/file/d/1gpbPWhuy_GFbUzTOrRpQIRgn5BDJJz11/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 7','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e8', type:'filme', title:'T3:E8 — I See You', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:8, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1YVFjMYWFqBc9Glz-qyp8Pxi172KvBdSi', subtitleDriveFileId:'1daHyVsvp49aBWeeKjkDt7jz7KvHjkx8h',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 8: I See You.',
+    sourceUrl:'https://drive.google.com/file/d/1YVFjMYWFqBc9Glz-qyp8Pxi172KvBdSi/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 8','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e9', type:'filme', title:'T3:E9 — Kafkaesque', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:9, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1HubhDVSsGyH4kG8ixRQz9kQox6Tit-Vs', subtitleDriveFileId:'1CxqCoMroBgxWwQ6Oj5U3veumB8_ci9dZ',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 9: Kafkaesque.',
+    sourceUrl:'https://drive.google.com/file/d/1HubhDVSsGyH4kG8ixRQz9kQox6Tit-Vs/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 9','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e10', type:'filme', title:'T3:E10 — Fly', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:10, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1N2VM1zzvpoZFmp8PrXzcZbOI8JqHEKsi', subtitleDriveFileId:'1G4rNtmtic0IqUu-4oANsGe1eMXTUlW9x',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 10: Fly.',
+    sourceUrl:'https://drive.google.com/file/d/1N2VM1zzvpoZFmp8PrXzcZbOI8JqHEKsi/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 10','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e11', type:'filme', title:'T3:E11 — Abiquiu', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:11, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1BRtE1iZqqojZh3k__MnwrSuEY2PryFgn', subtitleDriveFileId:'1KxDgQJuYe2TvFR3pM2fyMskXysKpyorO',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 11: Abiquiu.',
+    sourceUrl:'https://drive.google.com/file/d/1BRtE1iZqqojZh3k__MnwrSuEY2PryFgn/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 11','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e12', type:'filme', title:'T3:E12 — Half Measures', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:12, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1gRGblEjW3zAFdVT1cL571dlJMNAMWSst', subtitleDriveFileId:'1CgV4zLtqgxzkN_jVN32Ng8N3PeVuDBZE',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 12: Half Measures.',
+    sourceUrl:'https://drive.google.com/file/d/1gRGblEjW3zAFdVT1cL571dlJMNAMWSst/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 12','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s3e13', type:'filme', title:'T3:E13 — Full Measure', year:'2010', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:3, episode:13, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1x_HuUUvuY3XcK7EyYrq6nJkX_UXteKpj', subtitleDriveFileId:'16F3SmHNBVHpuW2him2KfaYRPtIbxSiEJ',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 3, Episódio 13: Full Measure.',
+    sourceUrl:'https://drive.google.com/file/d/1x_HuUUvuY3XcK7EyYrq6nJkX_UXteKpj/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','3ª temporada','episódio 13','crime','drama']
+  },
+  {
+    id:'drive-breaking-bad-s4e1', type:'filme', title:'T4:E1 — Box Cutter', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:1, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1x9AQ6mo18e7uvQiTHz_e3VWt7XeJ5GCE', subtitleDriveFileId:'1_XdpXiw80Rumkl8I-7FYX5vDf8Xu_qef',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 1: Box Cutter.',
+    sourceUrl:'https://drive.google.com/file/d/1x9AQ6mo18e7uvQiTHz_e3VWt7XeJ5GCE/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 1','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e2', type:'filme', title:'T4:E2 — Thirty-Eight Snub', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:2, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1rp48hCWR9DYcKJeFSX85pqTW5sXOP8bO', subtitleDriveFileId:'1XebzVkJg45QglEKz9FcyL7pu-KfWgKS3',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 2: Thirty-Eight Snub.',
+    sourceUrl:'https://drive.google.com/file/d/1rp48hCWR9DYcKJeFSX85pqTW5sXOP8bO/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 2','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e3', type:'filme', title:'T4:E3 — Open House', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:3, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1cZIwIlK7ipkLq2VR1lt6DFrg6j3FrPFv', subtitleDriveFileId:'1aJVIxmUChHEz-drEXILATUdMeEjs-0Js',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 3: Open House.',
+    sourceUrl:'https://drive.google.com/file/d/1cZIwIlK7ipkLq2VR1lt6DFrg6j3FrPFv/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 3','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e4', type:'filme', title:'T4:E4 — Bullet Points', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:4, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1EbXgpxNrVKd-Ooc_N7oU-IcqsKzXhwWQ', subtitleDriveFileId:'1FxqJHrtlgpvH2KvISukKv9irpdlQc5mk',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 4: Bullet Points.',
+    sourceUrl:'https://drive.google.com/file/d/1EbXgpxNrVKd-Ooc_N7oU-IcqsKzXhwWQ/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 4','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e5', type:'filme', title:'T4:E5 — Shotgun', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:5, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1kctTeKvO0Q2G979Cc0iqCcfveeStp6PG', subtitleDriveFileId:'1MaSjn-ir7UbyugsLxblts22OVWBqTNpB',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 5: Shotgun.',
+    sourceUrl:'https://drive.google.com/file/d/1kctTeKvO0Q2G979Cc0iqCcfveeStp6PG/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 5','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e6', type:'filme', title:'T4:E6 — Cornered', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:6, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1-yUmH_foQVIGUrWPeNIvrlGEuUR_lIYD', subtitleDriveFileId:'1QxV4WdHcf3x_MHYChuKDHf84A-vd5FQP',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 6: Cornered.',
+    sourceUrl:'https://drive.google.com/file/d/1-yUmH_foQVIGUrWPeNIvrlGEuUR_lIYD/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 6','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e7', type:'filme', title:'T4:E7 — Problem Dog', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:7, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1vV7KACdd_hi48BROfUjXWQdDn_o92QGK', subtitleDriveFileId:'1oXShy7bLLPUt-ti4geo1Rzl0v2EQWsG0',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 7: Problem Dog.',
+    sourceUrl:'https://drive.google.com/file/d/1vV7KACdd_hi48BROfUjXWQdDn_o92QGK/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 7','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e8', type:'filme', title:'T4:E8 — Hermanos', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:8, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1V_9LCXCFwUAn0d3ScZMT1bwpGqIbRCnq', subtitleDriveFileId:'1oA5Cgm0FTjbO5cTbT1EIcWBvB0ji7wM8',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 8: Hermanos.',
+    sourceUrl:'https://drive.google.com/file/d/1V_9LCXCFwUAn0d3ScZMT1bwpGqIbRCnq/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 8','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e9', type:'filme', title:'T4:E9 — Bug', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:9, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1gpcjvNVLk4WydhsGO9LdRZrbjtLwseyB', subtitleDriveFileId:'1LOXlVTtUE62XYGI5W2H03VqvzjV-zFP7',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 9: Bug.',
+    sourceUrl:'https://drive.google.com/file/d/1gpcjvNVLk4WydhsGO9LdRZrbjtLwseyB/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 9','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e10', type:'filme', title:'T4:E10 — Salud', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:10, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1GLE3kt39wpcd1aAqkQUbIz9_9nn2GYRR', subtitleDriveFileId:'1voTDi6GRSEOXUXhCs1NxuV8vBmi7GSPj',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 10: Salud.',
+    sourceUrl:'https://drive.google.com/file/d/1GLE3kt39wpcd1aAqkQUbIz9_9nn2GYRR/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 10','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e11', type:'filme', title:'T4:E11 — Crawl Space', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:11, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1yk99EZHJStp2cDNQTzLBal7QrVny57Pp', subtitleDriveFileId:'10AUP9Lf4rHG30GuI810YRdrH0EManiMW',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 11: Crawl Space.',
+    sourceUrl:'https://drive.google.com/file/d/1yk99EZHJStp2cDNQTzLBal7QrVny57Pp/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 11','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e12', type:'filme', title:'T4:E12 — End Times', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:12, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1m-SXN8cTKTY1DEuBQme0HfLIeFzVW4KR', subtitleDriveFileId:'14b0c530IIBXjx1bONGp9y_qYVGzLlrYT',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 12: End Times.',
+    sourceUrl:'https://drive.google.com/file/d/1m-SXN8cTKTY1DEuBQme0HfLIeFzVW4KR/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 12','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s4e13', type:'filme', title:'T4:E13 — Face Off', year:'2011', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:4, episode:13, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1ih2yatYAcO39P86z4rE-nv0U_Z0Ixtq0', subtitleDriveFileId:'1U2JzGOpVAB_x8cKVxPn1FmKoW37KD4ah',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 4, Episódio 13: Face Off.',
+    sourceUrl:'https://drive.google.com/file/d/1ih2yatYAcO39P86z4rE-nv0U_Z0Ixtq0/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','4ª temporada','episódio 13','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e1', type:'filme', title:'T5:E1 — Live Free or Die', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:1, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1HXjWvZzro1gmH8FK3e0YgPaYyAmJ4bNq',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 1: Live Free or Die.',
+    sourceUrl:'https://drive.google.com/file/d/1HXjWvZzro1gmH8FK3e0YgPaYyAmJ4bNq/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 1','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e2', type:'filme', title:'T5:E2 — Madrigal', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:2, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1WSV4tDuyuJFZrGq8E7z6nduu-fGDFHWT',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 2: Madrigal.',
+    sourceUrl:'https://drive.google.com/file/d/1WSV4tDuyuJFZrGq8E7z6nduu-fGDFHWT/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 2','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e3', type:'filme', title:'T5:E3 — Hazard Pay', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:3, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1R_rHoT5LFdIXBnSqvgnirqrDrZA-fCON',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 3: Hazard Pay.',
+    sourceUrl:'https://drive.google.com/file/d/1R_rHoT5LFdIXBnSqvgnirqrDrZA-fCON/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 3','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e4', type:'filme', title:'T5:E4 — Fifty-One', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:4, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1VV3qhFO5ho8sfau2midW1qvf_x_jPKN3',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 4: Fifty-One.',
+    sourceUrl:'https://drive.google.com/file/d/1VV3qhFO5ho8sfau2midW1qvf_x_jPKN3/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 4','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e5', type:'filme', title:'T5:E5 — Dead Freight', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:5, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1v-eNVJQZ5KnatI2KHLfVsOZtQIIEWYyK',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 5: Dead Freight.',
+    sourceUrl:'https://drive.google.com/file/d/1v-eNVJQZ5KnatI2KHLfVsOZtQIIEWYyK/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 5','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e6', type:'filme', title:'T5:E6 — Buyout', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:6, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1S-7zZBa9HaIqPA0AoUVLTzpy3AcmcFBa',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 6: Buyout.',
+    sourceUrl:'https://drive.google.com/file/d/1S-7zZBa9HaIqPA0AoUVLTzpy3AcmcFBa/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 6','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e7', type:'filme', title:'T5:E7 — Say My Name', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:7, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'19aozL_RDGJwFeKoCotm5rj8W3R4BGBq0',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 7: Say My Name.',
+    sourceUrl:'https://drive.google.com/file/d/19aozL_RDGJwFeKoCotm5rj8W3R4BGBq0/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 7','crime','drama']
+  }
+,
+  {
+    id:'drive-breaking-bad-s5e8', type:'filme', title:'T5:E8 — Gliding Over All', year:'2012', genre:'Drama / Crime', mediaType:'serie',
+    seriesId:'breaking-bad-drive', seriesTitle:'Breaking Bad', season:5, episode:8, seasonCount:5, episodeCount:54,
+    language:'Português / conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1OEaRj-QOU2d9E8Zq4x6D3wrOLqkxwhfN',
+    thumb:'assets/serie-breaking-bad-s1.webp', accent:'var(--green)', imdbRating:9.5,
+    desc:'Breaking Bad — Temporada 5, Episódio 8: Gliding Over All.',
+    sourceUrl:'https://drive.google.com/file/d/1OEaRj-QOU2d9E8Zq4x6D3wrOLqkxwhfN/view?usp=sharing', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Breaking Bad','5ª temporada','episódio 8','crime','drama']
+  },
   {
     id:'archive-pole-position-completo', type:'filme', title:'Pole Position — Temporada Completa', year:'1984', genre:'Animação / Aventura / Corrida', mediaType:'serie',
     seriesId:'pole-position-archive', seriesTitle:'Pole Position', season:1, episode:1, episodeCount:13, archivePlaylist:true,

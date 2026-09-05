@@ -1,10 +1,10 @@
-const SHELL = 'jogahub-1.1.14';
-const CONTENT = 'jogahub-1.1.14-content';
+const SHELL = 'jogahub-1.1.21';
+const CONTENT = 'jogahub-1.1.21-content';
 const SHELL_FILES = [
-  './', './index.html', './instalar.html', './css/style.css?v=126', './js/data-jogos.js?v=40',
-  './js/data-links.js?v=40', './js/data-filmes.js?v=126', './js/imdb-ratings.js?v=1', './js/data-tv.js?v=124', './js/offline-assets.js?v=40', './js/app.js?v=126',
+  './', './index.html', './instalar.html', './css/style.css?v=131', './js/data-jogos.js?v=40',
+  './js/data-links.js?v=41', './js/data-filmes.js?v=129', './js/imdb-ratings.js?v=1', './js/data-tv.js?v=124', './js/offline-assets.js?v=40', './js/app.js?v=131',
   './link-player.html', './install-game.html', './assets/favicon.png', './assets/logo.png', './assets/banner-games.webp', './assets/serie-breaking-bad-s1.webp', './assets/hero-breaking-bad-s1.webp',
-  './assets/thumb-jogos-destaque.webp', './assets/thumb-crash-fan-game.webp', './assets/hero-crash-fan-game.webp', './assets/thumb-joao-crist.webp', './assets/hero-joao-crist.webp', './assets/thumb-zeco-lendas-da-ilha.webp', './assets/hero-zeco-lendas-da-ilha.webp', './assets/thumb-ruptura.webp', './assets/hero-ruptura.webp', './assets/icon-192.png', './assets/icon-512.png', './manifest.webmanifest?v=101'
+  './assets/thumb-jogos-destaque.webp', './assets/thumb-crash-fan-game.webp', './assets/hero-crash-fan-game.webp', './assets/thumb-joao-crist.webp', './assets/hero-joao-crist.webp', './assets/thumb-zeco-lendas-da-ilha.webp', './assets/hero-zeco-lendas-da-ilha.webp', './assets/thumb-ruptura.webp', './assets/hero-ruptura.webp', './assets/icon-192.png', './assets/icon-512.png', './manifest.webmanifest?v=124'
 ];
 self.addEventListener('install', event => {
   event.waitUntil((async()=>{
