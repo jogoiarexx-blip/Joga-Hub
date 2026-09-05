@@ -28,8 +28,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.1.11';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.1.11-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.1.14';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.1.14-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -92,6 +92,9 @@ function itemHref(item){
     const source = item.sourceUrl || `https://archive.org/details/${encodeURIComponent(item.archiveId)}`;
     return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&archiveId=${encodeURIComponent(item.archiveId)}&id=${encodeURIComponent(item.id || '')}`;
   }
+  if(item.type === 'filme' && item.driveFolderId){
+    return item.sourceUrl || `https://drive.google.com/drive/folders/${encodeURIComponent(item.driveFolderId)}`;
+  }
   if(item.type === 'filme' && item.driveFileId){
     const url = `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/preview`;
     const source = item.sourceUrl || `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/view`;
@@ -107,6 +110,7 @@ function itemHref(item){
 }
 function itemLinkAttrs(item){
   if(item.type === 'filme' && (item.archiveId || item.youtubePlaylistId || item.youtubeId || item.driveFileId)) return '';
+  if(item.type === 'filme' && item.driveFolderId) return ' target="_blank" rel="noopener noreferrer"';
   return (isCatalogExternal(item) || (isExternalItem(item) && item.embed !== true)) ? ' target="_blank" rel="noopener noreferrer"' : '';
 }
 function movieActionLabel(item){
@@ -175,7 +179,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.11</span><h2>Jogos primeiro. Conteúdo separado por categoria e imagens otimizadas.</h2><p>A Home começa pelos jogos, depois mostra filmes, séries e animes em áreas próprias.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.14</span><h2>Jogos primeiro. Conteúdo separado por categoria e imagens otimizadas.</h2><p>A Home começa pelos jogos, depois mostra filmes, séries e animes em áreas próprias.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('🎮 Jogos','Os jogos do JogaHub continuam em primeiro lugar.',games.slice(0,14),'Jogar')}
     ${row('🎬 Filmes','Filmes separados das séries e animes, priorizando melhor nota IMDb.',films.slice(0,14),'Assistir')}
     ${row('📺 Séries','Séries em uma área própria, sem misturar com filmes.',series.slice(0,14),'Assistir')}
@@ -284,7 +288,7 @@ function seriesCardHTML(group){
   const first=group.items[0];
   const catalogOnly=group.items.length===1 && first.catalogOnly;
   const seasons=catalogOnly ? Number(first.seasonCount||0) : [...new Set(group.items.map(i=>i.season||1))].length;
-  const episodes=Number(first.episodeCount||0) || (catalogOnly ? Number(first.episodeCount||0) : group.items.length);
+  const episodes=group.items.some(i=>Number(i.seasonEpisodeCount)>0) ? group.items.reduce((sum,i)=>sum+(Number(i.seasonEpisodeCount)||0),0) : (Number(first.episodeCount||0) || (catalogOnly ? Number(first.episodeCount||0) : group.items.length));
   const next=catalogOnly ? first : (group.items.find(i=>!movieWatchState(i)?.finished) || first);
   const watched=catalogOnly ? 0 : group.items.filter(i=>movieWatchState(i)?.finished).length;
   const availability=first.availabilityStatus ? `<small class="series-availability">${escapeHTML(first.availabilityStatus)}</small>` : '';
@@ -302,6 +306,7 @@ function mediaIdentity(item){
   if(item.youtubePlaylistId) return `ytp:${item.youtubePlaylistId}`;
   if(item.archiveId) return `ia:${item.archiveId}`;
   if(item.driveFileId) return `gdrive:${item.driveFileId}`;
+  if(item.driveFolderId) return `gdrive-folder:${item.driveFolderId}`;
   if(item.directVideoUrl || item.videoUrl || item.localVideoUrl) return `vid:${item.directVideoUrl || item.videoUrl || item.localVideoUrl}`;
   const base=normalize(item.seriesTitle || item.title || item.id).replace(/\b(19|20)\d{2}\b/g,'').replace(/\s+/g,' ').trim();
   return item.mediaType==='serie' ? `series:${base}:s${item.season||1}:e${item.episode||0}` : `${item.mediaType||'item'}:${base}`;
