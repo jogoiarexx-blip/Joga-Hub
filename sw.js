@@ -1,5 +1,5 @@
-const SHELL = 'jogahub-1.2.1';
-const CONTENT = 'jogahub-1.2.1-content';
+const SHELL = 'jogahub-1.2.2';
+const CONTENT = 'jogahub-1.2.2-content';
 const SHELL_FILES = [
   './', './index.html', './instalar.html', './css/style.css?v=131', './js/data-jogos.js?v=40',
   './js/data-links.js?v=41', './js/data-filmes.js?v=129', './js/imdb-ratings.js?v=1', './js/data-tv.js?v=124', './js/offline-assets.js?v=40', './js/app.js?v=131',

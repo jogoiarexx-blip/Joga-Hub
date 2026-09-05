@@ -29,8 +29,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.1';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.1-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.2';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.2-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -247,7 +247,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.1</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.2</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}
@@ -267,6 +267,15 @@ const CATEGORY_HERO_ASSETS = {
   emulador:'assets/banner-cat-emuladores.webp',
   radio:'assets/banner-cat-radios.webp'
 };
+const CATEGORY_HERO_META = {
+  jogo:{tag:'jogos', title:'Jogos', desc:'Explore os jogos do JogaHub organizados por categoria, com acesso rápido e visual mais profissional.', action:'explorar jogos →'},
+  filme:{tag:'filmes', title:'Filmes', desc:'Filmes organizados em uma categoria própria, com navegação mais clara e banners dedicados em WebP.', action:'explorar filmes →'},
+  serie:{tag:'séries', title:'Séries', desc:'Séries separadas dos filmes, com destaque visual próprio e acesso rápido às temporadas e episódios.', action:'explorar séries →'},
+  anime:{tag:'animes', title:'Animes', desc:'Animes reunidos em uma área própria, com banner exclusivo e descoberta mais rápida do catálogo.', action:'explorar animes →'},
+  tv:{tag:'transmissões oficiais', title:'TV ao Vivo', desc:'Canais e transmissões ao vivo reunidos em uma interface única.', action:'ver canais →'},
+  emulador:{tag:'emuladores', title:'Emuladores', desc:'Reviva clássicos com os emuladores integrados ao JogaHub.', action:'abrir emuladores →'},
+  radio:{tag:'áudio ao vivo', title:'Rádios Online', desc:'Estações brasileiras ao vivo com busca, volume e reprodução contínua.', action:'ouvir rádios →'}
+};
 
 function renderFeatured(){
   const games=itemsForView('jogo'), films=itemsForView('filme'), series=itemsForView('serie'), anime=itemsForView('anime');
@@ -276,15 +285,26 @@ function renderFeatured(){
   const seriesFeatured=series.find(i=>i.featuredSeries===true);
   const item=activeType==='todos'?(homeFeatured||games[0]||films[0]||series[0]||anime[0]||itemsForView('emulador')[0]):activeType==='serie'?(seriesFeatured||media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):['filme','anime'].includes(activeType)?(media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):activeType==='jogo'?games[0]:activeType==='emulador'?itemsForView('emulador')[0]:null;
   const tag=document.getElementById('featuredTag'),title=document.getElementById('featuredTitle'),desc=document.getElementById('featuredDesc'),action=document.getElementById('featuredAction'),link=document.getElementById('featuredLink');
-  if(activeType==='filme'){tag.textContent='filmes';title.textContent=item?.title||'Filmes';desc.textContent=item?.desc||'Filmes organizados em uma categoria própria.';action.textContent=item?'assistir agora →':'explorar filmes →';}
-  else if(activeType==='serie'){tag.textContent='séries';title.textContent=item?.seriesTitle||item?.title||'Séries';desc.textContent=item?.desc||'Séries separadas dos filmes e animes.';action.textContent=item?'assistir série →':'explorar séries →';}
-  else if(activeType==='anime'){tag.textContent='animes';title.textContent=item?.seriesTitle||item?.title||'Animes';desc.textContent=item?.desc||'Animes reunidos em uma categoria própria.';action.textContent=item?'assistir anime →':'explorar animes →';}
-  else if(activeType==='jogo'){tag.textContent='jogos';title.textContent='JogaHub Games';desc.textContent=`${games.length} jogos organizados por gênero, favoritos e acesso rápido.`;action.textContent=item?`jogar ${item.title} →`:'explorar jogos →';}
-  else if(activeType==='emulador'){tag.textContent='emuladores';title.textContent='Emuladores';desc.textContent='Reviva clássicos com os emuladores integrados ao JogaHub.';action.textContent='abrir emuladores →';}
-  else if(activeType==='tv'){tag.textContent='transmissões oficiais';title.textContent='TV ao Vivo';desc.textContent='Canais oficiais e transmissões ao vivo reunidos em uma interface única.';action.textContent='ver canais →';}
-  else if(activeType==='radio'){tag.textContent='áudio ao vivo';title.textContent='Rádios Online';desc.textContent='Estações brasileiras ao vivo com busca, volume e reprodução contínua.';action.textContent='ouvir rádios →';}
-  else{tag.textContent=item?.featuredHome?'destaque da semana':'sua central de entretenimento';title.textContent=item?.seriesTitle||item?.title||'JogaHub';desc.textContent=item?.desc||`Jogos primeiro, depois filmes, séries e animes em abas separadas.`;action.textContent=item?'assistir agora →':'começar agora →';}
-  if(item){link.href=itemHref(item);if(isCatalogExternal(item)||(isExternalItem(item)&&item.embed!==true)){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
+  const categoryMeta=CATEGORY_HERO_META[activeType] || null;
+  if(categoryMeta){
+    tag.textContent=categoryMeta.tag;
+    title.textContent=categoryMeta.title;
+    desc.textContent=categoryMeta.desc;
+    action.textContent=categoryMeta.action;
+    link.href='#games';
+    link.removeAttribute('target');
+    link.removeAttribute('rel');
+  }else{
+    tag.textContent=item?.featuredHome?'destaque da semana':'sua central de entretenimento';
+    title.textContent=item?.seriesTitle||item?.title||'JogaHub';
+    desc.textContent=item?.desc||'Jogos primeiro, depois filmes, séries e animes em abas separadas.';
+    action.textContent=item?'assistir agora →':'começar agora →';
+    if(item){
+      link.href=itemHref(item);
+      if(isCatalogExternal(item)||(isExternalItem(item)&&item.embed!==true)){link.target='_blank';link.rel='noopener noreferrer';}
+      else{link.removeAttribute('target');link.removeAttribute('rel');}
+    }else link.href='#games';
+  }
   const categoryHero=CATEGORY_HERO_ASSETS[activeType]||'';
   const heroAsset=activeType==='todos'?(item?.hero||item?.thumb||''):categoryHero;
   if(link) link.style.setProperty('--featured-bg', heroAsset?`url("${heroAsset.replace(/"/g,'\"')}")`:'url("assets/banner-games.webp")');
@@ -458,14 +478,16 @@ function renderMovieHub(list){
     rows+=section('Descobrir mais', 'Conteúdo restante do catálogo, sem duplicações nesta tela.', take(pool,40));
   }
 
+  const categoryMeta=CATEGORY_HERO_META[activeType] || CATEGORY_HERO_META.filme;
+  const categoryHero=CATEGORY_HERO_ASSETS[activeType] || CATEGORY_HERO_ASSETS.filme;
   grid.innerHTML=`<div class="movie-hub">
-    <section class="stream-hero" style="--hero-image:url('${escapeHTML(featured.thumb || '')}')">
+    <section class="stream-hero category-hero" style="--hero-image:url('${escapeHTML(categoryHero)}')">
       <div class="stream-hero-art"></div><div class="stream-hero-shade"></div>
-      <div class="stream-hero-copy"><span class="stream-eyebrow">${featured.jackieChan?'🥋 JACKIE CHAN':featured.mediaType==='serie'?'📺 SÉRIE / DESENHO':'🎬 FILME'}</span>
-        <h1>${escapeHTML(featured.seriesTitle || featured.title)}</h1>
-        <p>${escapeHTML(featured.desc || '')}</p>
-        <div class="stream-hero-meta"><span>${escapeHTML(featured.genre||'')}</span>${featured.year?`<span>${escapeHTML(featured.year)}</span>`:''}<span>${escapeHTML(movieKindLabel(featured))}</span>${imdbBadge(featured,'hero-imdb')}</div>
-        <div class="stream-hero-actions"><a class="stream-primary" href="${escapeHTML(itemHref(featured))}"${itemLinkAttrs(featured)}>▶ ${heroP?(heroP.episodeOnly?'Continuar episódio':'Continuar '+heroPct+'%'):'Assistir agora'}</a><button type="button" class="stream-secondary" data-favorite="${escapeHTML(featured.id)}">♥ Minha Lista</button></div>
+      <div class="stream-hero-copy"><span class="stream-eyebrow">${escapeHTML(categoryMeta.tag.toUpperCase())}</span>
+        <h1>${escapeHTML(categoryMeta.title)}</h1>
+        <p>${escapeHTML(categoryMeta.desc)}</p>
+        <div class="stream-hero-meta"><span>${activeType==='filme' ? 'Catálogo de filmes' : activeType==='serie' ? 'Catálogo de séries' : 'Catálogo de animes'}</span><span>${pool.length} conteúdos</span></div>
+        <div class="stream-hero-actions"><a class="stream-primary" href="#games">▶ ${escapeHTML(categoryMeta.action.replace('→','').trim())}</a>${featured?`<a class="stream-secondary" href="${escapeHTML(itemHref(featured))}"${itemLinkAttrs(featured)}>⭐ destaque: ${escapeHTML(featured.seriesTitle || featured.title)}</a>`:''}</div>
       </div>
     </section>
     ${rows}
