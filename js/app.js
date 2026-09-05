@@ -4,9 +4,10 @@ const TYPES = {
   jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
   filme: { label: 'Filmes', action: 'assistir', icon: '🎬', singular: 'filme' },
   serie: { label: 'Séries', action: 'assistir', icon: '📺', singular: 'série' },
-  anime: { label: 'Animes', action: 'assistir', icon: '🍥', singular: 'anime' }
+  anime: { label: 'Animes', action: 'assistir', icon: '🍥', singular: 'anime' },
+  emulador: { label: 'Emuladores', action: 'abrir', icon: '🕹️', singular: 'emulador' }
 };
-const TYPE_ORDER = ['todos', 'jogo', 'filme', 'serie', 'anime'];
+const TYPE_ORDER = ['todos', 'jogo', 'filme', 'serie', 'anime', 'emulador'];
 const GAME_CATEGORIES = {
   arcade: {label:'Arcade', icon:'🕹️', order:1},
   acao: {label:'Ação', icon:'💥', order:2},
@@ -27,8 +28,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.1.6';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.1.6-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.1.8';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.1.8-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -167,16 +168,18 @@ function renderHomeDashboard(){
   const games=itemsForView('jogo');
   const films=sortMoviesByImdb(itemsForView('filme'));
   const series=sortMoviesByImdb(itemsForView('serie'));
+  const shortDramas=series.filter(i=>i.shortDrama===true && (i.portuguese || /portugu/i.test(i.language||'')));
   const anime=sortMoviesByImdb(itemsForView('anime'));
   const media=[...films,...series,...anime];
   const topMovies=sortMoviesByImdb(media).filter(i=>imdbRating(i)>0).slice(0,12);
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.6</span><h2>Jogos primeiro. Conteúdo separado por categoria e imagens otimizadas.</h2><p>A Home começa pelos jogos, depois mostra filmes, séries e animes em áreas próprias.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome"><div><span class="eyebrow">JogaHub v1.1.8</span><h2>Jogos primeiro. Conteúdo separado por categoria e imagens otimizadas.</h2><p>A Home começa pelos jogos, depois mostra filmes, séries e animes em áreas próprias.</p></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('🎮 Jogos','Os jogos do JogaHub continuam em primeiro lugar.',games.slice(0,14),'Jogar')}
     ${row('🎬 Filmes','Filmes separados das séries e animes, priorizando melhor nota IMDb.',films.slice(0,14),'Assistir')}
     ${row('📺 Séries','Séries em uma área própria, sem misturar com filmes.',series.slice(0,14),'Assistir')}
+    ${row('📱 Doramas Curtos Dublados','Minidramas verticais dublados em português, publicados por fontes oficiais.',shortDramas.slice(0,14),'Assistir')}
     ${row('🍥 Animes','Animes separados para ficar mais fácil encontrar o que assistir.',anime.slice(0,14),'Assistir')}
     ${row('⭐ Melhores no IMDb','Os títulos mais bem avaliados entre filmes, séries e animes.',topMovies,'IMDb')}
     ${row('▶ Continue assistindo','Seu progresso salvo aparece aqui.',continuing,'Continuar')}
@@ -187,12 +190,13 @@ function renderFeatured(){
   const games=itemsForView('jogo'), films=itemsForView('filme'), series=itemsForView('serie'), anime=itemsForView('anime');
   const mediaByView={filme:films,serie:series,anime:anime};
   const media=mediaByView[activeType] || [];
-  const item=['filme','serie','anime'].includes(activeType)?(media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):activeType==='jogo'?games[0]:(games[0]||films[0]||series[0]||anime[0]);
+  const item=['filme','serie','anime'].includes(activeType)?(media.find(movieProgress)||sortMoviesByImdb(media)[0]||media[0]):activeType==='jogo'?games[0]:activeType==='emulador'?itemsForView('emulador')[0]:(games[0]||films[0]||series[0]||anime[0]||itemsForView('emulador')[0]);
   const tag=document.getElementById('featuredTag'),title=document.getElementById('featuredTitle'),desc=document.getElementById('featuredDesc'),action=document.getElementById('featuredAction'),link=document.getElementById('featuredLink');
   if(activeType==='filme'){tag.textContent='filmes';title.textContent=item?.title||'Filmes';desc.textContent=item?.desc||'Filmes organizados em uma categoria própria.';action.textContent=item?'assistir agora →':'explorar filmes →';}
   else if(activeType==='serie'){tag.textContent='séries';title.textContent=item?.seriesTitle||item?.title||'Séries';desc.textContent=item?.desc||'Séries separadas dos filmes e animes.';action.textContent=item?'assistir série →':'explorar séries →';}
   else if(activeType==='anime'){tag.textContent='animes';title.textContent=item?.seriesTitle||item?.title||'Animes';desc.textContent=item?.desc||'Animes reunidos em uma categoria própria.';action.textContent=item?'assistir anime →':'explorar animes →';}
   else if(activeType==='jogo'){tag.textContent='jogos';title.textContent='JogaHub Games';desc.textContent=`${games.length} jogos organizados por gênero, favoritos e acesso rápido.`;action.textContent=item?`jogar ${item.title} →`:'explorar jogos →';}
+  else if(activeType==='emulador'){tag.textContent='emulador';title.textContent=item?.title||'Emuladores';desc.textContent=item?.desc||'Emuladores disponíveis no JogaHub.';action.textContent=item?'abrir emulador →':'explorar emuladores →';}
   else{tag.textContent='sua central de entretenimento';title.textContent='JogaHub';desc.textContent=`Jogos primeiro, depois filmes, séries e animes em abas separadas.`;action.textContent='começar agora →';}
   if(item){link.href=itemHref(item);if(isCatalogExternal(item)||(isExternalItem(item)&&item.embed!==true)){link.target='_blank';link.rel='noopener noreferrer'}else{link.removeAttribute('target');link.removeAttribute('rel')}}else link.href='#games';
   document.getElementById('featuredImg').hidden=true;
@@ -415,7 +419,8 @@ function renderTypeTabs(){
     ['filme','🎬 Filmes',itemsForView('filme').length],
     ['serie','📺 Séries',itemsForView('serie').length],
     ['anime','🍥 Animes',itemsForView('anime').length],
-    ['tv','📡 TV ao Vivo',(typeof LIVE_TV_CHANNELS!=='undefined'?LIVE_TV_CHANNELS.length:0)]
+    ['tv','📡 TV ao Vivo',(typeof LIVE_TV_CHANNELS!=='undefined'?LIVE_TV_CHANNELS.length:0)],
+    ['emulador','🕹️ Emulador',itemsForView('emulador').length]
   ];
   tabsEl.innerHTML=tabs.map(([type,label,count])=>`<button class="type-btn${type===activeType?' active':''}" data-type="${type}" type="button" aria-pressed="${type===activeType}">${label} <span>${count}</span></button>`).join('');
 }
@@ -549,8 +554,9 @@ function renderGenreFilters(){
     return;
   }
   if(activeType === 'tv'){ document.getElementById('filters').innerHTML=''; return; }
+  if(activeType === 'emulador'){ document.getElementById('filters').innerHTML=''; return; }
   if(['filme','serie','anime'].includes(activeType)){
-    const options=[['todos','🍿 Todos'],['youtube-pt','▶️ YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Grátis'],['infantil','🧸 Infantil'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
+    const options=[['todos','🍿 Todos'],...(activeType==='serie'?[['doramas','📱 Doramas curtos']]:[]),['youtube-pt','▶️ YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Grátis'],['infantil','🧸 Infantil'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
     document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
     return;
   }
@@ -621,9 +627,9 @@ function applyFilters(){
   const search = document.getElementById('search');
   if(search) search.placeholder = activeType === 'todos' ? 'buscar jogos, filmes, séries e animes...' : activeType === 'filme'
     ? 'buscar filme ou gênero...' : activeType === 'serie' ? 'buscar série, episódio ou gênero...' : activeType === 'anime' ? 'buscar anime ou gênero...'
-    : 'buscar jogo por título, gênero ou descrição...';
+    : activeType === 'emulador' ? 'buscar emulador...' : 'buscar jogo por título, gênero ou descrição...';
   const empty = document.getElementById('emptyState');
-  if(empty) empty.textContent = activeType === 'filme' ? 'nenhum filme encontrado com esse filtro.' : activeType === 'serie' ? 'nenhuma série encontrada com esse filtro.' : activeType === 'anime' ? 'nenhum anime encontrado com esse filtro.' : 'nenhum jogo encontrado com esse filtro.';
+  if(empty) empty.textContent = activeType === 'filme' ? 'nenhum filme encontrado com esse filtro.' : activeType === 'serie' ? 'nenhuma série encontrada com esse filtro.' : activeType === 'anime' ? 'nenhum anime encontrado com esse filtro.' : activeType === 'emulador' ? 'nenhum emulador encontrado.' : 'nenhum jogo encontrado com esse filtro.';
 }
 function toggleFavorite(id, button){
   const favorites = loadFavorites();

@@ -130,5 +130,17 @@ const LINK_ITEMS = [
     url: 'https://jogoiarexx-blip.github.io/noite-amaldi-oada/',
     installable: true,
     embed: false
+  },
+  {
+    id: 'snes-nova',
+    type: 'emulador',
+    title: 'SNES Nova',
+    genre: 'Super Nintendo / Emulação',
+    category: 'emulador',
+    accent: 'var(--brand-blue)',
+    desc: 'SNES Nova v0.6.0 — emulador moderno de Super Nintendo com seleção inteligente entre Snes9x e bsnes, biblioteca integrada, save/load state, gamepad e perfis gráficos.',
+    url: 'https://jogoiarexx-blip.github.io/Snes-Nova/',
+    installable: true,
+    embed: false
   }
 ];

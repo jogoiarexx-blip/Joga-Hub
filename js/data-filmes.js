@@ -1267,6 +1267,44 @@ const FILMES_CATALOGO = [
     nostalgiaTags:['Pole Position','desenho clássico','anos 80','corrida','dublado','TV']
   }
 
+,
+  {
+    id:'yt-shortmax-licano-rua-dublado', type:'filme', title:'Meu Companheiro é um Lícano de Rua', year:'2026', genre:'Drama curto / Romance / Fantasia', mediaType:'serie',
+    seriesId:'shortmax-licano-rua', seriesTitle:'Meu Companheiro é um Lícano de Rua', dorama:true, shortDrama:true,
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'XGWScFNq6uc', thumb:'https://i.ytimg.com/vi/XGWScFNq6uc/hqdefault.jpg', accent:'var(--purple)',
+    desc:'Drama curto dublado em português publicado pelo canal ShortMax - Latinoamérica. Isabella procura um guerreiro para protegê-la e acaba encontrando Ethan, que esconde uma identidade sobrenatural.',
+    sourceUrl:'https://www.youtube.com/watch?v=XGWScFNq6uc', sourceLabel:'ShortMax - Latinoamérica — YouTube oficial',
+    nostalgiaTags:['ShortMax','dorama curto','drama vertical','dublado','romance','fantasia']
+  },
+  {
+    id:'yt-shortmax-domando-desejo-bilionario-dublado', type:'filme', title:'Domando o Desejo Implacável do Meu Bilionário', year:'2026', genre:'Drama curto / Romance / Vingança', mediaType:'serie',
+    seriesId:'shortmax-domando-desejo-bilionario', seriesTitle:'Domando o Desejo Implacável do Meu Bilionário', dorama:true, shortDrama:true,
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'DjjmN6OzKXo', thumb:'https://i.ytimg.com/vi/DjjmN6OzKXo/hqdefault.jpg', accent:'var(--red)',
+    desc:'Drama curto dublado em português publicado pelo canal ShortMax - Latinoamérica. Jade retorna cinco anos depois e reencontra Samuel, enquanto segredos familiares e vingança vêm à tona.',
+    sourceUrl:'https://www.youtube.com/watch?v=DjjmN6OzKXo', sourceLabel:'ShortMax - Latinoamérica — YouTube oficial',
+    nostalgiaTags:['ShortMax','dorama curto','drama vertical','dublado','bilionário','vingança']
+  },
+  {
+    id:'yt-shortmax-fingindo-pobre-dublado', type:'filme', title:'Fingindo ser Pobre', year:'2026', genre:'Drama curto / Romance / Bilionário', mediaType:'serie',
+    seriesId:'shortmax-fingindo-pobre', seriesTitle:'Fingindo ser Pobre', dorama:true, shortDrama:true,
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'8dobNmEJXnc', thumb:'https://i.ytimg.com/vi/8dobNmEJXnc/hqdefault.jpg', accent:'var(--gold)',
+    desc:'Drama curto dublado em português publicado pelo canal ShortMax - Latinoamérica. Um jovem rejeita a fortuna bilionária, assume outro nome e tenta construir sua própria vida no setor automobilístico.',
+    sourceUrl:'https://www.youtube.com/watch?v=8dobNmEJXnc', sourceLabel:'ShortMax - Latinoamérica — YouTube oficial',
+    nostalgiaTags:['ShortMax','dorama curto','drama vertical','dublado','bilionário','identidade secreta']
+  },
+  {
+    id:'yt-shortmax-herdeira-deslumbrante-dublado', type:'filme', title:'A Herdeira Deslumbrante', year:'2026', genre:'Drama curto / Romance / Divórcio', mediaType:'serie',
+    seriesId:'shortmax-herdeira-deslumbrante', seriesTitle:'A Herdeira Deslumbrante', dorama:true, shortDrama:true,
+    language:'Português (dublado)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'3YcOsHigt24', thumb:'https://i.ytimg.com/vi/3YcOsHigt24/hqdefault.jpg', accent:'var(--pink)',
+    desc:'Drama curto dublado em português publicado pelo canal ShortMax - Latinoamérica. Josiane descobre a traição do marido, pede o divórcio e vê uma nova disputa amorosa começar.',
+    sourceUrl:'https://www.youtube.com/watch?v=3YcOsHigt24', sourceLabel:'ShortMax - Latinoamérica — YouTube oficial',
+    nostalgiaTags:['ShortMax','dorama curto','drama vertical','dublado','romance','divórcio']
+  }
+
 ];
 
 // v1.0.25 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
