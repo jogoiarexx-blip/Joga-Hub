@@ -63,7 +63,7 @@ Tudo mora num único array `ITEMS`, em `js/app.js`. Cada item tem um campo
   title: 'Meu Item',
   genre: 'ação',          // aparece como tag e também vira filtro (dentro da aba do type)
   accent: 'var(--teal)',  // cor do cartucho: var(--red), var(--purple), var(--teal), var(--amber), var(--gold), var(--steel), var(--fire), ou um hex novo
-  thumb: 'assets/thumbs/meu-item.jpg', // opcional: screenshot ou capa
+  thumb: 'assets/thumbs/meu-item.webp', // opcional: screenshot ou capa
   desc: 'Descrição curta, uma frase.',
   path: 'jogos/meu-item/index.html'    // pode ser um caminho local ou um link https:// externo
 }

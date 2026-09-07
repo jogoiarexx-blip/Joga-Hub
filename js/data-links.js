@@ -142,5 +142,18 @@ const LINK_ITEMS = [
     url: 'https://jogoiarexx-blip.github.io/Snes-Nova/',
     installable: true,
     embed: false
+  },
+  {
+    id: 'neo-nes',
+    type: 'emulador',
+    title: 'Neo NES',
+    genre: 'Nintendo NES / Emulação',
+    category: 'emulador',
+    accent: 'var(--brand-cyan)',
+    thumb: 'assets/thumb-neo-nes.webp',
+    desc: 'Neo NES — emulador online de Nintendo Entertainment System criado para rodar direto no navegador pelo GitHub Pages.',
+    url: 'https://jogoiarexx-blip.github.io/Neo-nes/',
+    installable: true,
+    embed: false
   }
 ];

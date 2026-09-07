@@ -29,8 +29,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.2';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.2-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.5';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.5-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -247,7 +247,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.2</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.5</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}
@@ -308,7 +308,12 @@ function renderFeatured(){
   const categoryHero=CATEGORY_HERO_ASSETS[activeType]||'';
   const heroAsset=activeType==='todos'?(item?.hero||item?.thumb||''):categoryHero;
   if(link) link.style.setProperty('--featured-bg', heroAsset?`url("${heroAsset.replace(/"/g,'\"')}")`:'url("assets/banner-games.webp")');
-  document.getElementById('featuredImg').hidden=true;
+  const featuredImg=document.getElementById('featuredImg');
+  if(featuredImg){
+    featuredImg.src=heroAsset || 'assets/banner-games.webp';
+    featuredImg.alt=title.textContent ? `Banner de ${title.textContent}` : 'Banner JogaHub';
+    featuredImg.hidden=false;
+  }
 }
 function movieProgress(item){
   if(item.type !== 'filme') return null;
@@ -481,8 +486,8 @@ function renderMovieHub(list){
   const categoryMeta=CATEGORY_HERO_META[activeType] || CATEGORY_HERO_META.filme;
   const categoryHero=CATEGORY_HERO_ASSETS[activeType] || CATEGORY_HERO_ASSETS.filme;
   grid.innerHTML=`<div class="movie-hub">
-    <section class="stream-hero category-hero" style="--hero-image:url('${escapeHTML(categoryHero)}')">
-      <div class="stream-hero-art"></div><div class="stream-hero-shade"></div>
+    <section class="stream-hero category-hero">
+      <div class="stream-hero-art" style="background-image:url('${escapeHTML(categoryHero)}')"></div><div class="stream-hero-shade"></div>
       <div class="stream-hero-copy"><span class="stream-eyebrow">${escapeHTML(categoryMeta.tag.toUpperCase())}</span>
         <h1>${escapeHTML(categoryMeta.title)}</h1>
         <p>${escapeHTML(categoryMeta.desc)}</p>

@@ -29,7 +29,7 @@ const LIVROS = [
   {
     id: 'promessa-ao-amanhecer', type: 'livro', title: 'Promessa ao Amanhecer',
     genre: 'romance e fé', accent: 'var(--amber)',
-    thumb: 'assets/thumbs/promessa-ao-amanhecer.jpg',
+    thumb: 'assets/thumbs/promessa-ao-amanhecer.webp',
     desc: 'Um romance sobre duas tradições de fé, diálogo, casamento e a escolha diária de caminhar juntos.',
     path: 'livros/promessa-ao-amanhecer/index.html'
   },
@@ -39,7 +39,7 @@ const LIVROS = [
     title: 'O Vagante das Sombras',
     genre: 'terror',
     accent: 'var(--amber)',
-    thumb: 'assets/thumbs/o-vagante-das-sombras.jpg',
+    thumb: 'assets/thumbs/o-vagante-das-sombras.webp',
     desc: 'Uma jornada claustrofóbica pelos túneis do metrô, onde Marcos descobre que alguns passageiros jamais descem do trem.',
     path: 'livros/o-vagante-das-sombras/index.html'
   },
@@ -49,7 +49,7 @@ const LIVROS = [
     title: 'Contos de Terror com João e Crist',
     genre: 'terror e comédia',
     accent: 'var(--amber)',
-    thumb: 'assets/thumbs/contos-terror-joao-crist.jpg',
+    thumb: 'assets/thumbs/contos-terror-joao-crist.webp',
     desc: 'Uma noite de Halloween, histórias assustadoras, mentiras absurdas e uma última assombração que talvez seja verdadeira.',
     path: 'livros/contos-terror-joao-crist/index.html'
   },
@@ -59,7 +59,7 @@ const LIVROS = [
     title: 'As Aventuras de João e Crist — Sea of Liars',
     genre: 'aventura',
     accent: 'var(--amber)',
-    thumb: 'assets/thumbs/joao-e-crist-sea-of-liars.jpg',
+    thumb: 'assets/thumbs/joao-e-crist-sea-of-liars.webp',
     desc: 'Uma nova aventura de João e Crist, agora em Sea of Liars.',
     path: 'livros/joao-e-crist-sea-of-liars/index.html'
   },
@@ -69,7 +69,7 @@ const LIVROS = [
     title: 'As Aventuras de João e Crist — Vol. 4',
     genre: 'comédia',
     accent: 'var(--amber)',
-    thumb: 'assets/thumbs/joao-e-crist-vol4.jpg',
+    thumb: 'assets/thumbs/joao-e-crist-vol4.webp',
     desc: 'Uma Brasília velha, Carnaval no interior e uma fazenda mal-assombrada colocam João e Crist em mais uma sequência de confusões.',
     path: 'livros/joao-e-crist-vol4/index.html'
   },
@@ -79,7 +79,7 @@ const LIVROS = [
     title: 'As Aventuras de João e Crist — Vol. 2',
     genre: 'comédia',
     accent: 'var(--amber)',
-    thumb: 'assets/thumbs/joao-e-crist.jpg',
+    thumb: 'assets/thumbs/joao-e-crist.webp',
     desc: 'Dois amigos do interior ganham na loteria e viram a bagunça de Las Vegas do avesso — edição revisada, de Luis Paulo Alves.',
     path: 'livros/joao-e-crist/index.html'
   },
@@ -89,7 +89,7 @@ const LIVROS = [
     title: 'As Aventuras de João e Crist — Vol. 3',
     genre: 'comédia',
     accent: 'var(--red)',
-    thumb: 'assets/thumbs/joao-e-crist-vol3.jpg',
+    thumb: 'assets/thumbs/joao-e-crist-vol3.webp',
     desc: 'Mais confusão de João e Crist, agora num livro que você folheia na tela.',
     path: 'livros/joao-e-crist-vol3/index.html'
   },
@@ -99,7 +99,7 @@ const LIVROS = [
     title: 'As Aventuras de João e Crist — Vol. 1',
     genre: 'comédia',
     accent: 'var(--fire)',
-    thumb: 'assets/thumbs/joao-e-crist-interativo.jpg',
+    thumb: 'assets/thumbs/joao-e-crist-interativo.webp',
     desc: 'A mesma confusão de João e Crist em Las Vegas, agora num livro que você folheia na tela, com capa nova e efeito de página virando.',
     path: 'livros/joao-e-crist-interativo/index.html'
   }

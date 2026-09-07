@@ -1,0 +1,14 @@
+JogaHub 1.2.4 — Otimização de imagens e carregamento
+
+- Imagens locais antes: 227
+- Peso das imagens antes: aproximadamente 13,88 MB
+- Peso das imagens depois: aproximadamente 10,43 MB
+- Economia aproximada: 3,45 MB (~24,9%)
+- Todos os JPG locais foram convertidos para WebP.
+- Capas e páginas dos livros locais foram atualizadas para WebP.
+- Banners de categoria permanecem em WebP.
+- Imagens WebP grandes foram recomprimidas quando havia ganho real.
+- PNGs necessários para PWA/ícones foram preservados para compatibilidade.
+- Duplicatas restantes são ícones PWA usados por aplicativos independentes e foram mantidas para não quebrar instalação/manifestos.
+- Arquivo de backup antigo removido do pacote publicado.
+- Cache e versão atualizados para 1.2.4.
