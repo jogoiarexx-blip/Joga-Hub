@@ -35,6 +35,62 @@
 
 const LINK_ITEMS = [
   {
+    id: 'trilha-da-floresta',
+    type: 'jogo',
+    title: 'Trilha da Floresta',
+    genre: 'Plataforma / Aventura',
+    category: 'plataforma',
+    accent: 'var(--brand-green)',
+    thumb: 'assets/thumb-trilha-da-floresta.webp',
+    hero: 'assets/hero-trilha-da-floresta.webp',
+    desc: 'Trilha da Floresta — aventura de plataforma 2.5D em uma floresta cheia de desafios, exploração e segredos.',
+    url: 'https://jogoiarexx-blip.github.io/Trilha-da-floresta/',
+    installable: true,
+    embed: false
+  },
+  {
+    id: 'pixel-frontier',
+    type: 'jogo',
+    title: 'Pixel Frontier',
+    genre: 'Ação / Run & Gun',
+    category: 'acao',
+    accent: 'var(--brand-orange)',
+    thumb: 'assets/thumb-pixel-frontier.webp',
+    hero: 'assets/hero-pixel-frontier.webp',
+    desc: 'Pixel Frontier — ação arcade em estilo run & gun, com fases intensas, combate rápido e visual retrô.',
+    url: 'https://jogoiarexx-blip.github.io/pixel-frontier/',
+    installable: true,
+    embed: false
+  },
+  {
+    id: 'kart-racer',
+    type: 'jogo',
+    title: 'Kart Racer',
+    genre: 'Corrida / Arcade',
+    category: 'corrida',
+    accent: 'var(--brand-cyan)',
+    thumb: 'assets/thumb-kart-racer.webp',
+    hero: 'assets/hero-kart-racer.webp',
+    desc: 'Kart Racer — corrida arcade em pseudo-3D Mode 7 com cinco pistas, drift, turbo, itens e diferentes níveis gráficos.',
+    url: 'https://jogoiarexx-blip.github.io/Kart-racer/',
+    installable: true,
+    embed: false
+  },
+  {
+    id: 'bomber-blast',
+    type: 'jogo',
+    title: 'Bomber Blast',
+    genre: 'Arcade / Ação',
+    category: 'arcade',
+    accent: 'var(--brand-cyan)',
+    thumb: 'assets/thumb-bomber-blast.webp',
+    hero: 'assets/hero-bomber-blast.webp',
+    desc: 'Bomber Blast — labirinto arcade com 20 fases, quatro mundos, inimigos com comportamentos próprios, power-ups clássicos, chefes e modo Battle.',
+    url: 'https://jogoiarexx-blip.github.io/Bomber-Blast/',
+    installable: true,
+    embed: false
+  },
+  {
     id: 'rampage',
     type: 'jogo',
     title: 'Rampage',
