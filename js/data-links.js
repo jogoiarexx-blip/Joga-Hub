@@ -188,6 +188,20 @@ const LINK_ITEMS = [
     embed: false
   },
   {
+    id: 'navinha-arcade',
+    type: 'jogo',
+    title: 'Navinha Arcade',
+    genre: "Shoot 'em up / Arcade",
+    category: 'shoot-em-up',
+    accent: 'var(--brand-cyan)',
+    thumb: 'assets/thumb-navinha-arcade.webp',
+    hero: 'assets/hero-navinha-arcade.webp',
+    desc: 'Navinha Arcade — ação espacial com 10 fases, chefes multiestágio, resgates, estrelas e power-ups especiais.',
+    url: 'https://jogoiarexx-blip.github.io/navinha-arcade/',
+    installable: true,
+    embed: false
+  },
+  {
     id: 'snes-nova',
     type: 'emulador',
     title: 'SNES Nova',

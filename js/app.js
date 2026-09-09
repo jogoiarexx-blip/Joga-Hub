@@ -973,16 +973,47 @@ if('serviceWorker' in navigator){
     } catch(err){ console.warn('PWA:', err); }
   });
 }
+function getJogaHubInstallButtons(){
+  return [...document.querySelectorAll('.install-jogahub-trigger')];
+}
+function setJogaHubInstallState(state){
+  getJogaHubInstallButtons().forEach(btn => {
+    if(state === 'installed'){
+      btn.hidden = true;
+      btn.setAttribute('aria-hidden','true');
+      return;
+    }
+    btn.hidden = false;
+    btn.removeAttribute('aria-hidden');
+    if(btn.id === 'installApp') btn.textContent = '⬇ Instalar JogaHub';
+    const label = btn.querySelector('span');
+    if(label) label.textContent = 'Instalar';
+  });
+}
+async function installJogaHub(){
+  if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){
+    setJogaHubInstallState('installed');
+    alert('O JogaHub já está instalado neste aparelho.');
+    return;
+  }
+  if(deferredInstallPrompt){
+    const promptEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+    promptEvent.prompt();
+    const choice = await promptEvent.userChoice;
+    if(choice?.outcome !== 'accepted') setJogaHubInstallState('available');
+    return;
+  }
+  location.href='instalar.html';
+}
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstallPrompt = e;
-  const b = document.getElementById('installApp');
-  if(b){ b.hidden = false; b.textContent='⬇ Instalar app'; }
+  setJogaHubInstallState('available');
 });
 window.addEventListener('appinstalled', () => {
-  const b = document.getElementById('installApp');
-  if(b) b.hidden = true;
   deferredInstallPrompt = null;
+  setJogaHubInstallState('installed');
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -998,22 +1029,9 @@ document.addEventListener('DOMContentLoaded', () => {
   loadArchivePicaPau();
   loadArchiveJackieChan();
   loadYouTubeJackieChanDiscoveries();
-  const installBtn = document.getElementById('installApp');
-  if(installBtn) installBtn.hidden = false;
-  installBtn?.addEventListener('click', async () => {
-    if(deferredInstallPrompt){
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-      installBtn.textContent='✓ Instalado';
-      return;
-    }
-    if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){
-      alert('O JogaHub já está instalado neste aparelho.');
-      return;
-    }
-    location.href='instalar.html';
-  });
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  setJogaHubInstallState(isStandalone ? 'installed' : 'available');
+  getJogaHubInstallButtons().forEach(btn => btn.addEventListener('click', installJogaHub));
   navigator.serviceWorker?.addEventListener('message', e => {
     const d = e.data || {};
     const btn = document.querySelector(`[data-download="${d.id}"]`);
