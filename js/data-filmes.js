@@ -1751,9 +1751,91 @@ const FILMES_CATALOGO = [
     nostalgiaTags:['ShortMax','dorama curto','drama vertical','dublado','romance','divórcio']
   }
 
+,
+  {
+    id:'drive-stranger-things-85-s1e1', type:'filme', title:'T1:E1 — Episódio 1', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:1, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1JnhIJeAsGz-4QuiqP4irEyDL0G8hllMa',
+    thumb:'assets/serie-stranger-things-historias-85.webp', hero:'assets/hero-stranger-things-historias-85.webp', accent:'var(--red)', featuredSeries:true,
+    desc:'Stranger Things - Histórias de 85 — temporada 1 com 10 episódios em 1080p x265 DUAL 5.1 adicionada via Google Drive.',
+    sourceUrl:'https://drive.google.com/file/d/1JnhIJeAsGz-4QuiqP4irEyDL0G8hllMa/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','ficção científica','suspense','Google Drive']
+  },
+  {
+    id:'drive-stranger-things-85-s1e2', type:'filme', title:'T1:E2 — Episódio 2', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:2, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1J2wnyukjhwkexfhN7y5-eG1Rx_E1S64S',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 2.',
+    sourceUrl:'https://drive.google.com/file/d/1J2wnyukjhwkexfhN7y5-eG1Rx_E1S64S/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 2']
+  },
+  {
+    id:'drive-stranger-things-85-s1e3', type:'filme', title:'T1:E3 — Episódio 3', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:3, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1sojRHJVa5aaBsTyTOyG5CZarxSt2eLIa',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 3.',
+    sourceUrl:'https://drive.google.com/file/d/1sojRHJVa5aaBsTyTOyG5CZarxSt2eLIa/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 3']
+  },
+  {
+    id:'drive-stranger-things-85-s1e4', type:'filme', title:'T1:E4 — Episódio 4', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:4, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'102-BLC8GXYqpvCzrmzrR53O06lCf8WZW',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 4.',
+    sourceUrl:'https://drive.google.com/file/d/102-BLC8GXYqpvCzrmzrR53O06lCf8WZW/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 4']
+  },
+  {
+    id:'drive-stranger-things-85-s1e5', type:'filme', title:'T1:E5 — Episódio 5', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:5, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1Qp24Ii2yFtlFuU2WmSHP9Assyc69stNP',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 5.',
+    sourceUrl:'https://drive.google.com/file/d/1Qp24Ii2yFtlFuU2WmSHP9Assyc69stNP/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 5']
+  },
+  {
+    id:'drive-stranger-things-85-s1e6', type:'filme', title:'T1:E6 — Episódio 6', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:6, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1_kPGshkRkI5u0ogKwFsUtPWNsOqmX93p',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 6.',
+    sourceUrl:'https://drive.google.com/file/d/1_kPGshkRkI5u0ogKwFsUtPWNsOqmX93p/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 6']
+  },
+  {
+    id:'drive-stranger-things-85-s1e7', type:'filme', title:'T1:E7 — Episódio 7', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:7, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1UqGiM43gU1JQnOsBbvVRCZRljRq6YwC-',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 7.',
+    sourceUrl:'https://drive.google.com/file/d/1UqGiM43gU1JQnOsBbvVRCZRljRq6YwC-/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 7']
+  },
+  {
+    id:'drive-stranger-things-85-s1e8', type:'filme', title:'T1:E8 — Episódio 8', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:8, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1ZIkJsYigMot3NL19xlGaOx87Z0_nZyfi',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 8.',
+    sourceUrl:'https://drive.google.com/file/d/1ZIkJsYigMot3NL19xlGaOx87Z0_nZyfi/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 8']
+  },
+  {
+    id:'drive-stranger-things-85-s1e9', type:'filme', title:'T1:E9 — Episódio 9', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:9, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1UFqOiUGUAZ8jDL_ORKzWVAJwa3TMTU7g',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 9.',
+    sourceUrl:'https://drive.google.com/file/d/1UFqOiUGUAZ8jDL_ORKzWVAJwa3TMTU7g/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 9']
+  },
+  {
+    id:'drive-stranger-things-85-s1e10', type:'filme', title:'T1:E10 — Episódio 10', year:'2026', genre:'Ficção científica / Suspense', mediaType:'serie',
+    seriesId:'stranger-things-historias-85-drive', seriesTitle:'Stranger Things - Histórias de 85', season:1, episode:10, seasonCount:1, episodeCount:10,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1XMxanreGTmWqqpzEcKdYrclhRJSVImLt',
+    thumb:'assets/serie-stranger-things-historias-85.webp', accent:'var(--red)',
+    desc:'Stranger Things - Histórias de 85 — Temporada 1, Episódio 10.',
+    sourceUrl:'https://drive.google.com/file/d/1XMxanreGTmWqqpzEcKdYrclhRJSVImLt/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 10']
+  }
+
 ];
 
-// v1.0.25 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
+// v1.0.26 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
 // O app também busca automaticamente itens PT/dublados publicados no Internet Archive. Itens sem licença clara podem aparecer; apenas sinais explícitos de upload não autorizado são filtrados.
 // Entradas que servem apenas como “Onde assistir” continuam fora da interface principal.
 const FILMES = FILMES_CATALOGO.filter((item) => {
