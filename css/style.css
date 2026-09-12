@@ -797,3 +797,19 @@ footer{opacity:.82}
   .header-actions .install-app.install-jogahub-trigger{display:none!important}
   .mobile-nav .install-jogahub-mobile{display:flex!important}
 }
+
+
+/* ===== v1.2.15 — instalação PWA visível no celular ===== */
+.install-mobile-floating{display:none}
+@media(max-width:820px){
+  .install-mobile-floating{
+    position:fixed;right:14px;bottom:82px;z-index:1400;display:flex;align-items:center;gap:7px;
+    min-height:44px;padding:0 15px;border-radius:999px;border:1px solid rgba(80,218,255,.55);
+    background:linear-gradient(135deg,rgba(20,176,224,.96),rgba(105,75,220,.96));color:#fff;
+    box-shadow:0 12px 36px rgba(0,0,0,.42),0 5px 20px rgba(39,199,245,.24);
+    font:800 11px var(--font-body);letter-spacing:.01em;cursor:pointer
+  }
+  .install-mobile-floating span{white-space:nowrap}
+  .install-mobile-floating[hidden]{display:none!important}
+}
+@media(max-width:380px){.install-mobile-floating{right:10px;bottom:79px;padding:0 12px;font-size:10px}}

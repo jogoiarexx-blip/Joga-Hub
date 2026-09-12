@@ -1833,9 +1833,124 @@ const FILMES_CATALOGO = [
     sourceUrl:'https://drive.google.com/file/d/1XMxanreGTmWqqpzEcKdYrclhRJSVImLt/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['Stranger Things','Histórias de 85','episódio 10']
   }
 
+,
+  {
+    id:'drive-o-pinguim-s1e1', type:'filme', title:'T1:E1 — Episódio 1', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:1, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1n7SHnNOmnL0kWHGFrTi9Mhr1EoWgscib',
+    thumb:'assets/serie-o-pinguim.webp', hero:'assets/hero-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — temporada 1 com 8 episódios em 1080p WEB-DL DUAL 5.1 adicionada via Google Drive.',
+    sourceUrl:'https://drive.google.com/file/d/1n7SHnNOmnL0kWHGFrTi9Mhr1EoWgscib/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','The Penguin','crime','drama','Gotham']
+  },
+  {
+    id:'drive-o-pinguim-s1e2', type:'filme', title:'T1:E2 — Episódio 2', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:2, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1L5iRDqM1PQzwC-xRA5sOGi5JK5s2jJqo',
+    thumb:'assets/serie-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — Temporada 1, Episódio 2.',
+    sourceUrl:'https://drive.google.com/file/d/1L5iRDqM1PQzwC-xRA5sOGi5JK5s2jJqo/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','episódio 2']
+  },
+  {
+    id:'drive-o-pinguim-s1e3', type:'filme', title:'T1:E3 — Episódio 3', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:3, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1Gm-aWXqLY4_C0y4fpQBmdECMW6KIwOQu',
+    thumb:'assets/serie-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — Temporada 1, Episódio 3.',
+    sourceUrl:'https://drive.google.com/file/d/1Gm-aWXqLY4_C0y4fpQBmdECMW6KIwOQu/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','episódio 3']
+  },
+  {
+    id:'drive-o-pinguim-s1e4', type:'filme', title:'T1:E4 — Episódio 4', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:4, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1_MRlxxbLpZC6oWzRopHUP0GuWwv8EGTm',
+    thumb:'assets/serie-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — Temporada 1, Episódio 4.',
+    sourceUrl:'https://drive.google.com/file/d/1_MRlxxbLpZC6oWzRopHUP0GuWwv8EGTm/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','episódio 4']
+  },
+  {
+    id:'drive-o-pinguim-s1e5', type:'filme', title:'T1:E5 — Episódio 5', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:5, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1vpFzw3xR48xJ_LuUEo4S01fmx2Q3K8wc',
+    thumb:'assets/serie-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — Temporada 1, Episódio 5.',
+    sourceUrl:'https://drive.google.com/file/d/1vpFzw3xR48xJ_LuUEo4S01fmx2Q3K8wc/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','episódio 5']
+  },
+  {
+    id:'drive-o-pinguim-s1e6', type:'filme', title:'T1:E6 — Episódio 6', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:6, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'13OE2oHL0m7E8cH8PDLoiAsk75jWZY3ji',
+    thumb:'assets/serie-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — Temporada 1, Episódio 6.',
+    sourceUrl:'https://drive.google.com/file/d/13OE2oHL0m7E8cH8PDLoiAsk75jWZY3ji/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','episódio 6']
+  },
+  {
+    id:'drive-o-pinguim-s1e7', type:'filme', title:'T1:E7 — Episódio 7', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:7, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1mdc2G34-PqMdSocCdmSBanNPqjYPLkE9',
+    thumb:'assets/serie-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — Temporada 1, Episódio 7.',
+    sourceUrl:'https://drive.google.com/file/d/1mdc2G34-PqMdSocCdmSBanNPqjYPLkE9/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','episódio 7']
+  },
+  {
+    id:'drive-o-pinguim-s1e8', type:'filme', title:'T1:E8 — Episódio 8', year:'2024', genre:'Crime / Drama', mediaType:'serie',
+    seriesId:'the-penguin-drive', seriesTitle:'O Pinguim', season:1, episode:8, seasonCount:1, episodeCount:8,
+    language:'Português / DUAL 5.1 conforme arquivo', portuguese:true, colorContent:true, driveFileId:'1HofTkv9IXK4Yc8HfSeu4-JPfYNHdpuyV',
+    thumb:'assets/serie-o-pinguim.webp', accent:'var(--gold)',
+    desc:'O Pinguim — Temporada 1, Episódio 8.',
+    sourceUrl:'https://drive.google.com/file/d/1HofTkv9IXK4Yc8HfSeu4-JPfYNHdpuyV/view?usp=drivesdk', sourceLabel:'Google Drive — arquivo compartilhado', nostalgiaTags:['O Pinguim','episódio 8']
+  },
+
+  {
+    id:'hub-irmaos-piologo-1', type:'filme', title:'Canal Oficial — Irmãos Piologo', year:'2026', genre:'YouTube / Canal oficial', mediaType:'serie',
+    seriesId:'irmaos-piologo-oficial', seriesTitle:'Irmãos Piologo — Canal Oficial', season:1, episode:1, seasonCount:1, episodeCount:2,
+    language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    url:'https://www.youtube.com/@irmaospiologo', thumb:'assets/serie-irmaos-piologo-oficial.webp', hero:'assets/hero-irmaos-piologo-oficial.webp', accent:'var(--red)',
+    desc:'Acesso rápido ao canal oficial dos Irmãos Piologo no YouTube.',
+    sourceUrl:'https://www.youtube.com/@irmaospiologo', sourceLabel:'YouTube — canal oficial', nostalgiaTags:['Irmãos Piologo','YouTube','canal oficial','humor','games']
+  },
+  {
+    id:'hub-irmaos-piologo-2', type:'filme', title:'Mais vídeos no site oficial', year:'2026', genre:'Vídeos / Site oficial', mediaType:'serie',
+    seriesId:'irmaos-piologo-oficial', seriesTitle:'Irmãos Piologo — Canal Oficial', season:1, episode:2, seasonCount:1, episodeCount:2,
+    language:'Português (Brasil)', portuguese:true, colorContent:true, freeLegal:true,
+    url:'https://www.irmaospiologo.com.br/videos', thumb:'assets/serie-irmaos-piologo-oficial.webp', accent:'var(--orange)',
+    desc:'Página oficial de vídeos dos Irmãos Piologo com mais conteúdos recentes.',
+    sourceUrl:'https://www.irmaospiologo.com.br/videos', sourceLabel:'Site oficial — vídeos', nostalgiaTags:['Irmãos Piologo','site oficial','vídeos']
+  },
+  {
+    id:'yt-irmaos-piologo-games-1', type:'filme', title:'TRAILER BLANKA vs RYU! 🦖 REAÇÃO AO NOVO TRAILER DE STREET FIGHTER', year:'2026', genre:'YouTube / Games / Reação', mediaType:'serie',
+    seriesId:'irmaos-piologo-games', seriesTitle:'Irmãos Piologo + Games', season:1, episode:1, seasonCount:1, episodeCount:1,
+    language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'jxqMAqFhqQc', thumb:'assets/serie-irmaos-piologo-games.webp', hero:'assets/hero-irmaos-piologo-games.webp', accent:'var(--red)',
+    desc:'Vídeo oficial dos Irmãos Piologo com reação ao novo trailer de Street Fighter.',
+    sourceUrl:'https://www.youtube.com/watch?v=jxqMAqFhqQc', sourceLabel:'YouTube — canal oficial', nostalgiaTags:['Irmãos Piologo','YouTube','Games','Street Fighter','reação']
+  },
+  {
+    id:'yt-irmaos-piologo-reacoes-1', type:'filme', title:'IRMÃOS PIOLOGO NA COMIC CON SAN DIEGO 2026 - Cobertura Completa', year:'2026', genre:'YouTube / Cultura Pop / Reações', mediaType:'serie',
+    seriesId:'irmaos-piologo-reacoes', seriesTitle:'Irmãos Piologo — Reações', season:1, episode:1, seasonCount:1, episodeCount:1,
+    language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'RiypYqBG_1M', thumb:'assets/serie-irmaos-piologo-reacoes.webp', hero:'assets/hero-irmaos-piologo-reacoes.webp', accent:'var(--purple)',
+    desc:'Vídeo oficial dos Irmãos Piologo com cobertura da Comic-Con San Diego 2026.',
+    sourceUrl:'https://www.youtube.com/watch?v=RiypYqBG_1M', sourceLabel:'YouTube — canal oficial', nostalgiaTags:['Irmãos Piologo','YouTube','Comic-Con','cultura pop','reação']
+  },
+  {
+    id:'yt-irmaos-piologo-cortes-1', type:'filme', title:'✂️ ANIVERSÁRIO SURPRESA DO RODRIGO — CORTES Irmãos Piologo', year:'2026', genre:'YouTube / Cortes / Bastidores', mediaType:'serie',
+    seriesId:'irmaos-piologo-cortes', seriesTitle:'Irmãos Piologo — Cortes', season:1, episode:1, seasonCount:1, episodeCount:1,
+    language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'Kt9QsMSYM_o', thumb:'assets/serie-irmaos-piologo-cortes.webp', hero:'assets/hero-irmaos-piologo-cortes.webp', accent:'var(--blue)',
+    desc:'Vídeo oficial de cortes dos Irmãos Piologo mostrando os bastidores do aniversário surpresa do Rodrigo.',
+    sourceUrl:'https://www.youtube.com/watch?v=Kt9QsMSYM_o', sourceLabel:'YouTube — canal oficial', nostalgiaTags:['Irmãos Piologo','YouTube','cortes','bastidores','aniversário']
+  },
+  {
+    id:'yt-irmaos-piologo-mundo-canibal-1', type:'filme', title:'SR. DONIZILDO APOSTA TUDO NA BETIGRINHA!', year:'2026', genre:'YouTube / Animação / Humor', mediaType:'serie',
+    seriesId:'irmaos-piologo-mundo-canibal', seriesTitle:'Irmãos Piologo — Mundo Canibal', season:1, episode:1, seasonCount:1, episodeCount:1,
+    language:'Português (Brasil)', portuguese:true, colorContent:true, youtubePt:true, freeLegal:true,
+    youtubeId:'1QcJKbpmPr4', thumb:'assets/serie-irmaos-piologo-mundo-canibal.webp', hero:'assets/hero-irmaos-piologo-mundo-canibal.webp', accent:'var(--gold)',
+    desc:'Vídeo oficial dos Irmãos Piologo com animação do personagem Sr. Donizildo.',
+    sourceUrl:'https://www.youtube.com/watch?v=1QcJKbpmPr4', sourceLabel:'YouTube — canal oficial', nostalgiaTags:['Irmãos Piologo','YouTube','animação','Sr. Donizildo','humor','Mundo Canibal']
+  }
+
 ];
 
-// v1.0.26 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
+// v1.0.28 — Regra do catálogo: mostrar somente o que toca dentro do JogaHub.
 // O app também busca automaticamente itens PT/dublados publicados no Internet Archive. Itens sem licença clara podem aparecer; apenas sinais explícitos de upload não autorizado são filtrados.
 // Entradas que servem apenas como “Onde assistir” continuam fora da interface principal.
 const FILMES = FILMES_CATALOGO.filter((item) => {
@@ -1846,6 +1961,7 @@ const FILMES = FILMES_CATALOGO.filter((item) => {
     item.videoUrl ||
     item.directVideoUrl ||
     item.localVideoUrl ||
+    item.url ||
     item.driveFileId ||
     item.driveFolderId
   );

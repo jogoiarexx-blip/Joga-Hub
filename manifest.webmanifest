@@ -1,25 +1,68 @@
 {
-  "name": "JogaHub 1.0.27",
+  "id": "./",
+  "name": "JogaHub",
   "short_name": "JogaHub",
-  "description": "Central de entretenimento com jogos, filmes clássicos, séries e desenhos.",
-  "start_url": "./",
+  "description": "Central de entretenimento com jogos, filmes, séries, animes, TV, rádios e emuladores.",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#08080f",
-  "theme_color": "#08080f",
+  "theme_color": "#070a10",
   "orientation": "any",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Jogos",
+      "short_name": "Jogos",
+      "url": "./?view=jogo",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Séries",
+      "short_name": "Séries",
+      "url": "./?view=serie",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

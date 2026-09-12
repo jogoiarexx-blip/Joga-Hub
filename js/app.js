@@ -29,8 +29,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.11';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.11-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.15';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.15-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -1004,6 +1004,11 @@ async function installJogaHub(){
     if(choice?.outcome !== 'accepted') setJogaHubInstallState('available');
     return;
   }
+  const ua=navigator.userAgent||'';
+  const isiOS=/iphone|ipad|ipod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  const isAndroid=/android/i.test(ua);
+  const browserHint=isiOS?'No iPhone/iPad, abra no Safari e use Compartilhar → Adicionar à Tela de Início.':isAndroid?'No Android, abra no Chrome e use ⋮ → Instalar app / Adicionar à tela inicial.':'Abra a página de instalação para ver o passo a passo do seu navegador.';
+  sessionStorage.setItem('jogahub.install.hint',browserHint);
   location.href='instalar.html';
 }
 window.addEventListener('beforeinstallprompt', e => {

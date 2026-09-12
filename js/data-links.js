@@ -202,6 +202,48 @@ const LINK_ITEMS = [
     embed: false
   },
   {
+    id: 'breakout-evolution',
+    type: 'jogo',
+    title: 'Breakout Evolution',
+    genre: 'Arcade / Brick Breaker',
+    category: 'arcade',
+    accent: 'var(--brand-cyan)',
+    thumb: 'assets/thumb-breakout-evolution.webp',
+    hero: 'assets/hero-breakout-evolution.webp',
+    desc: 'Breakout Evolution — evolução do clássico brick breaker, com visual neon futurista, power-ups e desafios arcade.',
+    url: 'https://jogoiarexx-blip.github.io/Breakout-Evolution/',
+    installable: true,
+    embed: false
+  },
+  {
+    id: 'dead-end-survival',
+    type: 'jogo',
+    title: 'Dead End Survival',
+    genre: 'Survival / Horror',
+    category: 'survival',
+    accent: 'var(--brand-red)',
+    thumb: 'assets/thumb-dead-end-survival.webp',
+    hero: 'assets/hero-dead-end-survival.webp',
+    desc: 'Dead End Survival — sobrevivência em um mundo pós-apocalíptico, com atmosfera sombria, combate e hordas de inimigos.',
+    url: 'https://jogoiarexx-blip.github.io/Dead-end-Survival/',
+    installable: true,
+    embed: false
+  },
+  {
+    id: 'maze-hunter-core-shift',
+    type: 'jogo',
+    title: 'Maze Hunter: Core Shift',
+    genre: 'Arcade / Labirinto / Ação',
+    category: 'arcade',
+    accent: 'var(--brand-blue)',
+    thumb: 'assets/thumb-maze-hunter-core-shift.webp',
+    hero: 'assets/hero-maze-hunter-core-shift.webp',
+    desc: 'Maze Hunter: Core Shift — ação sci-fi em labirintos tecnológicos, com combate, inimigos robóticos e clima futurista.',
+    url: 'https://jogoiarexx-blip.github.io/Maze-Hunter-core-shift/',
+    installable: true,
+    embed: false
+  },
+  {
     id: 'snes-nova',
     type: 'emulador',
     title: 'SNES Nova',
