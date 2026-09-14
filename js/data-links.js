@@ -244,6 +244,48 @@ const LINK_ITEMS = [
     embed: false
   },
   {
+    id: 'mystic-grove',
+    type: 'jogo',
+    title: 'Mystic Grove',
+    genre: 'Puzzle / Aventura',
+    category: 'estrategia',
+    accent: 'var(--brand-purple)',
+    thumb: 'assets/thumb-mystic-grove.webp',
+    hero: 'assets/hero-mystic-grove.webp',
+    desc: 'Mystic Grove — puzzle de aventura com combinação de orbes, floresta mágica, personagens próprios e desafios especiais.',
+    url: 'https://jogoiarexx-blip.github.io/Mystic-Grove/',
+    installable: true,
+    embed: false
+  },
+  {
+    id: 'vc-sky',
+    type: 'jogo',
+    title: 'VC-Sky',
+    genre: 'Ação / Mundo Aberto / Web',
+    category: 'acao',
+    accent: 'var(--brand-pink)',
+    thumb: 'assets/thumb-vc-sky.webp',
+    hero: 'assets/hero-vc-sky.webp',
+    desc: 'VC-Sky — experiência de mundo aberto executada direto no navegador via WebAssembly. Projeto externo e não afiliado à Rockstar Games.',
+    url: 'https://gtavc.armdev.cn/',
+    installable: true,
+    embed: false
+  },
+  {
+    id: 'grim-grove-survivor',
+    type: 'jogo',
+    title: 'Grim Grove Survivor',
+    genre: 'Survival / Roguelite',
+    category: 'survival',
+    accent: 'var(--brand-green)',
+    thumb: 'assets/thumb-grim-grove-survivor.webp',
+    hero: 'assets/hero-grim-grove-survivor.webp',
+    desc: 'Grim Grove Survivor — sobrevivência em hordas com progressão roguelite, evolução durante as partidas e atmosfera sombria.',
+    url: 'https://jogoiarexx-blip.github.io/Grim-Grove-Survivor/',
+    installable: true,
+    embed: false
+  },
+  {
     id: 'snes-nova',
     type: 'emulador',
     title: 'SNES Nova',
