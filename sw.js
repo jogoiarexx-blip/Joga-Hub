@@ -1,8 +1,8 @@
 const SHELL = 'jogahub-1.2.25';
 const CONTENT = 'jogahub-1.2.25-content';
 const SHELL_FILES = [
-  './', './index.html', './instalar.html', './css/style.css?v=145', './js/data-jogos.js?v=40',
-  './js/data-links.js?v=48', './js/data-filmes.js?v=132', './js/imdb-ratings.js?v=1', './js/data-tv.js?v=124', './js/offline-assets.js?v=40', './js/app.js?v=144',
+  './', './index.html', './instalar.html', './css/style.css?v=145', './css/hud-pro.css?v=125', './css/player6.css?v=60', './js/data-jogos.js?v=40',
+  './js/data-links.js?v=48', './js/data-filmes.js?v=132', './js/imdb-ratings.js?v=1', './js/data-tv.js?v=124', './js/offline-assets.js?v=40', './js/app.js?v=144', './js/launcher-upgrade.js?v=125',
   './link-player.html', './install-game.html', './assets/favicon.png', './assets/logo.png', './assets/banner-games.webp', './assets/banner-breaking-bad.webp', './assets/banner-cat-jogos.webp', './assets/banner-cat-filmes.webp', './assets/banner-cat-series.webp', './assets/banner-cat-animes.webp', './assets/banner-cat-tv.webp', './assets/banner-cat-emuladores.webp', './assets/thumb-neo-nes.webp', './assets/banner-cat-radios.webp', './assets/serie-breaking-bad-s1.webp', './assets/hero-breaking-bad-s1.webp',
   './assets/thumb-jogos-destaque.webp', './assets/thumb-tiki-trail.webp', './assets/hero-tiki-trail.webp', './assets/thumb-mystic-grove.webp', './assets/hero-mystic-grove.webp', './assets/thumb-vc-sky.webp', './assets/hero-vc-sky.webp', './assets/thumb-grim-grove-survivor.webp', './assets/hero-grim-grove-survivor.webp', './assets/thumb-breakout-evolution.webp', './assets/hero-breakout-evolution.webp', './assets/thumb-dead-end-survival.webp', './assets/hero-dead-end-survival.webp', './assets/thumb-maze-hunter-core-shift.webp', './assets/hero-maze-hunter-core-shift.webp', './assets/thumb-navinha-arcade.webp', './assets/hero-navinha-arcade.webp', './assets/thumb-trilha-da-floresta.webp', './assets/hero-trilha-da-floresta.webp', './assets/thumb-pixel-frontier.webp', './assets/hero-pixel-frontier.webp', './assets/thumb-kart-racer.webp', './assets/hero-kart-racer.webp', './assets/thumb-bomber-blast.webp', './assets/hero-bomber-blast.webp', './assets/thumb-crash-fan-game.webp', './assets/hero-crash-fan-game.webp', './assets/thumb-joao-crist.webp', './assets/hero-joao-crist.webp', './assets/thumb-zeco-lendas-da-ilha.webp', './assets/hero-zeco-lendas-da-ilha.webp', './assets/thumb-ruptura.webp', './assets/hero-ruptura.webp', './assets/serie-stranger-things-historias-85.webp', './assets/hero-stranger-things-historias-85.webp', './assets/serie-o-pinguim.webp', './assets/hero-o-pinguim.webp', './assets/serie-irmaos-piologo-oficial.webp', './assets/hero-irmaos-piologo-oficial.webp', './assets/serie-irmaos-piologo-games.webp', './assets/hero-irmaos-piologo-games.webp', './assets/serie-irmaos-piologo-reacoes.webp', './assets/hero-irmaos-piologo-reacoes.webp', './assets/serie-irmaos-piologo-cortes.webp', './assets/hero-irmaos-piologo-cortes.webp', './assets/serie-irmaos-piologo-mundo-canibal.webp', './assets/hero-irmaos-piologo-mundo-canibal.webp', './assets/apple-touch-icon-180.png', './assets/icon-maskable-512.png', './assets/icon-192.png', './assets/icon-512.png', './manifest.webmanifest?v=142'
 ];
@@ -24,6 +24,18 @@ self.addEventListener('fetch', event => {
   if(event.request.method!=='GET') return;
   const url=new URL(event.request.url);
   if(url.origin!==self.location.origin) return;
+  if(url.pathname.endsWith('/link-player.html')){
+    event.respondWith((async()=>{
+      try{
+        const fresh=await fetch(event.request,{cache:'no-store'});
+        if(!fresh.ok) return fresh;
+        let html=await fresh.text();
+        html=html.replace('</head>','<link rel="stylesheet" href="css/player6.css?v=60"></head>').replaceAll('JogaHub Player 5.0','JogaHub Player 6.0').replaceAll('⚙ Player 5.0','⚙ Player 6.0');
+        return new Response(html,{status:fresh.status,statusText:fresh.statusText,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});
+      }catch(_){ return (await caches.match(event.request)) || Response.error(); }
+    })());
+    return;
+  }
   const isShell = event.request.mode==='navigate' || /\.(?:js|css|webmanifest)$/.test(url.pathname);
   if(isShell){
     event.respondWith((async()=>{
