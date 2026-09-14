@@ -29,8 +29,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.22';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.22-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.23';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.23-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 

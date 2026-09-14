@@ -244,6 +244,20 @@ const LINK_ITEMS = [
     embed: false
   },
   {
+    id: 'tiki-trail',
+    type: 'jogo',
+    title: 'Tiki Trail',
+    genre: 'Plataforma / Aventura',
+    category: 'plataforma',
+    accent: 'var(--brand-orange)',
+    thumb: 'assets/thumb-tiki-trail.webp',
+    hero: 'assets/hero-tiki-trail.webp',
+    desc: 'Tiki Trail — aventura de plataforma em ilhas tropicais, com desafios, relíquias e exploração.',
+    url: 'https://jogoiarexx-blip.github.io/tiki-trail/',
+    installable: true,
+    embed: false
+  },
+  {
     id: 'mystic-grove',
     type: 'jogo',
     title: 'Mystic Grove',
