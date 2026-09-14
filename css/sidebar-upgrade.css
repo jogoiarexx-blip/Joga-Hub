@@ -1,0 +1,57 @@
+/* JogaHub 1.2.28 — painel lateral retrátil, abas e banner dinâmico */
+body.hud-pro{padding-left:0!important}
+body.hud-pro .main-nav{display:none!important}
+body.hud-pro .type-tabs{display:none}
+body.hud-pro .catalog-shell{max-width:1480px;margin:12px auto 70px;padding:0 24px;display:grid;grid-template-columns:312px minmax(0,1fr);gap:24px;align-items:start;transition:grid-template-columns .44s cubic-bezier(.22,.9,.24,1),gap .34s ease}
+body.hud-pro .catalog-sidebar{min-width:0;position:sticky;top:calc(var(--jh-top,82px) + 18px);z-index:30}
+body.hud-pro .catalog-sidebar-panel{display:flex;flex-direction:column;gap:14px;min-width:0;transition:transform .42s cubic-bezier(.22,.9,.24,1),opacity .28s ease}
+body.hud-pro .catalog-sidebar-head,body.hud-pro .sidebar-view-tabs,body.hud-pro .catalog-sidebar .controls{border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(10,15,26,.98),rgba(8,13,23,.96));box-shadow:0 20px 48px rgba(0,0,0,.24)}
+body.hud-pro .catalog-sidebar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;transition:padding .38s cubic-bezier(.22,.9,.24,1)}
+body.hud-pro .catalog-sidebar-head>div{min-width:0;overflow:hidden;max-width:230px;opacity:1;transform:translateX(0);transition:max-width .38s cubic-bezier(.22,.9,.24,1),opacity .22s ease,transform .36s cubic-bezier(.22,.9,.24,1)}
+body.hud-pro .catalog-sidebar-head strong{display:block;margin-top:4px;font:800 24px/1.05 var(--font-body);letter-spacing:-.04em;color:#fff}
+body.hud-pro .catalog-sidebar-head p{margin:8px 0 0;color:#90a2c4;font-size:13px;line-height:1.5}
+body.hud-pro .sidebar-toggle{display:grid;place-items:center;flex:0 0 auto;width:42px;height:42px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;font:800 18px/1 var(--font-body);cursor:pointer;transition:transform .38s cubic-bezier(.22,.9,.24,1),background .18s ease,border-color .18s ease,box-shadow .18s ease}
+body.hud-pro .sidebar-toggle:hover{background:rgba(138,88,255,.18);border-color:rgba(155,109,255,.25);box-shadow:0 10px 24px rgba(94,58,220,.16)}
+body.hud-pro .sidebar-toggle:active{transform:scale(.94)}
+body.hud-pro .sidebar-view-tabs{display:flex;flex-direction:column;gap:9px;padding:14px;transition:padding .38s cubic-bezier(.22,.9,.24,1),gap .34s ease}
+body.hud-pro .sidebar-view-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);color:#d9e2f0;text-align:left;cursor:pointer;transition:padding .38s cubic-bezier(.22,.9,.24,1),gap .38s cubic-bezier(.22,.9,.24,1),background .2s ease,border-color .2s ease,transform .2s ease}
+body.hud-pro .sidebar-view-btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.10)}
+body.hud-pro .sidebar-view-btn.active{background:linear-gradient(135deg,rgba(113,69,235,.30),rgba(65,115,255,.17));border-color:rgba(149,99,255,.36);box-shadow:0 14px 28px rgba(0,0,0,.20);color:#fff}
+body.hud-pro .sidebar-view-btn>span{display:grid;place-items:center;flex:0 0 auto;width:35px;height:35px;border-radius:12px;background:rgba(255,255,255,.06);font-size:18px;transition:width .38s cubic-bezier(.22,.9,.24,1),height .38s cubic-bezier(.22,.9,.24,1),transform .35s cubic-bezier(.22,.9,.24,1)}
+body.hud-pro .sidebar-view-btn>div{display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;max-width:190px;opacity:1;transform:translateX(0);white-space:nowrap;transition:max-width .4s cubic-bezier(.22,.9,.24,1),opacity .22s ease,transform .34s cubic-bezier(.22,.9,.24,1)}
+body.hud-pro .sidebar-view-btn b{font:800 14px/1.1 var(--font-body);color:#fff}
+body.hud-pro .sidebar-view-btn small{font:600 10px var(--font-body);color:#8ea2c6;text-transform:uppercase;letter-spacing:.08em}
+body.hud-pro .catalog-sidebar .controls{position:static!important;top:auto!important;margin:0!important;padding:14px!important;max-width:none!important;display:flex;flex-direction:column;gap:12px;overflow:hidden;max-height:760px;opacity:1;transform:translateY(0) scale(1);transform-origin:top center;transition:max-height .42s cubic-bezier(.22,.9,.24,1),opacity .24s ease,transform .38s cubic-bezier(.22,.9,.24,1),padding .34s ease,border-width .28s ease}
+body.hud-pro .catalog-sidebar .search-wrap{width:100%;margin:0;min-height:50px}
+body.hud-pro .sidebar-filter-head{padding:2px 2px 12px;border-bottom:1px solid rgba(255,255,255,.06)}
+body.hud-pro .sidebar-filter-head span{display:block;font:700 10px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:#777f9c}
+body.hud-pro .sidebar-filter-head strong{display:block;margin-top:4px;color:#fff;font:800 18px/1.1 var(--font-body);letter-spacing:-.02em}
+body.hud-pro .catalog-sidebar .filters{width:100%;display:flex!important;flex-direction:column;gap:8px;max-height:calc(100vh - 535px);overflow:auto;padding:0!important;scrollbar-width:thin}
+body.hud-pro .catalog-sidebar .filter-btn{width:100%;min-height:43px;justify-content:flex-start;text-align:left;white-space:normal;padding:10px 12px;border-radius:13px;font:700 12px var(--font-body);background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);color:#c7d1e4;box-shadow:none}
+body.hud-pro .catalog-sidebar .filter-btn:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.10)}
+body.hud-pro .catalog-sidebar .filter-btn.active{background:linear-gradient(90deg,rgba(107,63,228,.92),rgba(147,92,255,.92));color:#fff;border-color:transparent;box-shadow:0 10px 24px rgba(95,58,210,.18)}
+body.hud-pro .catalog-main{min-width:0}
+body.hud-pro .catalog-main #banner,body.hud-pro .catalog-main .movie-notice,body.hud-pro .catalog-main .home-dashboard,body.hud-pro .catalog-main .results-meta,body.hud-pro .catalog-main #games{max-width:none!important;margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important}
+body.hud-pro .catalog-main #banner{margin-top:0!important}
+body.hud-pro .catalog-main .home-dashboard{margin-top:20px}
+body.hud-pro.sidebar-collapsed .catalog-shell{grid-template-columns:92px minmax(0,1fr);gap:18px}
+body.hud-pro.sidebar-collapsed .catalog-sidebar-head{padding:10px;justify-content:center}
+body.hud-pro.sidebar-collapsed .catalog-sidebar-head>div{max-width:0;opacity:0;transform:translateX(-14px)}
+body.hud-pro.sidebar-collapsed .sidebar-view-tabs{padding:9px;gap:8px}
+body.hud-pro.sidebar-collapsed .sidebar-view-btn{justify-content:center;padding:9px;gap:0}
+body.hud-pro.sidebar-collapsed .sidebar-view-btn>div{max-width:0;opacity:0;transform:translateX(-12px)}
+body.hud-pro.sidebar-collapsed .sidebar-view-btn>span{width:42px;height:42px;transform:scale(1.03)}
+body.hud-pro.sidebar-collapsed .catalog-sidebar .controls{max-height:0;min-height:0;opacity:0;transform:translateY(-12px) scale(.96);padding-top:0!important;padding-bottom:0!important;border-width:0;pointer-events:none}
+body.hud-pro #banner{perspective:1200px}
+body.hud-pro #banner .featured-banner{transition:opacity .34s ease,transform .44s cubic-bezier(.22,.9,.24,1),filter .34s ease,box-shadow .34s ease}
+body.hud-pro #banner .featured-copy,body.hud-pro #banner #featuredImg{transition:opacity .30s ease,transform .42s cubic-bezier(.22,.9,.24,1),filter .30s ease}
+body.hud-pro #banner.banner-switching .featured-banner{opacity:.48;transform:translateY(7px) scale(.992);filter:saturate(.72) brightness(.84)}
+body.hud-pro #banner.banner-switching .featured-copy{opacity:.18;transform:translateX(-16px)}
+body.hud-pro #banner.banner-switching #featuredImg{opacity:.18;transform:scale(1.035);filter:blur(2px)}
+body.hud-pro .featured-banner[data-banner-view='jogo']{box-shadow:0 30px 90px rgba(94,58,220,.20),0 30px 90px rgba(0,0,0,.42)}
+body.hud-pro .featured-banner[data-banner-view='filme']{box-shadow:0 30px 90px rgba(31,118,198,.16),0 30px 90px rgba(0,0,0,.42)}
+body.hud-pro .featured-banner[data-banner-view='serie']{box-shadow:0 30px 90px rgba(163,58,176,.16),0 30px 90px rgba(0,0,0,.42)}
+body.hud-pro .featured-banner[data-banner-view='anime']{box-shadow:0 30px 90px rgba(224,106,65,.14),0 30px 90px rgba(0,0,0,.42)}
+@media(max-width:920px){body.hud-pro{padding-left:0!important}.hud-pro .type-tabs{display:flex}.hud-pro .catalog-shell{grid-template-columns:1fr;padding:0 14px 90px}.hud-pro .catalog-sidebar{position:static}.hud-pro .catalog-sidebar-panel{gap:10px}.hud-pro .sidebar-view-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hud-pro .sidebar-view-btn{min-height:68px}.hud-pro .catalog-sidebar .filters{max-height:none;flex-direction:row;overflow:auto}.hud-pro .catalog-sidebar .filter-btn{min-width:max-content;width:auto;white-space:nowrap}.hud-pro.sidebar-collapsed .catalog-shell{grid-template-columns:1fr}.hud-pro.sidebar-collapsed .catalog-sidebar-head>div,.hud-pro.sidebar-collapsed .sidebar-view-btn>div{max-width:220px;opacity:1;transform:none}.hud-pro.sidebar-collapsed .catalog-sidebar .controls{max-height:760px;opacity:1;transform:none;padding:14px!important;border-width:1px;pointer-events:auto}.hud-pro.sidebar-collapsed .sidebar-view-btn{justify-content:flex-start;gap:10px;padding:10px}.hud-pro.sidebar-collapsed .sidebar-view-btn>span{width:35px;height:35px;transform:none}}
+@media(max-width:620px){.hud-pro .sidebar-view-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.hud-pro .catalog-sidebar-head p{display:none}.hud-pro .catalog-shell{padding-left:10px;padding-right:10px}.hud-pro .catalog-sidebar-head strong{font-size:21px}}
+@media(prefers-reduced-motion:reduce){body.hud-pro .catalog-shell,body.hud-pro .catalog-sidebar-head>div,body.hud-pro .sidebar-view-btn,body.hud-pro .sidebar-view-btn>div,body.hud-pro .sidebar-view-btn>span,body.hud-pro .catalog-sidebar .controls,body.hud-pro #banner .featured-banner,body.hud-pro #banner .featured-copy,body.hud-pro #banner #featuredImg{transition:none!important}}
