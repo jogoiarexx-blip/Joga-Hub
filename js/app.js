@@ -29,8 +29,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.36';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.36-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.37';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.37-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -208,15 +208,38 @@ function imdbRating(item){
   if(Number.isFinite(direct) && direct>0) return direct;
   const map=window.JOGAHUB_IMDB || {};
   const keys=[item.seriesTitle,item.title].filter(Boolean);
+
+  // Primeiro tenta o nome exato.
   for(const key of keys){
     const value=Number(map[key]);
     if(Number.isFinite(value) && value>0) return value;
   }
+
+  // Depois tenta uma forma normalizada para títulos com acentos,
+  // hífens, "dublado", ano ou pequenas diferenças de cadastro.
+  const clean=v=>normalize(String(v||''))
+    .replace(/\b(dublado|dual|online|filme|serie|série|temporada|completo|1080p|720p)\b/g,' ')
+    .replace(/\b(19|20)\d{2}\b/g,' ')
+    .replace(/[^a-z0-9]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+  const wanted=keys.map(clean).filter(Boolean);
+  for(const [key,raw] of Object.entries(map)){
+    const candidate=clean(key);
+    if(!candidate) continue;
+    if(wanted.some(w=>w===candidate || (w.length>7 && (w.includes(candidate)||candidate.includes(w))))){
+      const value=Number(raw);
+      if(Number.isFinite(value) && value>0) return value;
+    }
+  }
   return 0;
 }
 function imdbBadge(item, extraClass=''){
+  if(!item || item.type!=='filme') return '';
   const rating=imdbRating(item);
-  return rating ? `<span class="imdb-badge${extraClass?' '+extraClass:''}" title="Nota IMDb">⭐ IMDb ${rating.toFixed(1)}</span>` : '';
+  const cls=`imdb-badge${rating?'':' unrated'}${extraClass?' '+extraClass:''}`;
+  const value=rating?rating.toFixed(1):'—';
+  return `<span class="${cls}" title="${rating?'Nota atual cadastrada do IMDb':'Nota IMDb ainda não cadastrada'}"><strong>IMDb</strong><em>${value}</em></span>`;
 }
 function sortMoviesByImdb(items){
   return [...items].sort((a,b)=>{
@@ -231,7 +254,7 @@ function homeTile(item, label=''){
   const meta=item.type==='filme'?(item.seriesTitle||item.title):item.title;
   return `<a class="home-tile" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)}>
     <div class="home-tile-art">${item.thumb?`<img src="${escapeHTML(item.thumb)}" alt="${escapeHTML(meta)}" loading="lazy">`:`<span>${item.type==='filme'?'🎬':'🎮'}</span>`}<i>${item.type==='filme'?(isCatalogExternal(item)?'↗':'▶'):'🎮'}</i>${p&&!p.episodeOnly?`<b style="width:${Math.round(p.time/p.duration*100)}%"></b>`:''}</div>
-    <small>${escapeHTML(label|| (item.type==='filme'?'Assistir':'Jogar'))}</small><strong>${escapeHTML(meta)}</strong>${item.type==='filme'&&imdbRating(item)?`<em class="home-imdb">⭐ IMDb ${imdbRating(item).toFixed(1)}</em>`:(state?`<em>${escapeHTML(state.label)}</em>`:'')}
+    <small>${escapeHTML(label|| (item.type==='filme'?'Assistir':'Jogar'))}</small><strong>${escapeHTML(meta)}</strong>${item.type==='filme'?`<em class="home-imdb"><b>IMDb</b> ${imdbRating(item)?imdbRating(item).toFixed(1):'—'}</em>`:''}${state?`<em class="home-watch-state">${escapeHTML(state.label)}</em>`:''}
   </a>`;
 }
 function renderHomeDashboard(){
@@ -247,7 +270,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.5</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.37</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}
@@ -380,9 +403,12 @@ function movieCardHTML(item, compact=false){
   const p = movieProgress(item);
   const state = movieWatchState(item);
   const pct = p && !p.episodeOnly ? Math.max(0, Math.min(100, (p.time/p.duration)*100)) : 0;
-  return `<article class="stream-card${compact?' compact':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
+  const sourceBadge=item.driveFileId?'<span class="source-badge drive">☁ Drive</span>':(item.archiveId?'<span class="source-badge archive">Archive</span>':(item.youtubeId||item.youtubePlaylistId?'<span class="source-badge youtube">YouTube</span>':''));
+  const drivePosterTitle=item.driveFileId?`<span class="drive-poster-title">${escapeHTML(item.seriesTitle || item.title)}</span>`:'';
+  return `<article class="stream-card${compact?' compact':''}${item.driveFileId?' drive-card':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
     <a class="stream-poster" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)} aria-label="${isCatalogExternal(item)?'Onde assistir':'Assistir'} ${escapeHTML(item.title)}">
       <img src="${escapeHTML(item.thumb || '')}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy">
+      ${sourceBadge}${drivePosterTitle}
       <span class="stream-play">${isCatalogExternal(item)?'↗':'▶'}</span>
       ${imdbBadge(item,'poster-imdb')}${state?`<span class="stream-state${state.finished?' watched':''}">${state.label}</span>`:''}
       ${p&&!p.episodeOnly?`<span class="stream-progress"><i style="width:${pct.toFixed(1)}%"></i></span>`:''}
@@ -408,7 +434,7 @@ function seriesCardHTML(group){
       <span class="series-count">${episodes ? `${episodes} ep.` : 'Série'}</span>
       ${catalogOnly?'<span class="catalog-badge">CATÁLOGO</span>':''}
     </a>
-    <div class="stream-card-copy"><div class="stream-card-title"><b>${escapeHTML(group.title)}</b></div><span>${seasons||1} ${(seasons||1)===1?'temporada':'temporadas'}${episodes?` • ${episodes} episódios`:''}</span>${availability}<small>${catalogOnly?'↗ Onde assistir':(watched?`${watched}/${episodes} assistidos`:'Começar série')}</small></div>
+    <div class="stream-card-copy"><div class="stream-card-title"><b>${escapeHTML(group.title)}</b></div><span>${seasons||1} ${(seasons||1)===1?'temporada':'temporadas'}${episodes?` • ${episodes} episódios`:''}</span>${imdbBadge(first,'copy-imdb series-imdb')}${availability}<small>${catalogOnly?'↗ Onde assistir':(watched?`${watched}/${episodes} assistidos`:'Começar série')}</small></div>
   </article>`;
 }
 function mediaIdentity(item){
@@ -446,7 +472,7 @@ function renderMovieHub(list){
     }
     return out;
   };
-  const section=(title,subtitle,items)=> items.length ? `<section class="stream-row"><div class="stream-row-head"><div><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:''}</div><span>${items.length}</span></div><div class="stream-track">${items.map(i=>movieCardHTML(i)).join('')}</div></section>` : '';
+  const section=(title,subtitle,items,sectionId='')=> items.length ? `<section${sectionId?` id="${sectionId}"`:''} class="stream-row"><div class="stream-row-head"><div><h2>${title}</h2>${subtitle?`<p>${subtitle}</p>`:''}</div><div class="stream-row-nav"><span>${items.length}</span><button type="button" data-row-scroll="-1" aria-label="Voltar nesta fileira">‹</button><button type="button" data-row-scroll="1" aria-label="Avançar nesta fileira">›</button></div></div><div class="stream-track">${items.map(i=>movieCardHTML(i)).join('')}</div></section>` : '';
 
   let rows='';
   if(activeGenre!=='todos'){
@@ -459,16 +485,16 @@ function renderMovieHub(list){
     const jackie=take(pool.filter(i=>i.jackieChan),24);
     const classicTv=take(pool.filter(i=>i.classicTv),20);
 
-    rows+=section('Continuar assistindo','Vídeos diretos retomam no tempo exato; Google Drive retoma no último episódio aberto.',continuing);
-    rows+=section('Minha Lista','Seus favoritos, sem repetir o que já está acima.',favs);
-    rows+=section('⭐ Melhores no IMDb','Ranking do catálogo pela nota IMDb, da maior para a menor.',topImdb);
+    rows+=section('Continuar assistindo','Vídeos diretos retomam no tempo exato; Google Drive retoma no último episódio aberto.',continuing,'catalog-continuar');
+    rows+=section('Minha Lista','Seus favoritos, sem repetir o que já está acima.',favs,'catalog-lista');
+    rows+=section('⭐ Melhores no IMDb','Ranking do catálogo pela nota IMDb, da maior para a menor.',topImdb,'catalog-imdb');
     rows+=section('🥋 Jackie Chan','Filmes anteriores a 2000 e As Aventuras de Jackie Chan encontrados em fontes reproduzíveis.',jackie);
     rows+=section('📺 Nostalgia da TV','Desenhos, séries e clássicos que ainda não apareceram nas seções anteriores.',classicTv);
 
     // Google Drive: mostra cada longa individualmente, sem esconder dentro de coleção.
     // Cada card abre o link-player.html do próprio JogaHub por driveFileId.
     const driveMovies=take(pool.filter(i=>i.driveFileId && i.mediaType!=='serie' && i.mediaType!=='colecao'),60);
-    rows+=section('🎬 Filmes do Google Drive','Cada filme aparece separado e abre diretamente no player do JogaHub.',driveMovies);
+    rows+=section('🎬 Filmes do Google Drive','Cada filme aparece separado e abre diretamente no player do JogaHub.',driveMovies,'catalog-drive');
 
     // Séries do Drive: uma capa por série, com episódios navegáveis no player.
     const driveSeriesItems=pool.filter(i=>i.driveFileId && i.mediaType==='serie' && !used.has(mediaIdentity(i)));
@@ -480,7 +506,7 @@ function renderMovieHub(list){
         driveGroupMap.get(key).items.push(item);
       }
       driveGroups.forEach(g=>{g.items.sort((a,b)=>(a.season||1)-(b.season||1)||(a.episode||0)-(b.episode||0));g.items.forEach(i=>used.add(mediaIdentity(i)));});
-      rows+=`<section class="stream-row drive-series-row"><div class="stream-row-head"><div><h2>📺 Séries do Google Drive</h2><p>Séries agrupadas por temporada; escolha a série e navegue pelos episódios dentro do player.</p></div><span>${driveGroups.length}</span></div><div class="stream-track">${driveGroups.map(seriesCardHTML).join('')}</div></section>`;
+      rows+=`<section id="catalog-drive-series" class="stream-row drive-series-row"><div class="stream-row-head"><div><h2>📺 Séries do Google Drive</h2><p>Séries agrupadas por temporada; escolha a série e navegue pelos episódios dentro do player.</p></div><div class="stream-row-nav"><span>${driveGroups.length}</span><button type="button" data-row-scroll="-1" aria-label="Voltar nesta fileira">‹</button><button type="button" data-row-scroll="1" aria-label="Avançar nesta fileira">›</button></div></div><div class="stream-track">${driveGroups.map(seriesCardHTML).join('')}</div></section>`;
     }
 
     // Séries restantes: um cartão por série. Episódios continuam acessíveis dentro da página/player.
@@ -493,17 +519,25 @@ function renderMovieHub(list){
     }
     if(groups.length){
       groups.forEach(g=>g.items.forEach(i=>used.add(mediaIdentity(i))));
-      rows+=`<section class="stream-row"><div class="stream-row-head"><div><h2>Desenhos e séries</h2><p>Uma capa por série; os episódios ficam agrupados no player.</p></div><span>${groups.length}</span></div><div class="stream-track">${groups.map(g=>{g.items.sort((a,b)=>(a.season||1)-(b.season||1)||(a.episode||0)-(b.episode||0));return seriesCardHTML(g)}).join('')}</div></section>`;
+      rows+=`<section id="catalog-series" class="stream-row"><div class="stream-row-head"><div><h2>Desenhos e séries</h2><p>Uma capa por série; os episódios ficam agrupados no player.</p></div><div class="stream-row-nav"><span>${groups.length}</span><button type="button" data-row-scroll="-1" aria-label="Voltar nesta fileira">‹</button><button type="button" data-row-scroll="1" aria-label="Avançar nesta fileira">›</button></div></div><div class="stream-track">${groups.map(g=>{g.items.sort((a,b)=>(a.season||1)-(b.season||1)||(a.episode||0)-(b.episode||0));return seriesCardHTML(g)}).join('')}</div></section>`;
     }
 
-    rows+=section('Filmes', 'Longas que ainda não apareceram em nenhuma outra fileira.', take(pool.filter(i=>i.mediaType!=='serie' && i.mediaType!=='colecao'),30));
-    rows+=section('Coleções', 'Coleções e playlists reproduzíveis dentro do JogaHub.', take(pool.filter(i=>i.mediaType==='colecao'),20));
-    rows+=section('Descobrir mais', 'Conteúdo restante do catálogo, sem duplicações nesta tela.', take(pool,40));
+    rows+=section('Filmes', 'Longas que ainda não apareceram em nenhuma outra fileira.', take(pool.filter(i=>i.mediaType!=='serie' && i.mediaType!=='colecao'),30),'catalog-filmes');
+    rows+=section('Coleções', 'Coleções e playlists reproduzíveis dentro do JogaHub.', take(pool.filter(i=>i.mediaType==='colecao'),20),'catalog-colecoes');
+    rows+=section('Descobrir mais', 'Conteúdo restante do catálogo, sem duplicações nesta tela.', take(pool,40),'catalog-descobrir');
   }
 
   const categoryMeta=CATEGORY_HERO_META[activeType] || CATEGORY_HERO_META.filme;
   const categoryHero=CATEGORY_HERO_ASSETS[activeType] || CATEGORY_HERO_ASSETS.filme;
   grid.innerHTML=`<div class="movie-hub">
+    <nav class="catalog-quick-nav" aria-label="Atalhos do catálogo">
+      <button type="button" data-catalog-scroll="catalog-continuar">▶ Continuar</button>
+      <button type="button" data-catalog-scroll="catalog-lista">♥ Minha Lista</button>
+      <button type="button" data-catalog-scroll="catalog-imdb">⭐ IMDb</button>
+      <button type="button" data-catalog-scroll="catalog-drive">☁ Google Drive</button>
+      <button type="button" data-catalog-scroll="catalog-drive-series">📺 Séries Drive</button>
+      <button type="button" data-catalog-scroll="catalog-filmes">🎬 Todos os filmes</button>
+    </nav>
     <section class="stream-hero category-hero">
       <div class="stream-hero-art" style="background-image:url('${escapeHTML(categoryHero)}')"></div><div class="stream-hero-shade"></div>
       <div class="stream-hero-copy"><span class="stream-eyebrow">${escapeHTML(categoryMeta.tag.toUpperCase())}</span>
@@ -515,6 +549,17 @@ function renderMovieHub(list){
     </section>
     ${rows}
   </div>`;
+
+  grid.querySelectorAll('[data-catalog-scroll]').forEach(btn=>btn.addEventListener('click',()=>{
+    const target=grid.querySelector('#'+btn.dataset.catalogScroll);
+    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  }));
+  grid.querySelectorAll('[data-row-scroll]').forEach(btn=>btn.addEventListener('click',()=>{
+    const track=btn.closest('.stream-row')?.querySelector('.stream-track');
+    if(!track) return;
+    const dir=Number(btn.dataset.rowScroll)||1;
+    track.scrollBy({left:dir*Math.max(320,track.clientWidth*.82),behavior:'smooth'});
+  }));
 }
 
 function renderItems(list){
