@@ -29,8 +29,8 @@ const ITEMS = [
 ].filter(item => item.id !== 'exemplo');
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.35';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.35-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.36';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.36-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -465,7 +465,25 @@ function renderMovieHub(list){
     rows+=section('🥋 Jackie Chan','Filmes anteriores a 2000 e As Aventuras de Jackie Chan encontrados em fontes reproduzíveis.',jackie);
     rows+=section('📺 Nostalgia da TV','Desenhos, séries e clássicos que ainda não apareceram nas seções anteriores.',classicTv);
 
-    // Séries: um cartão por série. Episódios continuam acessíveis dentro da página/player.
+    // Google Drive: mostra cada longa individualmente, sem esconder dentro de coleção.
+    // Cada card abre o link-player.html do próprio JogaHub por driveFileId.
+    const driveMovies=take(pool.filter(i=>i.driveFileId && i.mediaType!=='serie' && i.mediaType!=='colecao'),60);
+    rows+=section('🎬 Filmes do Google Drive','Cada filme aparece separado e abre diretamente no player do JogaHub.',driveMovies);
+
+    // Séries do Drive: uma capa por série, com episódios navegáveis no player.
+    const driveSeriesItems=pool.filter(i=>i.driveFileId && i.mediaType==='serie' && !used.has(mediaIdentity(i)));
+    if(driveSeriesItems.length){
+      const driveGroups=[]; const driveGroupMap=new Map();
+      for(const item of driveSeriesItems){
+        const key=item.seriesId || normalize(item.seriesTitle || item.title);
+        if(!driveGroupMap.has(key)){const g={id:key,title:item.seriesTitle||item.title,items:[]};driveGroupMap.set(key,g);driveGroups.push(g);}
+        driveGroupMap.get(key).items.push(item);
+      }
+      driveGroups.forEach(g=>{g.items.sort((a,b)=>(a.season||1)-(b.season||1)||(a.episode||0)-(b.episode||0));g.items.forEach(i=>used.add(mediaIdentity(i)));});
+      rows+=`<section class="stream-row drive-series-row"><div class="stream-row-head"><div><h2>📺 Séries do Google Drive</h2><p>Séries agrupadas por temporada; escolha a série e navegue pelos episódios dentro do player.</p></div><span>${driveGroups.length}</span></div><div class="stream-track">${driveGroups.map(seriesCardHTML).join('')}</div></section>`;
+    }
+
+    // Séries restantes: um cartão por série. Episódios continuam acessíveis dentro da página/player.
     const remainingSeries=pool.filter(i=>i.mediaType==='serie' && !used.has(mediaIdentity(i)));
     const groups=[]; const groupMap=new Map();
     for(const item of remainingSeries){
