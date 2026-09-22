@@ -22,11 +22,13 @@ const GAME_CATEGORIES = {
   'simulação': {label:'Simulação', icon:'🔧', order:10},
   outros: {label:'Outros', icon:'🎮', order:99}
 };
-const ITEMS = [
-  ...JOGOS,
-  ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : []),
-  ...(typeof FILMES !== 'undefined' ? FILMES : [])
-].filter(item => item.id !== 'exemplo');
+let ITEMS = [];
+function rebuildCatalogItems(){
+  ITEMS = [...JOGOS, ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : []), ...(typeof FILMES !== 'undefined' ? FILMES : [])].filter(item => item.id !== 'exemplo');
+  window.JOGAHUB_ITEMS = ITEMS;
+}
+rebuildCatalogItems();
+window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
 const CURRENT_SHELL_CACHE = 'jogahub-1.2.40';
