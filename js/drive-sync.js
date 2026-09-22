@@ -26,9 +26,9 @@ function add(files,root){
 }
 async function sync(){
  const base=localStorage.getItem(CONFIG_KEY);if(!base||typeof FILMES_CATALOGO==='undefined'){window.JOGAHUB_DRIVE_SYNC_COUNT=0;return 0}
- let total=0,success=0;for(const root of ROOTS){try{const u=new URL(base);u.searchParams.set('folderId',root.id);const r=await fetch(u.toString(),{cache:'no-store'});if(!r.ok)continue;const j=await r.json();if(!j.ok||!Array.isArray(j.files))continue;total+=add(j.files,root);success++}catch(e){console.warn('JogaHub Drive',root.name,e)}}
- window.JOGAHUB_DRIVE_SYNC_COUNT=total;window.JOGAHUB_DRIVE_SYNC_ROOTS_OK=success;return total;
+ let total=0,found=0,errors=[];for(const root of ROOTS){try{const u=new URL(base);u.searchParams.set('folderId',root.id);const r=await fetch(u.toString(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();if(!j.ok||!Array.isArray(j.files))throw new Error(j.error||'Resposta inválida');const added=add(j.files,root);total+=added;found+=j.files.length;if(Array.isArray(j.errors))errors=errors.concat(j.errors)}catch(e){errors.push({name:root.name,error:String(e)});console.warn('JogaHub Drive',root.name,e)}}
+ window.JOGAHUB_DRIVE_SYNC_COUNT=total;window.JOGAHUB_DRIVE_SYNC_FOUND=found;window.JOGAHUB_DRIVE_SYNC_ERRORS=errors;window.JOGAHUB_DRIVE_SYNC_LAST_SYNC=Date.now();return total;
 }
-window.JOGAHUB_DRIVE_SYNC={configure:function(url){const cleanUrl=String(url||'').trim();if(cleanUrl)localStorage.setItem(CONFIG_KEY,cleanUrl);else localStorage.removeItem(CONFIG_KEY);return sync()},clear:function(){localStorage.removeItem(CONFIG_KEY)},sync:sync};
+window.JOGAHUB_DRIVE_SYNC={configure:function(url){const cleanUrl=String(url||'').trim();if(cleanUrl)localStorage.setItem(CONFIG_KEY,cleanUrl);else localStorage.removeItem(CONFIG_KEY);return sync()},clear:function(){localStorage.removeItem(CONFIG_KEY)},sync:sync,roots:ROOTS};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(sync,0)});else setTimeout(sync,0);
 })();
