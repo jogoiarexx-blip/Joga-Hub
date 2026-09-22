@@ -1,35 +1,157 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.40 */
+/* JOGAHUB — sincronizador Google Drive 1.2.42 */
 (function(){
+'use strict';
 const CONFIG_KEY='jogahub_drive_sync_url';
+const DATA_KEY='jogahub_drive_catalog_cache_v2';
 const ROOTS=[
 {id:'1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_',name:'Acervo Drive 1'},
 {id:'1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W',name:'Acervo Drive 2'},
 {id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'},
-{id:'1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1',name:'Clássicos / DC'},
+{id:'1F2_t5aERWvGOL_4VxWMgEDiwoBbZRc1',name:'Clássicos / DC'},
 {id:'1NCDe9l_-S_XAd8LYIxoarKqdkHJu8sse',name:'O Cavaleiro dos Sete Reinos'}];
+
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-const clean=s=>String(s||'').replace(/\.(mp4|mkv|webm|mov|avi|m4v|ogv)$/i,'').replace(/[._]+/g,' ').replace(/\s+/g,' ').trim();
+const clean=s=>String(s||'')
+ .replace(/\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i,'')
+ .replace(/[._]+/g,' ').replace(/\s+/g,' ').trim();
+
+function seasonFromText(s){
+ const x=norm(s);
+ let m=x.match(/\b(?:s|t)\s*0*(\d{1,2})\b/i);
+ if(m)return Number(m[1]);
+ m=x.match(/\b(?:temporada|season|temp)\s*0*(\d{1,2})\b/i);
+ if(m)return Number(m[1]);
+ m=x.match(/\b0*(\d{1,2})\s*[ªa]?\s*(?:temporada|season)\b/i);
+ return m?Number(m[1]):0;
+}
 function parse(name,path){
- const full=norm((path||'')+'/'+name);let m=full.match(/\bs(\d{1,2})e(\d{1,3})\b/i)||full.match(/\bt(\d{1,2})e(\d{1,3})\b/i)||full.match(/\b(\d{1,2})x(\d{1,3})\b/i);
+ const full=norm((path||'')+'/'+name);
+ let m=full.match(/\bs(\d{1,2})e(\d{1,3})\b/i)||full.match(/\bt(\d{1,2})e(\d{1,3})\b/i)||full.match(/\b(\d{1,2})x(\d{1,3})\b/i);
  let season=m?Number(m[1]):0,episode=m?Number(m[2]):0;
- if(!season){const sm=full.match(/(?:temporada|season|temp)[\s._-]*(\d{1,2})/i);season=sm?Number(sm[1]):0}
- if(!episode){const em=full.match(/(?:epis[oó]dio|episode|ep)[\s._-]*(\d{1,3})/i);episode=em?Number(em[1]):0}
- const parts=String(path||'').split('/').filter(Boolean),seasonIdx=parts.findIndex(x=>/(?:temporada|season|temp)[\s._-]*\d+/i.test(x));
- const seriesTitle=seasonIdx>0?clean(parts[seasonIdx-1]):(parts.length>1?clean(parts[parts.length-2]):clean(name));
- const serie=!!(season||episode||seasonIdx>=0||/(?:series|epis[oó]d|temporada|season)/i.test(full));
+ if(!season)season=seasonFromText(full);
+ if(!episode){
+   const em=full.match(/(?:epis[oó]dio|episode|ep)\s*0*(\d{1,3})\b/i);
+   episode=em?Number(em[1]):0;
+ }
+ const parts=String(path||'').split('/').filter(Boolean);
+ const seasonIdx=parts.findIndex(x=>seasonFromText(x)>0);
+ let seriesTitle='';
+ if(seasonIdx>0) seriesTitle=clean(parts[seasonIdx-1]);
+ else if(parts.length>1 && (season||episode)) seriesTitle=clean(parts[0]);
+ else if(/(?:series|epis[oó]d|temporada|season|\bs\d{1,2}\b)/i.test(full) && parts.length>1) seriesTitle=clean(parts[0]);
+ const serie=!!(season||episode||seasonIdx>=0||seriesTitle);
  return {serie,season:season||1,episode,title:clean(name),seriesTitle:serie?seriesTitle:''};
 }
-function add(files,root){
- if(typeof FILMES_CATALOGO==='undefined')return 0;const existing=new Set(FILMES_CATALOGO.map(x=>x.driveFileId).filter(Boolean));let added=0;
- for(const f of(Array.isArray(files)?files:[])){if(!f?.id||existing.has(f.id))continue;const p=parse(f.name,f.path||''),seriesKey=p.serie?norm(p.seriesTitle).replace(/[^a-z0-9]+/g,'-'):'';
- FILMES_CATALOGO.push({id:'drive-auto-'+f.id,type:'filme',title:p.serie&&p.episode?'E'+String(p.episode).padStart(2,'0')+' — '+p.seriesTitle:p.title,year:'Google Drive',genre:p.serie?'Série • Google Drive':'Filme • Google Drive',mediaType:p.serie?'serie':'filme',language:'Conforme o arquivo',portuguese:true,colorContent:true,accent:'var(--brand-blue)',thumb:p.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp',...(p.serie?{seriesId:seriesKey,seriesTitle:p.seriesTitle,season:p.season,episode:p.episode}:{}),driveFileId:f.id,driveFileSize:Number(f.size)||0,driveMime:f.mime,sourceUrl:f.url,url:f.url,sourceLabel:'Google Drive',sourceCollection:root.name,embed:false,desc:'Conteúdo sincronizado automaticamente do Google Drive.',nostalgiaTags:['Google Drive',p.serie?'série':'filme']});existing.add(f.id);added++}
+
+function readCache(){
+ try{const v=JSON.parse(localStorage.getItem(DATA_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return []}
+}
+function writeCache(){
+ try{
+   const files=FILMES_CATALOGO.filter(x=>x&&x.driveFileId&&String(x.id||'').startsWith('drive-auto-'))
+     .map(x=>({
+       id:x.driveFileId,name:x._driveName||x.title,mime:x.driveMime,size:x.driveFileSize,
+       path:x._drivePath||'',url:x.sourceUrl,updated:x._driveUpdated||''
+     }));
+   localStorage.setItem(DATA_KEY,JSON.stringify(files));
+ }catch(e){console.warn('JogaHub Drive cache',e)}
+}
+function add(files,root,fromCache){
+ if(typeof FILMES_CATALOGO==='undefined')return 0;
+ const existing=new Set(FILMES_CATALOGO.map(x=>x.driveFileId).filter(Boolean));let added=0;
+ for(const f of(Array.isArray(files)?files:[])){
+   if(!f?.id||existing.has(f.id))continue;
+   const p=parse(f.name,f.path||''),seriesKey=p.serie?norm(p.seriesTitle).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
+   FILMES_CATALOGO.push({
+     id:'drive-auto-'+f.id,type:'filme',
+     title:p.serie&&p.episode?'E'+String(p.episode).padStart(2,'0')+' — '+p.seriesTitle:p.title,
+     year:'Google Drive',genre:p.serie?'Série • Google Drive':'Filme • Google Drive',
+     mediaType:p.serie?'serie':'filme',language:'Conforme o arquivo',portuguese:true,colorContent:true,
+     accent:'var(--brand-blue)',thumb:p.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp',
+     ...(p.serie?{seriesId:seriesKey,seriesTitle:p.seriesTitle,season:p.season,episode:p.episode}:{}),
+     driveFileId:f.id,driveFileSize:Number(f.size)||0,driveMime:f.mime||'',
+     sourceUrl:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),
+     url:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),
+     sourceLabel:'Google Drive',sourceCollection:root?.name||'Google Drive',embed:false,
+     desc:'Conteúdo sincronizado do Google Drive.',
+     nostalgiaTags:['Google Drive',p.serie?'série':'filme'],
+     _driveName:f.name||'',_drivePath:f.path||'',_driveUpdated:f.updated||''
+   });
+   existing.add(f.id);added++;
+ }
+ if(!fromCache)writeCache();
  return added;
 }
-async function sync(){
- const base=localStorage.getItem(CONFIG_KEY);if(!base||typeof FILMES_CATALOGO==='undefined'){window.JOGAHUB_DRIVE_SYNC_COUNT=0;return 0}
- let total=0,found=0,errors=[];for(const root of ROOTS){try{const u=new URL(base);u.searchParams.set('folderId',root.id);const r=await fetch(u.toString(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();if(!j.ok||!Array.isArray(j.files))throw new Error(j.error||'Resposta inválida');const added=add(j.files,root);total+=added;found+=j.files.length;if(Array.isArray(j.errors))errors=errors.concat(j.errors)}catch(e){errors.push({name:root.name,error:String(e)});console.warn('JogaHub Drive',root.name,e)}}
- window.JOGAHUB_DRIVE_SYNC_COUNT=total;window.JOGAHUB_DRIVE_SYNC_FOUND=found;if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS();window.JOGAHUB_DRIVE_SYNC_ERRORS=errors;window.JOGAHUB_DRIVE_SYNC_LAST_SYNC=Date.now();return total;
+function hydrateCache(){
+ const cached=readCache();
+ if(cached.length){
+   const added=add(cached,{name:'Google Drive (cache local)'},true);
+   if(added&&typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS();
+ }
+ return cached.length;
 }
-window.JOGAHUB_DRIVE_SYNC={configure:function(url){const cleanUrl=String(url||'').trim();if(cleanUrl)localStorage.setItem(CONFIG_KEY,cleanUrl);else localStorage.removeItem(CONFIG_KEY);return sync()},clear:function(){localStorage.removeItem(CONFIG_KEY)},sync:sync,roots:ROOTS};
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(sync,0)});else setTimeout(sync,0);
+async function sync(){
+ const base=localStorage.getItem(CONFIG_KEY);
+ if(!base||typeof FILMES_CATALOGO==='undefined'){
+   window.JOGAHUB_DRIVE_SYNC_COUNT=0;
+   window.JOGAHUB_DRIVE_SYNC_FOUND=0;
+   return 0;
+ }
+ let total=0,found=0,errors=[],folderStats=[];
+ for(const root of ROOTS){
+   try{
+     const u=new URL(base);u.searchParams.set('folderId',root.id);
+     const r=await fetch(u.toString(),{cache:'no-store',redirect:'follow'});
+     if(!r.ok)throw new Error('HTTP '+r.status);
+     const j=await r.json();
+     if(!j.ok||!Array.isArray(j.files))throw new Error(j.error||'Resposta inválida');
+     const added=add(j.files,root,false);
+     total+=added;found+=j.files.length;
+     folderStats.push({name:root.name,found:j.files.length,added});
+     if(Array.isArray(j.errors))errors=errors.concat(j.errors);
+   }catch(e){
+     errors.push({name:root.name,error:String(e)});
+     folderStats.push({name:root.name,found:0,added:0,error:String(e)});
+     console.warn('JogaHub Drive',root.name,e);
+   }
+ }
+ window.JOGAHUB_DRIVE_SYNC_COUNT=total;
+ window.JOGAHUB_DRIVE_SYNC_FOUND=found;
+ window.JOGAHUB_DRIVE_SYNC_ERRORS=errors;
+ window.JOGAHUB_DRIVE_SYNC_FOLDERS=folderStats;
+ window.JOGAHUB_DRIVE_SYNC_LAST_SYNC=Date.now();
+ if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS();
+ return total;
+}
+window.JOGAHUB_DRIVE_SYNC={
+ configure:function(url){
+   const cleanUrl=String(url||'').trim();
+   if(cleanUrl)localStorage.setItem(CONFIG_KEY,cleanUrl);else localStorage.removeItem(CONFIG_KEY);
+   return sync();
+ },
+ clear:function(){
+   localStorage.removeItem(CONFIG_KEY);
+   localStorage.removeItem(DATA_KEY);
+   if(typeof FILMES_CATALOGO!=='undefined'){
+     for(let i=FILMES_CATALOGO.length-1;i>=0;i--)if(String(FILMES_CATALOGO[i].id||'').startsWith('drive-auto-'))FILMES_CATALOGO.splice(i,1);
+   }
+   if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS();
+ },
+ sync:sync,roots:ROOTS,
+ getStatus:function(){return {
+   configured:!!localStorage.getItem(CONFIG_KEY),
+   cached:readCache().length,
+   found:Number(window.JOGAHUB_DRIVE_SYNC_FOUND||0),
+   added:Number(window.JOGAHUB_DRIVE_SYNC_COUNT||0),
+   errors:window.JOGAHUB_DRIVE_SYNC_ERRORS||[],
+   folders:window.JOGAHUB_DRIVE_SYNC_FOLDERS||[]
+ }}
+};
+
+function boot(){
+ hydrateCache();
+ if(localStorage.getItem(CONFIG_KEY))setTimeout(sync,0);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
+else boot();
 })();
