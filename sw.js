@@ -1,5 +1,5 @@
-const SHELL = 'jogahub-1.2.43';
-const CONTENT = 'jogahub-1.2.43-content';
+const SHELL = 'jogahub-1.2.44';
+const CONTENT = 'jogahub-1.2.44-content';
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
 // armazenados sob demanda, evitando um download inicial de quase 9 MB.
@@ -21,7 +21,8 @@ const SHELL_FILES = [
   './js/data-arcana.js?v=3',
   './js/data-filmes.js?v=132',
   './js/data-drive-filmes.js?v=5',
-  './js/drive-sync.js?v=5',
+  './js/drive-snapshot.js?v=1',
+  './js/drive-sync.js?v=6',
   './js/site-upgrades.js?v=3',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',

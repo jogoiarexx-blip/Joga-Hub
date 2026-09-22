@@ -42,6 +42,10 @@ function parse(name,path){
  if(seasonIdx>0) seriesTitle=clean(parts[seasonIdx-1]);
  else if(parts.length && (season||episode)) seriesTitle=clean(parts[parts.length-1]);
  else if(/(?:series|epis[oó]d|temporada|season|\bs\d{1,2}\b)/i.test(full) && parts.length) seriesTitle=clean(parts[parts.length-1]);
+ if(seriesTitle){
+   seriesTitle=seriesTitle.replace(/(?:\s*[-–]?\s*(?:\d{1,2}\s*[ªa]?\s*Temporada|\b(?:S|T)\s*0*\d{1,2}\b|\d{1,2}\s*[ªa]?\s*Season)).*$/i,'')
+     .replace(/\s*\(?\b(?:19|20)\d{2}\b\)?\s*$/,'').replace(/\s*[-–]\s*$/,'').trim()||seriesTitle;
+ }
  const serie=!!(season||episode||seasonIdx>=0||seriesTitle);
  return {serie,season:season||1,episode,title:clean(name),seriesTitle:serie?seriesTitle:''};
 }
@@ -153,6 +157,7 @@ window.JOGAHUB_DRIVE_SYNC={
 
 function boot(){
  LEGACY_DATA_KEYS.forEach(key=>localStorage.removeItem(key));
+ if(Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT))add(window.JOGAHUB_DRIVE_SNAPSHOT,ROOTS[0],true);
  hydrateCache();
  if(localStorage.getItem(CONFIG_KEY))setTimeout(sync,0);
 }
