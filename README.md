@@ -1,4 +1,4 @@
-# JogaHub 1.2.43
+# JogaHub 1.2.45
 
 Central de jogos, filmes, séries, animes, TV e rádios para GitHub Pages.
 
@@ -10,15 +10,9 @@ O catálogo de filmes e séries usa somente esta pasta raiz:
 
 O arquivo `tools/google-drive-sync.gs` percorre a raiz e todas as subpastas. As outras pastas do Drive que existiam nas versões anteriores foram removidas do catálogo, do sincronizador e do código do Apps Script.
 
-Para ativar a leitura automática:
+A leitura automática já está configurada nesta versão com a implantação `/exec` criada para o acervo. Para manter o modo mais compatível entre navegadores, o arquivo `tools/google-drive-sync.gs` desta versão também oferece JSONP como fallback. Se você substituir o código do Apps Script, atualize a implantação existente e mantenha o mesmo URL `/exec`; se criar uma implantação nova, cole a nova URL em **Configurações → Acervo único do Google Drive**.
 
-1. Abra um projeto no Google Apps Script.
-2. Cole o conteúdo de `tools/google-drive-sync.gs`.
-3. Implante como **Aplicativo da Web**, executando como você e permitindo acesso a qualquer pessoa com o link.
-4. No JogaHub, abra **Configurações → Acervo único do Google Drive**.
-5. Cole a URL terminada em `/exec` e clique em **Sincronizar agora**.
-
-O navegador guarda a URL e o catálogo sincronizado localmente. Quando uma versão antiga é aberta, o cache de múltiplos Drives é apagado automaticamente.
+O navegador guarda o catálogo sincronizado localmente e usa `drive-snapshot.js` como fallback. Quando uma versão antiga é aberta, os caches antigos do Drive são descartados automaticamente.
 
 ## Organização recomendada
 
@@ -44,7 +38,7 @@ O sincronizador reconhece formatos como `S01E02`, `T01E02`, `1x02`, `Episódio 2
 - cache antigo de múltiplos Drives invalidado;
 - um único Drive permitido no front-end e no Apps Script;
 - agrupamento de séries corrigido para respeitar a pasta real da série;
-- versão e caches unificados em `1.2.43`.
+- versão e caches unificados em `1.2.45`.
 
 ## Execução local
 
@@ -61,3 +55,13 @@ O projeto é estático. Abra com um servidor HTTP local ou publique a pasta no G
 - `sw.js` — instalação PWA e cache offline.
 
 Use somente mídias que você tenha autorização para armazenar e reproduzir.
+
+## Google Drive automático — 1.2.45
+
+- O JogaHub usa o Web App do Google Apps Script como índice do acervo, sem Drive API e sem API key.
+- A pasta principal e todas as subpastas são percorridas recursivamente.
+- O sincronizador aceita tanto o formato antigo (`ok/files`) quanto o novo (`sucesso/itens`).
+- O catálogo é atualizado automaticamente e remove itens que saíram do Drive.
+- Há cache local e `drive-snapshot.js` como fallback para abrir rápido/offline.
+- O player também carrega o catálogo do Drive, permitindo navegar por temporadas e episódios.
+- Se `fetch()` for bloqueado pelo navegador, o sincronizador tenta JSONP; para isso, use o `tools/google-drive-sync.gs` desta versão.

@@ -31,8 +31,8 @@ rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.43';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.43-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.45';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.45-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -272,7 +272,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.43</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.45</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}

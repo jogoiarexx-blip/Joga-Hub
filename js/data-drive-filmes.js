@@ -1,6 +1,6 @@
 /* ===================================================================
    JOGAHUB — ACERVO ÚNICO DO GOOGLE DRIVE
-   Versão 1.2.43 — 2026-09-22.
+   Versão 1.2.45 — 2026-09-22.
 
    Todo o catálogo de filmes e séries vem desta pasta raiz. O
    sincronizador percorre recursivamente todas as subpastas.
@@ -12,11 +12,16 @@
   const ROOT_ID = '1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut';
   const ROOT_URL = 'https://drive.google.com/drive/folders/' + ROOT_ID;
 
+  // Implantação do Apps Script criada para este acervo. Pode ser trocada em
+  // Configurações; o valor salvo no navegador tem prioridade sobre este.
+  const SYNC_URL = 'https://script.google.com/macros/s/AKfycbxXQk9M6_VLSyspyNfTvXqGioOhmIE1vRMw6bZtV5GBx8hlrYx3Qnqr7tXmFsfKQeC1TQ/exec';
+
   window.JOGAHUB_DRIVE_ROOT = Object.freeze({
     id: ROOT_ID,
     name: 'Filmes e Séries',
     url: ROOT_URL
   });
+  window.JOGAHUB_DRIVE_SYNC_URL = SYNC_URL;
 
   FILMES_CATALOGO.push({
     id:'acervo-unico-filmes-series',
