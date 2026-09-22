@@ -7,7 +7,7 @@ const ROOTS=[
 {id:'1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_',name:'Acervo Drive 1'},
 {id:'1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W',name:'Acervo Drive 2'},
 {id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'},
-{id:'1F2_t5aERWvGOL_4VxWMgEDiwoBbZRc1',name:'Clássicos / DC'},
+{id:'1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1',name:'Clássicos / DC'},
 {id:'1NCDe9l_-S_XAd8LYIxoarKqdkHJu8sse',name:'O Cavaleiro dos Sete Reinos'}];
 
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
