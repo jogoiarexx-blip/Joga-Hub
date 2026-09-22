@@ -12,6 +12,8 @@
   const ROOT_FILMES_SERIES = 'https://drive.google.com/drive/folders/1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut';
   const ROOT_DC = 'https://drive.google.com/drive/folders/1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1';
   const ROOT_CAVALEIRO = 'https://drive.google.com/drive/folders/1NCDe9l_-S_XAd8LYIxoarKqdkHJu8sse';
+  const ROOT_NOVO_1 = 'https://drive.google.com/drive/folders/1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_';
+  const ROOT_NOVO_2 = 'https://drive.google.com/drive/folders/1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W';
 
   const driveItem = ({id,title,fileId,year='',genre='Filme • Google Drive',language='Conforme o arquivo',mediaType='filme',seriesId='',seriesTitle='',season=0,episode=0,size=0,mime='video/mp4',sourceRoot=ROOT_FILMES_SERIES,desc='',portuguese=true,thumb=''}) => ({
     id,
@@ -41,6 +43,47 @@
 
   FILMES_CATALOGO.push(
     {
+      id:'colecao-drive-1qmy3x-2026',
+      type:'filme',
+      title:'Acervo Drive — Nova Pasta 1',
+      year:'Acervo compartilhado',
+      genre:'Filmes / Séries / Animações',
+      mediaType:'colecao',
+      language:'Conforme cada arquivo',
+      portuguese:true,
+      colorContent:true,
+      catalogOnly:true,
+      accent:'var(--brand-blue)',
+      driveFolderId:'1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_',
+      driveFolderUrl:ROOT_NOVO_1,
+      sourceUrl:ROOT_NOVO_1,
+      sourceLabel:'Google Drive — novo acervo',
+      thumb:'assets/banner-cat-filmes.webp',
+      desc:'Nova pasta do Google Drive adicionada ao catálogo do JogaHub.',
+      nostalgiaTags:['filmes','séries','animações','Google Drive']
+    },
+    {
+      id:'colecao-drive-1xisydv-2026',
+      type:'filme',
+      title:'Acervo Drive — Nova Pasta 2',
+      year:'Acervo compartilhado',
+      genre:'Filmes / Séries / Animações',
+      mediaType:'colecao',
+      language:'Conforme cada arquivo',
+      portuguese:true,
+      colorContent:true,
+      catalogOnly:true,
+      accent:'var(--brand-blue)',
+      driveFolderId:'1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W',
+      driveFolderUrl:ROOT_NOVO_2,
+      sourceUrl:ROOT_NOVO_2,
+      sourceLabel:'Google Drive — novo acervo',
+      thumb:'assets/banner-cat-filmes.webp',
+      desc:'Nova pasta do Google Drive adicionada ao catálogo do JogaHub.',
+      nostalgiaTags:['filmes','séries','animações','Google Drive']
+    },
+
+        {
       id:'colecao-drive-filmes-series-2026',
       type:'filme',
       title:'Acervo Drive — Filmes e Séries',
