@@ -31,8 +31,8 @@ rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.40';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.40-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.42';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.42-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
