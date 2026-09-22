@@ -1,51 +1,32 @@
-# Como adicionar filmes antigos ao JogaHub
+# Como adicionar filmes e séries ao JogaHub
 
-Edite o arquivo `js/data-filmes.js`. Os filmes aparecem automaticamente na aba **Filmes Antigos**.
+Não é necessário editar o JavaScript para cada título. Envie os vídeos para a pasta principal **Filmes e Séries** ou para qualquer subpasta dentro dela.
 
-Use somente obras cuja licença permita a exibição. No Internet Archive, abra a página do filme e confira o campo **Usage**. Dê preferência a itens marcados como **Public Domain** ou **CC0**.
+## Filmes
 
-Exemplo, para uma página com endereço `https://archive.org/details/IDENTIFICADOR`:
+Use nomes claros, preferencialmente com o ano:
 
-```js
-{
-  id: 'filme-identificador-ano',
-  type: 'filme',
-  title: 'Nome do Filme',
-  year: '1925',
-  genre: 'Comédia',
-  accent: 'var(--gold)',
-  thumb: 'https://archive.org/services/img/IDENTIFICADOR',
-  desc: 'Descrição curta e informação sobre idioma ou legendas.',
-  archiveId: 'IDENTIFICADOR',
-  sourceUrl: 'https://archive.org/details/IDENTIFICADOR'
-}
+```text
+Filmes/Nome do Filme (2026).mp4
 ```
 
-O `archiveId` é exatamente o trecho que aparece depois de `/details/`. Não coloque links de arquivos particulares ou filmes sem autorização.
+## Séries
 
+Organize cada série em sua própria pasta e use temporadas e episódios no nome:
 
-## Player aprimorado (v1.3.2)
-
-Filmes com `archiveId` tentam automaticamente usar o arquivo de vídeo do Internet Archive no player próprio do JogaHub. Isso habilita retomar de onde parou, avançar/voltar 10 segundos, velocidade, tela cheia, Picture-in-Picture e atalhos. Se o item não disponibilizar um arquivo de vídeo direto compatível, o sistema volta automaticamente para o player incorporado do Internet Archive.
-
-A ordem dos itens em `js/data-filmes.js` também define a navegação **anterior/próximo** e a lista exibida abaixo do player.
-
-## Organização em séries, temporadas e episódios (JogaHub 1.4.0)
-
-Para um filme avulso, use:
-
-```js
-mediaType: 'filme'
+```text
+Séries/Nome da Série/Temporada 1/S01E01 - Título.mp4
+Séries/Nome da Série/Temporada 1/S01E02 - Título.mp4
 ```
 
-Para desenho ou série episódica, além dos campos normais, use:
+Também são reconhecidos `T01E02`, `1x02`, `Episódio 2`, `Temporada 1` e `Season 1`.
 
-```js
-mediaType: 'serie',
-seriesId: 'nome-unico-da-serie',
-seriesTitle: 'Nome da Série',
-season: 1,
-episode: 1
-```
+## Atualizar o catálogo
 
-Episódios com o mesmo `seriesId` e `season` são agrupados automaticamente no player. A aba Filmes Antigos também separa Séries/Desenhos, Filmes, Minha Lista e conteúdos em andamento.
+1. Abra **Configurações** no JogaHub.
+2. Na área **Acervo único do Google Drive**, confira a URL `/exec` do Google Apps Script.
+3. Clique em **Sincronizar agora**.
+
+O sincronizador percorre todas as subpastas da única raiz configurada. Outras pastas do Google Drive não são consultadas.
+
+Use apenas conteúdos que você tenha autorização para armazenar e reproduzir.

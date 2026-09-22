@@ -59,7 +59,7 @@ function makePage(n,side){
   if(!n){p.style.visibility='hidden';return p}
   if(current===0)p.classList.add('single');
   const img=document.createElement('img');
-  img.src='pages/pagina-'+String(n).padStart(2,'0')+'.jpg';
+  img.src='pages/pagina-'+String(n).padStart(2,'0')+'.webp';
   img.alt='Página '+n; p.appendChild(img); return p;
 }
 function render(anim=true){

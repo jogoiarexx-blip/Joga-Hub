@@ -4,7 +4,7 @@
   const title = cfg.title || document.title;
   const total = Number(cfg.total || 1);
   const prefix = cfg.pagePrefix || 'pages/pagina-';
-  const ext = cfg.pageExt || '.jpg';
+  const ext = cfg.pageExt || '.webp';
   const storageKey = `linkora.reader.${id}`;
   const book = document.getElementById('book');
   const counter = document.getElementById('counter');

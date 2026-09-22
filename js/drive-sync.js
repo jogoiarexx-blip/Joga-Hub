@@ -1,14 +1,13 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.42 */
+/* JOGAHUB — sincronizador Google Drive 1.2.43 */
 (function(){
 'use strict';
 const CONFIG_KEY='jogahub_drive_sync_url';
-const DATA_KEY='jogahub_drive_catalog_cache_v2';
-const ROOTS=[
-{id:'1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_',name:'Acervo Drive 1'},
-{id:'1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W',name:'Acervo Drive 2'},
-{id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'},
-{id:'1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1',name:'Clássicos / DC'},
-{id:'1NCDe9l_-S_XAd8LYIxoarKqdkHJu8sse',name:'O Cavaleiro dos Sete Reinos'}];
+const DATA_KEY='jogahub_drive_catalog_cache_v3_single_root';
+const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v2'];
+const root=window.JOGAHUB_DRIVE_ROOT||{
+ id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'
+};
+const ROOTS=[{id:root.id,name:root.name}];
 
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const clean=s=>String(s||'')
@@ -25,7 +24,12 @@ function seasonFromText(s){
  return m?Number(m[1]):0;
 }
 function parse(name,path){
- const full=norm((path||'')+'/'+name);
+ // O Apps Script inclui o nome da raiz no caminho. Ele contém a palavra
+ // "Séries", então precisa ser removido antes da classificação para que
+ // filmes comuns não sejam tratados como episódios.
+ const rawParts=String(path||'').split('/').filter(Boolean);
+ const parts=rawParts.length>1?rawParts.slice(1):[];
+ const full=norm(parts.join('/')+'/'+name);
  let m=full.match(/\bs(\d{1,2})e(\d{1,3})\b/i)||full.match(/\bt(\d{1,2})e(\d{1,3})\b/i)||full.match(/\b(\d{1,2})x(\d{1,3})\b/i);
  let season=m?Number(m[1]):0,episode=m?Number(m[2]):0;
  if(!season)season=seasonFromText(full);
@@ -33,12 +37,11 @@ function parse(name,path){
    const em=full.match(/(?:epis[oó]dio|episode|ep)\s*0*(\d{1,3})\b/i);
    episode=em?Number(em[1]):0;
  }
- const parts=String(path||'').split('/').filter(Boolean);
  const seasonIdx=parts.findIndex(x=>seasonFromText(x)>0);
  let seriesTitle='';
  if(seasonIdx>0) seriesTitle=clean(parts[seasonIdx-1]);
- else if(parts.length>1 && (season||episode)) seriesTitle=clean(parts[0]);
- else if(/(?:series|epis[oó]d|temporada|season|\bs\d{1,2}\b)/i.test(full) && parts.length>1) seriesTitle=clean(parts[0]);
+ else if(parts.length && (season||episode)) seriesTitle=clean(parts[parts.length-1]);
+ else if(/(?:series|epis[oó]d|temporada|season|\bs\d{1,2}\b)/i.test(full) && parts.length) seriesTitle=clean(parts[parts.length-1]);
  const serie=!!(season||episode||seasonIdx>=0||seriesTitle);
  return {serie,season:season||1,episode,title:clean(name),seriesTitle:serie?seriesTitle:''};
 }
@@ -149,6 +152,7 @@ window.JOGAHUB_DRIVE_SYNC={
 };
 
 function boot(){
+ LEGACY_DATA_KEYS.forEach(key=>localStorage.removeItem(key));
  hydrateCache();
  if(localStorage.getItem(CONFIG_KEY))setTimeout(sync,0);
 }

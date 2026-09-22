@@ -111,7 +111,7 @@ const LIVROS = [
   //   title: 'Nome do Livro',
   //   genre: 'aventura',
   //   accent: 'var(--amber)',
-  //   thumb: 'assets/thumbs/meu-livro.jpg', // opcional
+  //   thumb: 'assets/thumbs/meu-livro.webp', // opcional
   //   desc: 'Descrição curta, uma frase.',
   //   path: 'livros/meu-livro/index.html' // ou .pdf
   // }

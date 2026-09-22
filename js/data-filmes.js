@@ -9,26 +9,6 @@
 
 const FILMES_CATALOGO = [
   {
-    id: 'catalogo-google-drive',
-    type: 'filme',
-    title: 'DC — Filmes e Animações no Google Drive',
-    year: 'Acervo do Drive',
-    genre: 'Filmes / Animações',
-    mediaType: 'colecao',
-    language: 'Português / conforme cada arquivo',
-    portuguese: true,
-    colorContent: true,
-    catalogOnly: true,
-    accent: 'var(--brand-blue)',
-    thumb: 'assets/banner-cat-filmes.webp',
-    driveFolderId: '1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1',
-    sourceUrl: 'https://drive.google.com/drive/folders/1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1',
-    sourceLabel: 'Google Drive — acervo DC',
-    desc: 'Coleção compartilhada no Google Drive. Os filmes individuais desta pasta também aparecem diretamente no catálogo do JogaHub.',
-    nostalgiaTags: ['filmes','animações','DC','Google Drive','catálogo']
-  },
-  {
     id: 'colecao-series-gratis-mercado-play',
     type: 'filme',
     title: 'Séries Grátis — Mercado Play',
