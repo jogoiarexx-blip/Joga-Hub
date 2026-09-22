@@ -1,34 +1,34 @@
 /**
- * JogaHub — Google Drive Sync
- * Cole este arquivo em Google Apps Script.
- *
- * Publicação:
- * 1. Novo projeto em script.google.com
- * 2. Cole este arquivo.
- * 3. Implantar > Nova implantação > Aplicativo da Web.
- * 4. Executar como: você.
- * 5. Quem tem acesso: qualquer pessoa.
- * 6. Copie a URL /exec para o JogaHub.
- *
- * A pasta compartilhada precisa permitir acesso por link.
+ * JogaHub — Google Drive Sync 1.2.41
+ * Varre recursivamente todos os acervos configurados.
  */
 const ROOT_FOLDERS = [
-  '1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_',
-  '1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W',
-  '1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',
-  '1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1'
+  {id:'1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_', name:'Acervo Drive 1'},
+  {id:'1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W', name:'Acervo Drive 2'},
+  {id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut', name:'Filmes e Séries'},
+  {id:'1F2_t5aERWvGfOL_4VxWMgEDiwoBbZRc1', name:'Clássicos / DC'},
+  {id:'1NCDe9l_-S_XAd8LYIxoarKqdkHJu8sse', name:'O Cavaleiro dos Sete Reinos'}
 ];
 
 function doGet(e) {
-  try {
-    const requested = String(e?.parameter?.folderId || '').trim();
-    const roots = requested ? [requested] : ROOT_FOLDERS;
-    const files = [];
-    roots.forEach(id => scanFolder_(DriveApp.getFolderById(id), '', files));
-    return json_({ok:true, files:files});
-  } catch (err) {
-    return json_({ok:false,error:String(err)});
-  }
+  const requested = String(e && e.parameter && e.parameter.folderId || '').trim();
+  const roots = requested
+    ? ROOT_FOLDERS.filter(r => r.id === requested).concat(ROOT_FOLDERS.every(r => r.id !== requested) ? [{id:requested,name:'Pasta solicitada'}] : [])
+    : ROOT_FOLDERS;
+  const files = [];
+  const folders = [];
+  const errors = [];
+  roots.forEach(root => {
+    try {
+      const folder = DriveApp.getFolderById(root.id);
+      const before = files.length;
+      scanFolder_(folder, '', files);
+      folders.push({id:root.id,name:root.name,files:files.length-before,ok:true});
+    } catch (err) {
+      errors.push({id:root.id,name:root.name,error:String(err)});
+    }
+  });
+  return json_({ok:true,files:files,folders:folders,errors:errors,total:files.length,updatedAt:new Date().toISOString()});
 }
 
 function scanFolder_(folder, path, out) {
@@ -37,13 +37,12 @@ function scanFolder_(folder, path, out) {
   while (it.hasNext()) {
     const f = it.next();
     const mime = f.getMimeType();
-    if (!/^video\//i.test(mime) && mime !== 'application/octet-stream') continue;
+    const name = f.getName();
+    const isVideo = /^video\//i.test(mime) || mime === 'application/octet-stream' ||
+      /\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i.test(name);
+    if (!isVideo) continue;
     out.push({
-      id:f.getId(),
-      name:f.getName(),
-      mime:mime,
-      size:f.getSize(),
-      path:current,
+      id:f.getId(), name:name, mime:mime, size:f.getSize(), path:current,
       url:'https://drive.google.com/file/d/' + f.getId() + '/view?usp=sharing',
       updated:f.getLastUpdated().toISOString()
     });
