@@ -32,6 +32,6 @@ function shortcuts(){
  });
 }
 function imageFallbacks(){document.addEventListener('error',function(e){const img=e.target;if(img instanceof HTMLImageElement&&!img.dataset.jhFallback){img.dataset.jhFallback='1';img.src='assets/icon-512.png'}},true)}
-function boot(){installDrivePanel();shortcuts();imageFallbacks();window.addEventListener('online',function(){toast('Conexão restaurada.')});window.addEventListener('offline',function(){toast('Você está offline. Conteúdo local disponível continua acessível.')})}
+function boot(){installDrivePanel();shortcuts();imageFallbacks();window.addEventListener('online',function(){toast('Conexão restaurada.');if(localStorage.getItem(KEY)&&window.JOGAHUB_DRIVE_SYNC)window.JOGAHUB_DRIVE_SYNC.sync()});window.addEventListener('offline',function(){toast('Você está offline. Conteúdo local disponível continua acessível.')});if(localStorage.getItem(KEY)&&window.JOGAHUB_DRIVE_SYNC)setInterval(function(){if(navigator.onLine)window.JOGAHUB_DRIVE_SYNC.sync().then(function(n){if(n){refresh();toast('Novos conteúdos do Drive encontrados: '+n) }})},600000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,0)});else setTimeout(boot,0);
 })();
