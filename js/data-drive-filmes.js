@@ -15,6 +15,22 @@
   const ROOT_NOVO_1 = 'https://drive.google.com/drive/folders/1QmY3xIAk4AWVgRzcaTzAuKPdVrL9k6H_';
   const ROOT_NOVO_2 = 'https://drive.google.com/drive/folders/1XiSyDV7cLNMaLDjbCdeR-VCP_KWK9C3W';
 
+  const BREAKING_BAD_FOLDER_ID = '1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut';
+  const BREAKING_BAD_FOLDER_URL = 'https://drive.google.com/drive/folders/' + BREAKING_BAD_FOLDER_ID;
+
+  // Coleção raiz para o acervo de Breaking Bad. Os episódios reais continuam
+  // sendo importados pelo sincronizador quando o endpoint do Apps Script estiver configurado.
+  FILMES_CATALOGO.push({
+    id:'breaking-bad-drive', type:'filme', title:'Breaking Bad', year:'Acervo Google Drive',
+    genre:'Série • Google Drive', mediaType:'serie', language:'Conforme o arquivo',
+    portuguese:true, colorContent:true, catalogOnly:true, accent:'var(--brand-blue)',
+    thumb:'assets/banner-cat-series.webp', seriesId:'breaking-bad', seriesTitle:'Breaking Bad',
+    driveFolderId:BREAKING_BAD_FOLDER_ID, driveFolderUrl:BREAKING_BAD_FOLDER_URL,
+    sourceUrl:BREAKING_BAD_FOLDER_URL, sourceLabel:'Google Drive — Breaking Bad',
+    desc:'Breaking Bad — temporadas disponíveis no acervo do Google Drive. Os episódios são agrupados automaticamente quando a sincronização do Drive estiver conectada.',
+    nostalgiaTags:['Breaking Bad','série','Google Drive','temporadas']
+  });
+
   const driveItem = ({id,title,fileId,year='',genre='Filme • Google Drive',language='Conforme o arquivo',mediaType='filme',seriesId='',seriesTitle='',season=0,episode=0,size=0,mime='video/mp4',sourceRoot=ROOT_FILMES_SERIES,desc='',portuguese=true,thumb=''}) => ({
     id,
     type:'filme',
