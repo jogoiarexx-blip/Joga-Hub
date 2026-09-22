@@ -1,6 +1,6 @@
 /* ===================================================================
    JOGAHUB — ACERVO ÚNICO DO GOOGLE DRIVE
-   Versão 1.2.45 — 2026-09-22.
+   Versão 1.2.46 — 2026-09-22.
 
    Todo o catálogo de filmes e séries vem desta pasta raiz. O
    sincronizador percorre recursivamente todas as subpastas.

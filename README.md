@@ -1,4 +1,4 @@
-# JogaHub 1.2.45
+# JogaHub 1.2.46
 
 Central de jogos, filmes, séries, animes, TV e rádios para GitHub Pages.
 
@@ -38,7 +38,7 @@ O sincronizador reconhece formatos como `S01E02`, `T01E02`, `1x02`, `Episódio 2
 - cache antigo de múltiplos Drives invalidado;
 - um único Drive permitido no front-end e no Apps Script;
 - agrupamento de séries corrigido para respeitar a pasta real da série;
-- versão e caches unificados em `1.2.45`.
+- versão e caches unificados em `1.2.46`.
 
 ## Execução local
 
@@ -56,7 +56,7 @@ O projeto é estático. Abra com um servidor HTTP local ou publique a pasta no G
 
 Use somente mídias que você tenha autorização para armazenar e reproduzir.
 
-## Google Drive automático — 1.2.45
+## Google Drive automático — 1.2.46
 
 - O JogaHub usa o Web App do Google Apps Script como índice do acervo, sem Drive API e sem API key.
 - A pasta principal e todas as subpastas são percorridas recursivamente.

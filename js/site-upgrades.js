@@ -1,4 +1,4 @@
-/* JogaHub 1.2.45 — melhorias globais */
+/* JogaHub 1.2.46 — melhorias globais */
 (function(){
 'use strict';
 const KEY='jogahub_drive_sync_url';

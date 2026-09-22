@@ -1,4 +1,4 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.45 */
+/* JOGAHUB — sincronizador Google Drive 1.2.46 */
 (function(){
 'use strict';
 
@@ -69,16 +69,37 @@ function parse(name,path){
   }
 
   const seasonIdx=parts.findIndex(x=>seasonFromText(x)>0);
+  const stripSeasonFolder=value=>clean(value)
+    .replace(/(?:\s*[-–]?\s*(?:\d{1,2}\s*[ªa]?\s*Temporada|\b(?:S|T)\s*0*\d{1,2}\b|\d{1,2}\s*[ªa]?\s*Season)).*$/i,'')
+    .replace(/\s*\(?\b(?:19|20)\d{2}\b\)?\s*$/,'')
+    .replace(/\s*[-–]\s*$/,'').trim();
+  const genericSeriesFolder=value=>/^(?:series|serie|seriados|tv|temporadas?)$/i.test(norm(clean(value)));
+
   let seriesTitle='';
-  if(seasonIdx>0) seriesTitle=clean(parts[seasonIdx-1]);
-  else if(parts.length&&(season||episode)) seriesTitle=clean(parts[parts.length-1]);
-  else if(/(?:series|epis[oó]d|temporada|season|\bs\d{1,2}\b)/i.test(full)&&parts.length) seriesTitle=clean(parts[parts.length-1]);
+  if(seasonIdx>=0){
+    // Quando existe uma pasta genérica "Series" acima da temporada, o nome da
+    // série está na própria pasta "Breaking Bad - 4ª Temporada...", não em
+    // "Series". Primeiro tenta extrair dali; só depois sobe para o pai.
+    const fromSeasonFolder=stripSeasonFolder(parts[seasonIdx]);
+    if(fromSeasonFolder&&!genericSeriesFolder(fromSeasonFolder)){
+      seriesTitle=fromSeasonFolder;
+    }else{
+      for(let i=seasonIdx-1;i>=0;i--){
+        const candidate=stripSeasonFolder(parts[i]);
+        if(candidate&&!genericSeriesFolder(candidate)){seriesTitle=candidate;break}
+      }
+    }
+  }else if(parts.length&&(season||episode)){
+    for(let i=parts.length-1;i>=0;i--){
+      const candidate=stripSeasonFolder(parts[i]);
+      if(candidate&&!genericSeriesFolder(candidate)){seriesTitle=candidate;break}
+    }
+  }else if(/(?:series|epis[oó]d|temporada|season|\bs\d{1,2}\b)/i.test(full)&&parts.length){
+    seriesTitle=stripSeasonFolder(parts[parts.length-1]);
+  }
 
   if(seriesTitle){
-    seriesTitle=seriesTitle
-      .replace(/(?:\s*[-–]?\s*(?:\d{1,2}\s*[ªa]?\s*Temporada|\b(?:S|T)\s*0*\d{1,2}\b|\d{1,2}\s*[ªa]?\s*Season)).*$/i,'')
-      .replace(/\s*\(?\b(?:19|20)\d{2}\b\)?\s*$/,'')
-      .replace(/\s*[-–]\s*$/,'').trim()||seriesTitle;
+    seriesTitle=stripSeasonFolder(seriesTitle)||seriesTitle;
   }
 
   const serie=!!(season||episode||seasonIdx>=0||seriesTitle);
