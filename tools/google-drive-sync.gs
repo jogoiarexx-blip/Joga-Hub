@@ -1,84 +1,96 @@
 /**
- * JogaHub — Google Drive Sync 1.2.49
- * Sem Drive API / sem API key: usa DriveApp do Google Apps Script.
- * Varre recursivamente a pasta principal e todas as subpastas.
- * Inclui cache curto e trava para evitar varreduras simultâneas.
+ * JogaHub — Google Drive Sync 1.2.50
+ * Sem API key. Usa DriveApp e funciona como Web App do Apps Script.
+ * Varre a pasta principal e subpastas, com cache em blocos e trava real.
  */
 const ROOT_FOLDER_ID = '1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut';
-const CACHE_SECONDS = 120;
-const CACHE_KEY = 'jogahub-drive-catalog-v2';
+const CACHE_SECONDS = 180;
+const CACHE_PREFIX = 'jogahub-drive-v3';
+const CACHE_META_KEY = CACHE_PREFIX + ':meta';
+const CACHE_CHUNK_CHARS = 70000;
 
 function doGet(e) {
   const requested = String((e && e.parameter && e.parameter.folderId) || '').trim();
   if (requested && requested !== ROOT_FOLDER_ID) {
-    return output_(e, {ok:false,sucesso:false,error:'folderId não autorizado',erro:'folderId não autorizado',files:[],itens:[]});
+    return output_(e, {
+      ok:false,
+      sucesso:false,
+      error:'folderId não autorizado',
+      erro:'folderId não autorizado',
+      files:[]
+    });
   }
 
   const force = String((e && e.parameter && e.parameter.refresh) || '') === '1';
   const cache = CacheService.getScriptCache();
+
   if (!force) {
-    const cached = cache.get(CACHE_KEY);
+    const cached = readCachedPayload_(cache);
     if (cached) {
-      try {
-        const payload = JSON.parse(cached);
-        payload.cached = true;
-        return output_(e, payload);
-      } catch (_) {}
+      cached.cached = true;
+      return output_(e, cached);
     }
   }
 
   const lock = LockService.getScriptLock();
-  let locked = false;
   const started = Date.now();
+  let locked = false;
+
   try {
     locked = lock.tryLock(5000);
 
-    // Outro acesso pode ter terminado a varredura enquanto aguardávamos a trava.
+    if (!locked) {
+      const cachedWhileBusy = readCachedPayload_(cache);
+      if (cachedWhileBusy) {
+        cachedWhileBusy.cached = true;
+        cachedWhileBusy.busy = true;
+        return output_(e, cachedWhileBusy);
+      }
+      return output_(e, {
+        ok:false,
+        sucesso:false,
+        busy:true,
+        error:'Sincronização do Drive já está em andamento. Tente novamente em instantes.',
+        erro:'Sincronização do Drive já está em andamento. Tente novamente em instantes.',
+        files:[]
+      });
+    }
+
     if (!force) {
-      const cachedAfterWait = cache.get(CACHE_KEY);
-      if (cachedAfterWait) {
-        const payload = JSON.parse(cachedAfterWait);
-        payload.cached = true;
-        return output_(e, payload);
+      const cachedAfterLock = readCachedPayload_(cache);
+      if (cachedAfterLock) {
+        cachedAfterLock.cached = true;
+        return output_(e, cachedAfterLock);
       }
     }
 
     const root = DriveApp.getFolderById(ROOT_FOLDER_ID);
-    const itens = [];
-    scanFolder_(root, [], itens);
-    itens.sort((a,b) => String(b.atualizado||'').localeCompare(String(a.atualizado||'')) || Number(b.tamanho||0)-Number(a.tamanho||0));
+    const files = [];
+    const visited = {};
+    scanFolder_(root, [], files, visited, 0);
 
-    const files = itens.map(item => ({
-      id: item.id,
-      name: item.nome,
-      mime: item.mime,
-      size: item.tamanho,
-      path: item.caminho,
-      url: item.link,
-      player: item.player,
-      updated: item.atualizado
-    }));
+    files.sort(function(a,b) {
+      const byUpdated = String(b.updated || '').localeCompare(String(a.updated || ''));
+      if (byUpdated) return byUpdated;
+      return Number(b.size || 0) - Number(a.size || 0);
+    });
 
     const now = new Date().toISOString();
     const payload = {
       sucesso:true,
       ok:true,
-      version:'1.2.49',
+      version:'1.2.50',
       atualizado:now,
       updatedAt:now,
       pastaRaiz:root.getName(),
-      total:itens.length,
+      total:files.length,
       scanMs:Date.now()-started,
       cached:false,
-      itens,
-      files,
+      files:files,
       errors:[]
     };
 
-    const json = JSON.stringify(payload);
-    // CacheService aceita valores relativamente pequenos. Acervos maiores
-    // continuam funcionando normalmente, apenas sem o cache intermediário.
-    if (json.length < 90000) cache.put(CACHE_KEY, json, CACHE_SECONDS);
+    writeCachedPayload_(cache, payload);
     return output_(e, payload);
   } catch (err) {
     return output_(e, {
@@ -86,7 +98,6 @@ function doGet(e) {
       ok:false,
       erro:String(err && err.message ? err.message : err),
       error:String(err && err.message ? err.message : err),
-      itens:[],
       files:[]
     });
   } finally {
@@ -96,53 +107,143 @@ function doGet(e) {
   }
 }
 
-function scanFolder_(folder, pathParts, out) {
+function scanFolder_(folder, pathParts, out, visited, depth) {
+  if (depth > 40) return;
+
+  const folderId = folder.getId();
+  if (visited[folderId]) return;
+  visited[folderId] = true;
+
   const currentParts = pathParts.concat(folder.getName());
   const currentPath = currentParts.join('/');
 
-  const files = folder.getFiles();
-  while (files.hasNext()) {
-    const file = files.next();
+  const fileIterator = folder.getFiles();
+  while (fileIterator.hasNext()) {
+    const file = fileIterator.next();
     const name = file.getName();
     const mime = file.getMimeType();
 
-    const isVideo = /^video\//i.test(mime) ||
-      mime === 'application/octet-stream' ||
-      /\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i.test(name);
-
-    if (!isVideo) continue;
+    if (!isVideo_(name, mime)) continue;
 
     const id = file.getId();
     out.push({
-      id,
-      nome:name,
-      titulo:cleanTitle_(name),
-      mime,
-      pasta:folder.getName(),
-      caminho:currentPath,
-      tamanho:file.getSize(),
-      atualizado:file.getLastUpdated().toISOString(),
+      id:id,
+      name:name,
+      mime:mime,
+      size:file.getSize(),
+      path:currentPath,
+      url:'https://drive.google.com/file/d/' + id + '/view',
       player:'https://drive.google.com/file/d/' + id + '/preview',
-      link:'https://drive.google.com/file/d/' + id + '/view'
+      updated:file.getLastUpdated().toISOString()
     });
   }
 
-  const folders = folder.getFolders();
-  while (folders.hasNext()) scanFolder_(folders.next(), currentParts, out);
+  const folderIterator = folder.getFolders();
+  while (folderIterator.hasNext()) {
+    scanFolder_(folderIterator.next(), currentParts, out, visited, depth + 1);
+  }
 }
 
-function cleanTitle_(name) {
-  return String(name || '')
-    .replace(/\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i, '')
-    .replace(/[._]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+function isVideo_(name, mime) {
+  return /^video\//i.test(mime) ||
+    mime === 'application/octet-stream' ||
+    /\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i.test(name);
+}
+
+function splitFilesIntoChunks_(files) {
+  const chunks = [];
+  let current = [];
+  let currentChars = 2;
+
+  for (let i = 0; i < files.length; i++) {
+    const item = files[i];
+    const itemText = JSON.stringify(item);
+    const extra = itemText.length + (current.length ? 1 : 0);
+
+    if (current.length && currentChars + extra > CACHE_CHUNK_CHARS) {
+      chunks.push(current);
+      current = [];
+      currentChars = 2;
+    }
+
+    current.push(item);
+    currentChars += extra;
+  }
+
+  if (current.length || !chunks.length) chunks.push(current);
+  return chunks;
+}
+
+function writeCachedPayload_(cache, payload) {
+  try {
+    const chunks = splitFilesIntoChunks_(payload.files || []);
+    const values = {};
+
+    for (let i = 0; i < chunks.length; i++) {
+      values[CACHE_PREFIX + ':chunk:' + i] = JSON.stringify(chunks[i]);
+    }
+
+    cache.putAll(values, CACHE_SECONDS);
+    cache.put(CACHE_META_KEY, JSON.stringify({
+      version:payload.version,
+      updatedAt:payload.updatedAt,
+      pastaRaiz:payload.pastaRaiz,
+      total:payload.total,
+      scanMs:payload.scanMs,
+      chunks:chunks.length
+    }), CACHE_SECONDS);
+  } catch (err) {
+    console.warn('Falha ao gravar cache do catálogo: ' + err);
+  }
+}
+
+function readCachedPayload_(cache) {
+  try {
+    const metaText = cache.get(CACHE_META_KEY);
+    if (!metaText) return null;
+
+    const meta = JSON.parse(metaText);
+    const count = Number(meta.chunks || 0);
+    if (count <= 0) return null;
+
+    const keys = [];
+    for (let i = 0; i < count; i++) keys.push(CACHE_PREFIX + ':chunk:' + i);
+
+    const values = cache.getAll(keys);
+    const files = [];
+
+    for (let i = 0; i < keys.length; i++) {
+      const chunkText = values[keys[i]];
+      if (!chunkText) return null;
+      const chunk = JSON.parse(chunkText);
+      if (!Array.isArray(chunk)) return null;
+      for (let j = 0; j < chunk.length; j++) files.push(chunk[j]);
+    }
+
+    return {
+      sucesso:true,
+      ok:true,
+      version:String(meta.version || '1.2.50'),
+      atualizado:String(meta.updatedAt || ''),
+      updatedAt:String(meta.updatedAt || ''),
+      pastaRaiz:String(meta.pastaRaiz || 'Google Drive'),
+      total:Number(meta.total || files.length),
+      scanMs:Number(meta.scanMs || 0),
+      cached:true,
+      files:files,
+      errors:[]
+    };
+  } catch (err) {
+    console.warn('Falha ao ler cache do catálogo: ' + err);
+    return null;
+  }
 }
 
 function output_(e, obj) {
   const callback = String(
     (e && e.parameter && (e.parameter.callback || e.parameter.prefix)) || ''
   ).trim();
+
   const json = JSON.stringify(obj);
 
   if (callback && /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(callback)) {
