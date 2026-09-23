@@ -1,0 +1,42 @@
+name: Atualizar catálogo do Google Drive
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */3 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jogahub-drive-catalog
+  cancel-in-progress: false
+
+jobs:
+  update-drive-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Usar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Atualizar snapshot do Drive
+        run: node tools/update-drive-snapshot.mjs
+
+      - name: Publicar somente se houver mudança
+        shell: bash
+        run: |
+          if git diff --quiet -- js/drive-snapshot.js; then
+            echo "Nenhuma mudança no catálogo."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/drive-snapshot.js
+          git commit -m "Atualiza catálogo automático do Google Drive"
+          git push
