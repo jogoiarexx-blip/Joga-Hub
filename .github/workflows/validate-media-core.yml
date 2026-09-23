@@ -1,0 +1,33 @@
+name: Validar núcleo de mídia
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/drive-sync.js'
+      - 'js/drive-snapshot.js'
+      - 'js/app.js'
+      - 'link-player.html'
+      - 'tools/google-drive-sync.gs'
+      - 'tools/test-drive-core.mjs'
+      - '.github/workflows/validate-media-core.yml'
+  pull_request:
+    paths:
+      - 'js/drive-sync.js'
+      - 'js/drive-snapshot.js'
+      - 'js/app.js'
+      - 'link-player.html'
+      - 'tools/google-drive-sync.gs'
+      - 'tools/test-drive-core.mjs'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validar catálogo e parser do Drive
+        run: node tools/test-drive-core.mjs
