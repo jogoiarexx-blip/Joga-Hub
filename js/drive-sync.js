@@ -320,6 +320,7 @@ async function requestCatalog(baseUrl,folderId){
   const u=new URL(baseUrl);
   if(folderId)u.searchParams.set('folderId',folderId);
   u.searchParams.set('_',Date.now());
+  if(u.hostname==='script.google.com'||u.hostname.endsWith('.googleusercontent.com'))return await jsonp(baseUrl,folderId);
   const controller=typeof AbortController!=='undefined'?new AbortController():null;
   const timeout=setTimeout(()=>controller?.abort(),9000);
   try{
