@@ -46,8 +46,8 @@ window.addEventListener('jogahub:drive-sync',()=>{
 });
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.50';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.50-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.51';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.51-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -275,6 +275,53 @@ function homeTile(item, label=''){
     <small>${escapeHTML(label|| (item.type==='filme'?'Assistir':'Jogar'))}</small><strong>${escapeHTML(meta)}</strong>${item.type==='filme'?`<em class="home-imdb"><b>IMDb</b> ${imdbRating(item)?imdbRating(item).toFixed(1):'—'}</em>`:''}${state?`<em class="home-watch-state">${escapeHTML(state.label)}</em>`:''}
   </a>`;
 }
+function driveRecommendationItems(films,series){
+  const picks=[];
+  const groups=new Map();
+  for(const item of series.filter(i=>i.driveFileId)){
+    const key=item.seriesId||normalize(item.seriesTitle||item.title);
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push(item);
+  }
+  for(const items of groups.values()){
+    items.sort((a,b)=>(a.season||1)-(b.season||1)||(a.episode||0)-(b.episode||0));
+    const pick=items.find(i=>!movieWatchState(i)?.finished)||items[0];
+    const newest=Math.max(...items.map(i=>Date.parse(i._driveUpdated||'')||0));
+    picks.push({item:pick,updated:newest});
+  }
+  for(const item of films.filter(i=>i.driveFileId))picks.push({item,updated:Date.parse(item._driveUpdated||'')||0});
+  return picks.sort((a,b)=>b.updated-a.updated).map(x=>x.item).slice(0,10);
+}
+function recommendationCarousel(items){
+  if(!items.length)return '';
+  const slides=items.map((item,index)=>{
+    const title=item.seriesTitle||item.title;
+    const kind=item.mediaType==='serie'?'Série':'Filme';
+    const fallback=item.mediaType==='serie'?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp';
+    const meta=[kind,item.year&&item.year!=='Google Drive'?item.year:'Google Drive',item.mediaType==='serie'&&item.episode?`Episódio ${item.episode}`:''].filter(Boolean).join(' • ');
+    const desc=item.mediaType==='serie'?'Continue pela série diretamente no acervo do Google Drive.':'Abra o filme diretamente no player do JogaHub.';
+    return `<article class="recommend-slide" data-recommend-slide aria-label="${escapeHTML(title)}"><div class="recommend-backdrop"><img src="${escapeHTML(item.thumb||fallback)}" alt="" loading="lazy"></div><a class="recommend-content" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)}><div class="recommend-poster"><img src="${escapeHTML(item.thumb||fallback)}" alt="Capa de ${escapeHTML(title)}" loading="${index===0?'eager':'lazy'}" onerror="this.src='${fallback}';this.onerror=null"></div><div class="recommend-copy"><span class="recommend-kicker">☁ Recomendado do Drive</span><h3>${escapeHTML(title)}</h3><p>${escapeHTML(desc)}</p><div class="recommend-meta"><span>${escapeHTML(meta)}</span>${imdbRating(item)?`<span>⭐ IMDb ${imdbRating(item).toFixed(1)}</span>`:''}</div><strong class="recommend-play">▶ Assistir agora</strong></div></a></article>`;
+  }).join('');
+  const dots=items.map((item,index)=>`<button type="button" data-recommend-dot="${index}" aria-label="Mostrar recomendação ${index+1}"${index===0?' class="active"':''}></button>`).join('');
+  return `<section class="recommend-carousel" aria-label="Recomendações de filmes e séries"><div class="recommend-head"><div><span class="eyebrow">Selecionado no seu acervo</span><h2>🎬 Recomendações para assistir</h2><p>Filmes e séries encontrados no Google Drive, sem repetir episódios da mesma série.</p></div><div class="recommend-nav"><button type="button" data-recommend-prev aria-label="Recomendação anterior">‹</button><button type="button" data-recommend-next aria-label="Próxima recomendação">›</button></div></div><div class="recommend-viewport" data-recommend-viewport><div class="recommend-track">${slides}</div></div><div class="recommend-dots" aria-label="Navegação do carrossel">${dots}</div></section>`;
+}
+function initRecommendationCarousel(root){
+  const viewport=root?.querySelector('[data-recommend-viewport]');
+  if(!viewport)return;
+  const slides=[...viewport.querySelectorAll('[data-recommend-slide]')],dots=[...root.querySelectorAll('[data-recommend-dot]')];
+  if(!slides.length)return;
+  let active=0,timer=0,scrollTimer=0;
+  const paint=()=>dots.forEach((dot,i)=>dot.classList.toggle('active',i===active));
+  const go=(index,behavior='smooth')=>{active=(index+slides.length)%slides.length;viewport.scrollTo({left:slides[active].offsetLeft,behavior});paint();};
+  const stop=()=>{clearInterval(timer);timer=0};
+  const start=()=>{stop();if(slides.length<2||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;timer=setInterval(()=>go(active+1),6500)};
+  root.querySelector('[data-recommend-prev]')?.addEventListener('click',()=>{go(active-1);start()});
+  root.querySelector('[data-recommend-next]')?.addEventListener('click',()=>{go(active+1);start()});
+  dots.forEach((dot,i)=>dot.addEventListener('click',()=>{go(i);start()}));
+  viewport.addEventListener('scroll',()=>{clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>{let best=0,dist=Infinity;slides.forEach((slide,i)=>{const d=Math.abs(slide.offsetLeft-viewport.scrollLeft);if(d<dist){dist=d;best=i}});active=best;paint()},80)},{passive:true});
+  root.addEventListener('pointerenter',stop);root.addEventListener('pointerleave',start);root.addEventListener('focusin',stop);root.addEventListener('focusout',start);
+  start();
+}
 function renderHomeDashboard(){
   const box=document.getElementById('homeDashboard'); if(!box) return;
   if(activeType!=='todos'){box.hidden=true;box.innerHTML='';return;}
@@ -284,11 +331,13 @@ function renderHomeDashboard(){
   const shortDramas=series.filter(i=>i.shortDrama===true && (i.portuguese || /portugu/i.test(i.language||'')));
   const anime=sortMoviesByImdb(itemsForView('anime'));
   const media=[...films,...series,...anime];
+  const recommendations=driveRecommendationItems(films,series);
   const topMovies=sortMoviesByImdb(media).filter(i=>imdbRating(i)>0).slice(0,12);
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.46</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.2.51</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+    ${recommendationCarousel(recommendations)}
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}
@@ -298,6 +347,7 @@ function renderHomeDashboard(){
     ${row('📱 Doramas Curtos Dublados','Minidramas verticais dublados em português.',shortDramas.slice(0,14),'Assistir')}
     ${row('🍥 Animes','Animes separados para encontrar mais rápido.',anime.slice(0,14),'Assistir')}`;
   box.hidden=false;
+  initRecommendationCarousel(box);
 }
 const CATEGORY_HERO_ASSETS = {
   jogo:'assets/banner-cat-jogos.webp',
