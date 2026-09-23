@@ -57,7 +57,7 @@ function parse(name,path,sourceRootName=''){
   const compactRoot=value=>norm(clean(value)).replace(/\b(?:e|de|da|do|dos|das)\b/g,' ').replace(/\s+/g,' ').trim();
   const first=compactRoot(parts[0]||''), hint=compactRoot(sourceRootName||root.name||'');
   const looksLikeMediaRoot=/\bfilmes?\b.*\bseries?\b|\bseries?\b.*\bfilmes?\b/.test(first);
-  if(parts.length>1&&(first===hint||looksLikeMediaRoot))parts=parts.slice(1);
+  if(first&&(first===hint||looksLikeMediaRoot))parts=parts.slice(1);
   const full=norm(parts.join('/')+'/'+name);
 
   let m=full.match(/\bs(\d{1,2})e(\d{1,3})\b/i)
