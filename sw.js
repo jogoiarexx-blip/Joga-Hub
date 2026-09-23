@@ -1,5 +1,5 @@
-const SHELL = 'jogahub-1.3.1';
-const CONTENT = 'jogahub-1.3.1-content';
+const SHELL = 'jogahub-1.3.2';
+const CONTENT = 'jogahub-1.3.2-content';
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
 // armazenados sob demanda, evitando um download inicial de quase 9 MB.
@@ -10,26 +10,26 @@ const SHELL_FILES = [
   './link-player.html',
   './install-game.html',
   './manifest.webmanifest?v=142',
-  './css/style.css?v=148',
+  './css/style.css?v=147',
   './css/hud-pro.css?v=125',
   './css/sidebar-upgrade.css?v=128',
   './css/responsive-layout.css?v=131',
   './css/header-upgrade.css?v=131',
-  './css/core-upgrades.css?v=131',
   './css/player6.css?v=60',
+  './css/core-upgrades.css?v=132',
   './js/data-jogos.js?v=40',
   './js/data-links.js?v=48',
   './js/data-arcana.js?v=3',
   './js/data-filmes.js?v=132',
-  './js/data-drive-filmes.js?v=9',
-  './js/drive-snapshot.js?v=3',
-  './js/drive-sync.js?v=15',
-  './js/site-upgrades.js?v=6',
+  './js/data-drive-filmes.js?v=6',
+  './js/drive-snapshot.js?v=2',
+  './js/drive-sync.js?v=10',
+  './js/site-upgrades.js?v=4',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=157',
-  './js/launcher-upgrade.js?v=128',
+  './js/app.js?v=132',
+  './js/launcher-upgrade.js?v=126',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
   './js/header-upgrade.js?v=131',
@@ -70,15 +70,25 @@ self.addEventListener('fetch', event => {
 
   const isNavigation=event.request.mode==='navigate';
   const isVersionedCode=/\.(?:js|css|webmanifest)$/.test(url.pathname);
-  if(isNavigation||isVersionedCode){
+  if(isNavigation){
     event.respondWith((async()=>{
+      const controller=typeof AbortController==='function'?new AbortController():null;
+      const timer=controller?setTimeout(()=>controller.abort(),3500):0;
       try{
-        const fresh=await fetch(event.request,{cache:'no-store'});
+        const fresh=await fetch(event.request,{cache:'no-store',...(controller?{signal:controller.signal}:{})});
         if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(event.request,fresh.clone());}
         return fresh;
       }catch(_){
-        return (await caches.match(event.request)) || (isNavigation ? await caches.match('./index.html') : Response.error());
-      }
+        return (await caches.match(event.request)) || await caches.match('./index.html') || Response.error();
+      }finally{if(timer)clearTimeout(timer)}
+    })());
+    return;
+  }
+  if(isVersionedCode){
+    event.respondWith((async()=>{
+      const cached=await caches.match(event.request);
+      if(cached)return cached;
+      try{const fresh=await fetch(event.request,{cache:'no-store'});if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(event.request,fresh.clone())}return fresh}catch(_){return Response.error()}
     })());
     return;
   }

@@ -1,242 +1,102 @@
 /**
- * JogaHub — Google Drive Sync 1.3.1
- * Sem API key. Usa DriveApp e funciona como Web App do Apps Script.
- * Varre a pasta principal e subpastas, com cache em blocos e trava real.
+ * JogaHub — Google Drive Sync 1.3.2
+ * Sem Drive API / sem API key: usa apenas DriveApp do Google Apps Script.
+ * Varre recursivamente a pasta principal e todas as subpastas.
  */
 const ROOT_FOLDER_ID = '1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut';
-const CACHE_SECONDS = 180;
-const CACHE_PREFIX = 'jogahub-drive-v3';
-const CACHE_META_KEY = CACHE_PREFIX + ':meta';
-const CACHE_CHUNK_CHARS = 70000;
 
 function doGet(e) {
-  const requested = String((e && e.parameter && e.parameter.folderId) || '').trim();
-  if (requested && requested !== ROOT_FOLDER_ID) {
-    return output_(e, {
-      ok:false,
-      sucesso:false,
-      error:'folderId não autorizado',
-      erro:'folderId não autorizado',
-      files:[]
-    });
-  }
-
-  const force = String((e && e.parameter && e.parameter.refresh) || '') === '1';
-  const cache = CacheService.getScriptCache();
-
-  if (!force) {
-    const cached = readCachedPayload_(cache);
-    if (cached) {
-      cached.cached = true;
-      return output_(e, cached);
-    }
-  }
-
-  const lock = LockService.getScriptLock();
-  const started = Date.now();
-  let locked = false;
-
   try {
-    locked = lock.tryLock(5000);
-
-    if (!locked) {
-      const cachedWhileBusy = readCachedPayload_(cache);
-      if (cachedWhileBusy) {
-        cachedWhileBusy.cached = true;
-        cachedWhileBusy.busy = true;
-        return output_(e, cachedWhileBusy);
-      }
-      return output_(e, {
-        ok:false,
-        sucesso:false,
-        busy:true,
-        error:'Sincronização do Drive já está em andamento. Tente novamente em instantes.',
-        erro:'Sincronização do Drive já está em andamento. Tente novamente em instantes.',
-        files:[]
-      });
-    }
-
-    if (!force) {
-      const cachedAfterLock = readCachedPayload_(cache);
-      if (cachedAfterLock) {
-        cachedAfterLock.cached = true;
-        return output_(e, cachedAfterLock);
-      }
-    }
-
     const root = DriveApp.getFolderById(ROOT_FOLDER_ID);
-    const files = [];
-    const visited = {};
-    scanFolder_(root, [], files, visited, 0);
-
-    files.sort(function(a,b) {
-      const byUpdated = String(b.updated || '').localeCompare(String(a.updated || ''));
-      if (byUpdated) return byUpdated;
-      return Number(b.size || 0) - Number(a.size || 0);
+    const itens = [];
+    scanFolder_(root, [], itens);
+    const vistos = {};
+    const unicos = itens.filter(function(item) {
+      if (vistos[item.id]) return false;
+      vistos[item.id] = true;
+      return true;
     });
 
-    const now = new Date().toISOString();
-    const payload = {
-      sucesso:true,
-      ok:true,
-      version:'1.3.1',
-      atualizado:now,
-      updatedAt:now,
-      pastaRaiz:root.getName(),
-      total:files.length,
-      scanMs:Date.now()-started,
-      cached:false,
-      files:files,
-      errors:[]
-    };
+    // Mantém os dois formatos para compatibilidade com versões antigas e novas
+    // do JogaHub.
+    const files = unicos.map(item => ({
+      id: item.id,
+      name: item.nome,
+      mime: item.mime,
+      size: item.tamanho,
+      path: item.caminho,
+      url: item.link,
+      player: item.player,
+      updated: item.atualizado
+    }));
 
-    writeCachedPayload_(cache, payload);
-    return output_(e, payload);
+    return output_(e, {
+      sucesso: true,
+      ok: true,
+      atualizado: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      pastaRaiz: root.getName(),
+      total: unicos.length,
+      duplicadosIgnorados: itens.length - unicos.length,
+      itens: unicos,
+      files: files,
+      errors: []
+    });
   } catch (err) {
     return output_(e, {
-      sucesso:false,
-      ok:false,
-      erro:String(err && err.message ? err.message : err),
-      error:String(err && err.message ? err.message : err),
-      files:[]
+      sucesso: false,
+      ok: false,
+      erro: String(err && err.message ? err.message : err),
+      error: String(err && err.message ? err.message : err),
+      itens: [],
+      files: []
     });
-  } finally {
-    if (locked) {
-      try { lock.releaseLock(); } catch (_) {}
-    }
   }
 }
 
-function scanFolder_(folder, pathParts, out, visited, depth) {
-  if (depth > 40) return;
-
-  const folderId = folder.getId();
-  if (visited[folderId]) return;
-  visited[folderId] = true;
-
+function scanFolder_(folder, pathParts, out) {
   const currentParts = pathParts.concat(folder.getName());
   const currentPath = currentParts.join('/');
 
-  const fileIterator = folder.getFiles();
-  while (fileIterator.hasNext()) {
-    const file = fileIterator.next();
+  const files = folder.getFiles();
+  while (files.hasNext()) {
+    const file = files.next();
     const name = file.getName();
     const mime = file.getMimeType();
 
-    if (!isVideo_(name, mime)) continue;
+    const isVideo = /^video\//i.test(mime) ||
+      mime === 'application/octet-stream' ||
+      /\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i.test(name);
+
+    if (!isVideo) continue;
 
     const id = file.getId();
     out.push({
-      id:id,
-      name:name,
-      mime:mime,
-      size:file.getSize(),
-      path:currentPath,
-      url:'https://drive.google.com/file/d/' + id + '/view',
-      player:'https://drive.google.com/file/d/' + id + '/preview',
-      updated:file.getLastUpdated().toISOString()
+      id: id,
+      nome: name,
+      titulo: cleanTitle_(name),
+      mime: mime,
+      pasta: folder.getName(),
+      caminho: currentPath,
+      tamanho: file.getSize(),
+      atualizado: file.getLastUpdated().toISOString(),
+      player: 'https://drive.google.com/file/d/' + id + '/preview',
+      link: 'https://drive.google.com/file/d/' + id + '/view'
     });
   }
 
-  const folderIterator = folder.getFolders();
-  while (folderIterator.hasNext()) {
-    scanFolder_(folderIterator.next(), currentParts, out, visited, depth + 1);
+  const folders = folder.getFolders();
+  while (folders.hasNext()) {
+    scanFolder_(folders.next(), currentParts, out);
   }
 }
 
-function isVideo_(name, mime) {
-  return /^video\//i.test(mime) ||
-    mime === 'application/octet-stream' ||
-    /\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i.test(name);
-}
-
-function splitFilesIntoChunks_(files) {
-  const chunks = [];
-  let current = [];
-  let currentChars = 2;
-
-  for (let i = 0; i < files.length; i++) {
-    const item = files[i];
-    const itemText = JSON.stringify(item);
-    const extra = itemText.length + (current.length ? 1 : 0);
-
-    if (current.length && currentChars + extra > CACHE_CHUNK_CHARS) {
-      chunks.push(current);
-      current = [];
-      currentChars = 2;
-    }
-
-    current.push(item);
-    currentChars += extra;
-  }
-
-  if (current.length || !chunks.length) chunks.push(current);
-  return chunks;
-}
-
-function writeCachedPayload_(cache, payload) {
-  try {
-    const chunks = splitFilesIntoChunks_(payload.files || []);
-    const values = {};
-
-    for (let i = 0; i < chunks.length; i++) {
-      values[CACHE_PREFIX + ':chunk:' + i] = JSON.stringify(chunks[i]);
-    }
-
-    cache.putAll(values, CACHE_SECONDS);
-    cache.put(CACHE_META_KEY, JSON.stringify({
-      version:payload.version,
-      updatedAt:payload.updatedAt,
-      pastaRaiz:payload.pastaRaiz,
-      total:payload.total,
-      scanMs:payload.scanMs,
-      chunks:chunks.length
-    }), CACHE_SECONDS);
-  } catch (err) {
-    console.warn('Falha ao gravar cache do catálogo: ' + err);
-  }
-}
-
-function readCachedPayload_(cache) {
-  try {
-    const metaText = cache.get(CACHE_META_KEY);
-    if (!metaText) return null;
-
-    const meta = JSON.parse(metaText);
-    const count = Number(meta.chunks || 0);
-    if (count <= 0) return null;
-
-    const keys = [];
-    for (let i = 0; i < count; i++) keys.push(CACHE_PREFIX + ':chunk:' + i);
-
-    const values = cache.getAll(keys);
-    const files = [];
-
-    for (let i = 0; i < keys.length; i++) {
-      const chunkText = values[keys[i]];
-      if (!chunkText) return null;
-      const chunk = JSON.parse(chunkText);
-      if (!Array.isArray(chunk)) return null;
-      for (let j = 0; j < chunk.length; j++) files.push(chunk[j]);
-    }
-
-    return {
-      sucesso:true,
-      ok:true,
-      version:String(meta.version || '1.3.1'),
-      atualizado:String(meta.updatedAt || ''),
-      updatedAt:String(meta.updatedAt || ''),
-      pastaRaiz:String(meta.pastaRaiz || 'Google Drive'),
-      total:Number(meta.total || files.length),
-      scanMs:Number(meta.scanMs || 0),
-      cached:true,
-      files:files,
-      errors:[]
-    };
-  } catch (err) {
-    console.warn('Falha ao ler cache do catálogo: ' + err);
-    return null;
-  }
+function cleanTitle_(name) {
+  return String(name || '')
+    .replace(/\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i, '')
+    .replace(/[._]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function output_(e, obj) {
@@ -246,6 +106,8 @@ function output_(e, obj) {
 
   const json = JSON.stringify(obj);
 
+  // JSONP é um fallback útil quando o navegador bloquear fetch/CORS.
+  // Só aceita um identificador simples para não permitir injeção de código.
   if (callback && /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(callback)) {
     return ContentService
       .createTextOutput(callback + '(' + json + ');')

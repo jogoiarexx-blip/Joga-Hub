@@ -1,4 +1,4 @@
-# JogaHub 1.3.1
+# JogaHub 1.3.2
 
 Central de jogos, filmes, séries, animes, TV e rádios para GitHub Pages.
 
@@ -31,20 +31,32 @@ O sincronizador reconhece formatos como `S01E02`, `T01E02`, `1x02`, `Episódio 2
 
 ## Otimizações desta versão
 
+- busca usa índice normalizado em memória, reduzindo trabalho a cada tecla em catálogos grandes;
+- cache do Google Drive ficou mais compacto e evita sincronização redundante durante 10 minutos;
+- snapshot empacotado e cache local são comparados para priorizar a fonte mais recente;
+- navegação do PWA usa fallback temporizado e arquivos versionados são atendidos pelo cache imediatamente;
+- nova seção **Adicionados recentemente** para o conteúdo do Drive;
+- aba e busca refletidas na URL, permitindo voltar, avançar e compartilhar a tela atual;
+- indicador de conexão, quantidade de vídeos e horário da última sincronização;
+- botão para limpar busca e botão de retorno ao topo;
+- imagens com decodificação assíncrona e carregamento progressivo;
+- listas fora da tela deixam de consumir renderização desnecessária;
+- navegação de teclado, foco visível, salto para o conteúdo e respeito à redução de movimento;
+- aviso quando uma nova versão do PWA estiver pronta;
 - imagens de conteúdo locais em WebP;
 - PNG mantido somente onde PWA, Android, iOS ou favicon exigem compatibilidade;
 - pré-cache inicial reduzido de aproximadamente 8,6 MB para os arquivos essenciais;
 - capas, banners e fontes armazenados sob demanda;
 - cache antigo de múltiplos Drives invalidado;
 - um único Drive permitido no front-end e no Apps Script;
-- fallback offline atualizado com os 77 vídeos atuais do acervo;
-- agrupamento de séries corrigido para ignorar pastas genéricas como “Series”;
-- episódios repetidos são ocultados por série, temporada e episódio;
-- catálogo atualizado na tela sem precisar recarregar a página;
-- conteúdos descobertos no Archive e YouTube são preservados após sincronizar o Drive;
-- busca, favoritos e eventos de rolagem foram otimizados;
-- capas específicas e testes do sincronizador foram preservados;
-- versão e caches unificados em `1.3.1`.
+- fallback offline atualizado com os 77 vídeos encontrados no acervo em 23/09/2026;
+- agrupamento de séries corrigido para ignorar pastas genéricas como “Series” e respeitar a pasta real da série;
+- episódios repetidos são ocultados por série, temporada e número do episódio;
+- sincronizações simultâneas são consolidadas e têm limite de tempo;
+- novos itens aparecem na tela imediatamente, sem precisar recarregar a página;
+- itens descobertos no Archive e YouTube não somem após atualizar o Drive;
+- listeners de rolagem e leituras repetidas de favoritos foram reduzidos;
+- versão e caches unificados em `1.3.2`.
 
 ## Execução local
 
@@ -62,7 +74,7 @@ O projeto é estático. Abra com um servidor HTTP local ou publique a pasta no G
 
 Use somente mídias que você tenha autorização para armazenar e reproduzir.
 
-## Google Drive automático — 1.3.1
+## Google Drive automático — 1.3.2
 
 - O JogaHub usa o Web App do Google Apps Script como índice do acervo, sem Drive API e sem API key.
 - A pasta principal e todas as subpastas são percorridas recursivamente.

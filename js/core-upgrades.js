@@ -1,4 +1,4 @@
-/* JogaHub 1.3.1 — navegação, desempenho e acessibilidade */
+/* JogaHub 1.3.2 — navegação, desempenho e acessibilidade */
 (function(){
 'use strict';
 const $=s=>document.querySelector(s);
@@ -77,10 +77,10 @@ function installUpdateNotice(){
   }).catch(()=>{});
 }
 window.addEventListener('jogahub:viewchange',()=>{if(!restoringHistory)updateUrl('push');setTimeout(enhanceRenderedContent,0)});
-window.addEventListener('jogahub:drive-sync',event=>{
+window.addEventListener('jogahub:drivesync',event=>{
   const d=event.detail||{};
-  const failed=Array.isArray(d.errors)&&d.errors.length&&!d.found;
-  let message=failed?'Falha ao atualizar o Drive':d.added?d.added+' novo(s) item(ns)':d.removed?d.removed+' item(ns) removido(s)':'Catálogo conferido';
+  if(typeof window.JOGAHUB_RENDER_CURRENT==='function')window.JOGAHUB_RENDER_CURRENT();
+  let message=!d.success?'Falha ao atualizar o Drive':d.added?d.added+' novo(s) item(ns)':d.removed?d.removed+' item(ns) removido(s)':d.duplicates?d.duplicates+' duplicado(s) ocultado(s)':'Catálogo conferido';
   paintStatus(message);setTimeout(enhanceRenderedContent,0);
 });
 window.addEventListener('online',()=>paintStatus('Conexão restaurada'));

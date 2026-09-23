@@ -1,4 +1,4 @@
-/* JogaHub 1.3.1 — melhorias globais */
+/* JogaHub 1.3.2 — melhorias globais */
 (function(){
 'use strict';
 const KEY='jogahub_drive_sync_url';
@@ -20,7 +20,7 @@ function installDrivePanel(){
   const url=input.value.trim();
   if(!/^https:\/\/script\.google\.com\/macros\/s\/[^\s]+\/exec(?:\?.*)?$/i.test(url)){status.textContent='URL inválida. Use a URL /exec da implantação do Apps Script.';return}
   status.textContent='Sincronizando as pastas…';
-  try{if(!window.JOGAHUB_DRIVE_SYNC)throw new Error('sincronizador ausente');await window.JOGAHUB_DRIVE_SYNC.configure(url);const st=window.JOGAHUB_DRIVE_SYNC.getStatus();status.textContent='✓ Catálogo atualizado: '+Number(st.found||0)+' vídeos únicos.';refresh();toast('Drive sincronizado: '+Number(st.found||0)+' vídeos únicos.')}catch(e){status.textContent='Não foi possível sincronizar. Confira a implantação e as permissões do Apps Script.';toast('Falha na sincronização do Google Drive.')}
+  try{if(!window.JOGAHUB_DRIVE_SYNC)throw new Error('sincronizador ausente');await window.JOGAHUB_DRIVE_SYNC.configure(url);const st=window.JOGAHUB_DRIVE_SYNC.getStatus();status.textContent='✓ Catálogo atualizado: '+Number(st.found||0)+' vídeos únicos'+(st.duplicates?' • '+st.duplicates+' duplicado(s) ocultado(s)':'')+'.';refresh();toast('Drive sincronizado: '+Number(st.found||0)+' vídeos únicos.')}catch(e){status.textContent='Não foi possível sincronizar. Confira a implantação e as permissões do Apps Script.';toast('Falha na sincronização do Google Drive.')}
  };
  wrap.querySelector('#jhDriveClear').onclick=async function(){status.textContent='Limpando cache e relendo o Drive…';try{if(!window.JOGAHUB_DRIVE_SYNC)throw new Error('sincronizador ausente');window.JOGAHUB_DRIVE_SYNC.clearCache();await window.JOGAHUB_DRIVE_SYNC.sync();input.value=window.JOGAHUB_DRIVE_SYNC.getUrl?window.JOGAHUB_DRIVE_SYNC.getUrl():(localStorage.getItem(KEY)||DEFAULT_URL||'');const st=window.JOGAHUB_DRIVE_SYNC.getStatus?window.JOGAHUB_DRIVE_SYNC.getStatus():{};status.textContent='✓ Catálogo relido: '+Number(st.found||0)+' vídeos encontrados.';refresh();toast('Catálogo do Drive atualizado do zero.')}catch(e){status.textContent='Não foi possível reler o Drive.';toast('Falha ao atualizar o catálogo do Drive.')}};
 }
