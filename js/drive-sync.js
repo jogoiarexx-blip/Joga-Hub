@@ -1,4 +1,4 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.50 */
+/* JOGAHUB — sincronizador Google Drive 1.2.51 */
 (function(){
 'use strict';
 
@@ -224,6 +224,23 @@ function filePreference(f){
   return score;
 }
 
+function driveCoverFor(file,parsed){
+  const key=norm(parsed?.serie?(parsed?.seriesTitle||parsed?.title):(parsed?.title||file?.name||'')).replace(/[^a-z0-9]+/g,' ').trim();
+  const pairs=[
+    [/^breaking bad\b/,'assets/covers/breaking-bad-drive.jpg'],
+    [/aqueles prestes a morrer/,'assets/covers/aqueles-prestes-a-morrer-drive.svg'],
+    [/cavaleiro dos (sete|7) reinos/,'assets/covers/cavaleiro-sete-reinos-drive.svg'],
+    [/stranger things.*historias de 85|historias de 85/,'assets/covers/stranger-historias-85-drive.svg'],
+    [/^pinguim\b|^the penguin\b/,'assets/covers/pinguim-drive.svg'],
+    [/el camino.*breaking bad|^el camino\b/,'assets/covers/el-camino-drive.svg'],
+    [/^resident evil\b/,'assets/covers/resident-evil-2026-drive.svg'],
+    [/tubarao de guerra/,'assets/covers/tubarao-de-guerra-drive.svg'],
+    [/^os pilantras\b|gold diggers/,'assets/covers/os-pilantras-drive.svg']
+  ];
+  for(const [pattern,asset] of pairs)if(pattern.test(key))return asset;
+  return parsed?.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp';
+}
+
 function addFiles(files,sourceRoot,options={}){
   if(typeof FILMES_CATALOGO==='undefined')return {added:0,removed:0,total:0};
   const byId=new Map();
@@ -264,7 +281,7 @@ function addFiles(files,sourceRoot,options={}){
       portuguese:true,
       colorContent:true,
       accent:'var(--brand-blue)',
-      thumb:p.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp',
+      thumb:driveCoverFor(f,p),
       ...(p.serie?{seriesId:seriesKey,seriesTitle:p.seriesTitle||p.title,season:p.season,episode:p.episode}:{}),
       driveFileId:f.id,
       driveFileSize:f.size,
