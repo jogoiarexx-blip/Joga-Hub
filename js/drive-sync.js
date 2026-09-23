@@ -1,10 +1,10 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.46 */
+/* JOGAHUB — sincronizador Google Drive 1.2.48 */
 (function(){
 'use strict';
 
 const CONFIG_KEY='jogahub_drive_sync_url';
-const DATA_KEY='jogahub_drive_catalog_cache_v4_single_root';
-const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
+const DATA_KEY='jogahub_drive_catalog_cache_v6_single_root';
+const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v5_single_root','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
 const DEFAULT_URL=String(window.JOGAHUB_DRIVE_SYNC_URL||'').trim();
 const root=window.JOGAHUB_DRIVE_ROOT||{
   id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'
@@ -174,17 +174,22 @@ function removeAutoEntries(){
 
 function addFiles(files,sourceRoot,options={}){
   if(typeof FILMES_CATALOGO==='undefined')return {added:0,removed:0,total:0};
-  const normalized=(Array.isArray(files)?files:[]).map(normalizeFile).filter(Boolean);
+  const normalized=(Array.isArray(files)?files:[]).map(normalizeFile).filter(Boolean).sort((a,b)=>(b.size||0)-(a.size||0));
   const old=options.replace?removeAutoEntries():[];
   const oldIds=new Set(old.map(x=>x.driveFileId).filter(Boolean));
   const existing=new Set(FILMES_CATALOGO.map(x=>x.driveFileId).filter(Boolean));
   const newIds=new Set();
+  const logicalSeen=new Set();
   let added=0;
 
   for(const f of normalized){
     if(existing.has(f.id))continue;
     const p=parse(f.name,f.path||'');
     const seriesKey=p.serie?norm(p.seriesTitle).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
+    const logicalSeriesKey=seriesKey||norm(p.seriesTitle||f.path||f.name).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    const logicalKey=p.serie&&p.episode>0?`serie:${logicalSeriesKey}:s${p.season||1}:e${p.episode}`:`file:${f.id}`;
+    if(logicalSeen.has(logicalKey))continue;
+    logicalSeen.add(logicalKey);
     const displayTitle=p.serie&&p.episode
       ?'E'+String(p.episode).padStart(2,'0')+' — '+(p.seriesTitle||p.title)
       :p.title;
@@ -224,7 +229,7 @@ function addFiles(files,sourceRoot,options={}){
 
   const removed=options.replace?[...oldIds].filter(id=>!newIds.has(id)).length:0;
   if(options.persist!==false)writeCache(normalized);
-  return {added,removed,total:normalized.length};
+  return {added,removed,total:newIds.size};
 }
 
 function jsonp(baseUrl,folderId){
