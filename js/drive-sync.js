@@ -16,8 +16,14 @@ const clean=s=>String(s||'')
   .replace(/\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i,'')
   .replace(/[._]+/g,' ').replace(/\s+/g,' ').trim();
 
+const LEGACY_SYNC_URLS=new Set(["https://script.google.com/macros/s/AKfycbxXQk9M6_VLSyspyNfTvXqGioOhmIE1vRMw6bZtV5GBx8hlrYx3Qnqr7tXmFsfKQeC1TQ/exec"]);
 function getConfiguredUrl(){
-  return String(localStorage.getItem(CONFIG_KEY)||DEFAULT_URL||'').trim();
+  const saved=String(localStorage.getItem(CONFIG_KEY)||'').trim();
+  if(saved&&LEGACY_SYNC_URLS.has(saved)){
+    localStorage.removeItem(CONFIG_KEY);
+    return DEFAULT_URL;
+  }
+  return saved||DEFAULT_URL;
 }
 
 function seasonFromText(s){

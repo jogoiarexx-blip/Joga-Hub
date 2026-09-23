@@ -14,7 +14,7 @@
 
   // Implantação do Apps Script criada para este acervo. Pode ser trocada em
   // Configurações; o valor salvo no navegador tem prioridade sobre este.
-  const SYNC_URL = 'https://script.google.com/macros/s/AKfycbxXQk9M6_VLSyspyNfTvXqGioOhmIE1vRMw6bZtV5GBx8hlrYx3Qnqr7tXmFsfKQeC1TQ/exec';
+  const SYNC_URL = 'https://script.google.com/macros/s/AKfycbzWpuUT37r9VEgfmxZh6X5SyYY_IwCz03iY_l6GNkyn-24qaUvdhICrTnug1_HCw-NUVw/exec';
 
   window.JOGAHUB_DRIVE_ROOT = Object.freeze({
     id: ROOT_ID,
