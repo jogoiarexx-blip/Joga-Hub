@@ -1,5 +1,5 @@
-const SHELL = 'jogahub-1.2.50';
-const CONTENT = 'jogahub-1.2.50-content';
+const SHELL = 'jogahub-1.2.51';
+const CONTENT = 'jogahub-1.2.51-content';
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
 // armazenados sob demanda, evitando um download inicial de quase 9 MB.
@@ -10,7 +10,7 @@ const SHELL_FILES = [
   './link-player.html',
   './install-game.html',
   './manifest.webmanifest?v=142',
-  './css/style.css?v=147',
+  './css/style.css?v=148',
   './css/hud-pro.css?v=125',
   './css/sidebar-upgrade.css?v=128',
   './css/responsive-layout.css?v=131',
@@ -22,12 +22,12 @@ const SHELL_FILES = [
   './js/data-filmes.js?v=132',
   './js/data-drive-filmes.js?v=8',
   './js/drive-snapshot.js?v=2',
-  './js/drive-sync.js?v=13',
+  './js/drive-sync.js?v=14',
   './js/site-upgrades.js?v=5',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=155',
+  './js/app.js?v=156',
   './js/launcher-upgrade.js?v=127',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
