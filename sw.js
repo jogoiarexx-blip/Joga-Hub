@@ -1,5 +1,5 @@
-const SHELL = 'jogahub-1.2.51';
-const CONTENT = 'jogahub-1.2.51-content';
+const SHELL = 'jogahub-1.3.1';
+const CONTENT = 'jogahub-1.3.1-content';
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
 // armazenados sob demanda, evitando um download inicial de quase 9 MB.
@@ -15,23 +15,25 @@ const SHELL_FILES = [
   './css/sidebar-upgrade.css?v=128',
   './css/responsive-layout.css?v=131',
   './css/header-upgrade.css?v=131',
+  './css/core-upgrades.css?v=131',
   './css/player6.css?v=60',
   './js/data-jogos.js?v=40',
   './js/data-links.js?v=48',
   './js/data-arcana.js?v=3',
   './js/data-filmes.js?v=132',
-  './js/data-drive-filmes.js?v=8',
-  './js/drive-snapshot.js?v=2',
-  './js/drive-sync.js?v=14',
-  './js/site-upgrades.js?v=5',
+  './js/data-drive-filmes.js?v=9',
+  './js/drive-snapshot.js?v=3',
+  './js/drive-sync.js?v=15',
+  './js/site-upgrades.js?v=6',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=156',
-  './js/launcher-upgrade.js?v=127',
+  './js/app.js?v=157',
+  './js/launcher-upgrade.js?v=128',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
   './js/header-upgrade.js?v=131',
+  './js/core-upgrades.js?v=131',
   './assets/favicon.png',
   './assets/logo.webp',
   './assets/icon-192.png',

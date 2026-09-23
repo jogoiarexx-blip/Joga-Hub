@@ -1,5 +1,5 @@
 /**
- * JogaHub — Google Drive Sync 1.2.50
+ * JogaHub — Google Drive Sync 1.3.1
  * Sem API key. Usa DriveApp e funciona como Web App do Apps Script.
  * Varre a pasta principal e subpastas, com cache em blocos e trava real.
  */
@@ -79,7 +79,7 @@ function doGet(e) {
     const payload = {
       sucesso:true,
       ok:true,
-      version:'1.2.50',
+      version:'1.3.1',
       atualizado:now,
       updatedAt:now,
       pastaRaiz:root.getName(),
@@ -223,7 +223,7 @@ function readCachedPayload_(cache) {
     return {
       sucesso:true,
       ok:true,
-      version:String(meta.version || '1.2.50'),
+      version:String(meta.version || '1.3.1'),
       atualizado:String(meta.updatedAt || ''),
       updatedAt:String(meta.updatedAt || ''),
       pastaRaiz:String(meta.pastaRaiz || 'Google Drive'),

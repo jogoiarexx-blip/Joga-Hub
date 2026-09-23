@@ -1,12 +1,12 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.51 */
+/* JOGAHUB — sincronizador Google Drive 1.3.1 */
 (function(){
 'use strict';
 
 const CONFIG_KEY='jogahub_drive_sync_url';
-const DATA_KEY='jogahub_drive_catalog_cache_v8_compact';
+const DATA_KEY='jogahub_drive_catalog_cache_v9_compact';
 const LAST_SUCCESS_KEY='jogahub_drive_last_success_v2';
 const CLIENT_TTL=2*60*1000;
-const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v7_compact','jogahub_drive_catalog_cache_v6_single_root','jogahub_drive_catalog_cache_v5_single_root','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
+const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v8_compact','jogahub_drive_catalog_cache_v7_compact','jogahub_drive_catalog_cache_v6_single_root','jogahub_drive_catalog_cache_v5_single_root','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
 const DEFAULT_URL=String(window.JOGAHUB_DRIVE_SYNC_URL||'').trim();
 const root=window.JOGAHUB_DRIVE_ROOT||{
   id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'
@@ -185,7 +185,7 @@ function readCache(){return readCacheEnvelope().files}
 
 function writeCache(files){
   const compact=(files||[]).map(compactForCache).filter(Boolean);
-  const envelope={version:8,savedAt:Date.now(),latestUpdated:latestUpdated(compact),files:compact};
+  const envelope={version:9,savedAt:Date.now(),latestUpdated:latestUpdated(compact),files:compact};
   try{localStorage.setItem(DATA_KEY,JSON.stringify(envelope))}
   catch(e){
     console.warn('JogaHub Drive cache cheio; mantendo o snapshot empacotado como fallback.',e);
