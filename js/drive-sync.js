@@ -1,10 +1,10 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.48 */
+/* JOGAHUB — sincronizador Google Drive 1.2.49 */
 (function(){
 'use strict';
 
 const CONFIG_KEY='jogahub_drive_sync_url';
-const DATA_KEY='jogahub_drive_catalog_cache_v6_single_root';
-const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v5_single_root','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
+const DATA_KEY='jogahub_drive_catalog_cache_v7_compact';
+const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v6_single_root','jogahub_drive_catalog_cache_v5_single_root','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
 const DEFAULT_URL=String(window.JOGAHUB_DRIVE_SYNC_URL||'').trim();
 const root=window.JOGAHUB_DRIVE_ROOT||{
   id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'
@@ -49,11 +49,13 @@ function movieTitleFromName(name){
   return s||clean(name);
 }
 
-function parse(name,path){
-  // O Apps Script inclui o nome da raiz no caminho. A raiz contém "Séries",
-  // por isso ela precisa ser descartada antes de classificar filmes/episódios.
+function parse(name,path,sourceRootName=''){
   const rawParts=String(path||'').split('/').filter(Boolean);
-  const parts=rawParts.length>1?rawParts.slice(1):[];
+  let parts=[...rawParts];
+  const compactRoot=value=>norm(clean(value)).replace(/\b(?:e|de|da|do|dos|das)\b/g,' ').replace(/\s+/g,' ').trim();
+  const first=compactRoot(parts[0]||''), hint=compactRoot(sourceRootName||root.name||'');
+  const looksLikeMediaRoot=/\bfilmes?\b.*\bseries?\b|\bseries?\b.*\bfilmes?\b/.test(first);
+  if(parts.length>1&&(first===hint||looksLikeMediaRoot))parts=parts.slice(1);
   const full=norm(parts.join('/')+'/'+name);
 
   let m=full.match(/\bs(\d{1,2})e(\d{1,3})\b/i)
@@ -139,24 +141,54 @@ function normalizeResponse(j){
   if(j.ok===false||j.sucesso===false)throw new Error(j.error||j.erro||'O Apps Script informou uma falha');
   const raw=Array.isArray(j.files)?j.files:(Array.isArray(j.itens)?j.itens:(Array.isArray(j.items)?j.items:null));
   if(!raw)throw new Error('Resposta inválida: lista de arquivos não encontrada');
-  const files=raw.map(normalizeFile).filter(Boolean);
+  const byId=new Map();
+  raw.map(normalizeFile).filter(Boolean).forEach(file=>{
+    const prev=byId.get(file.id);
+    if(!prev){byId.set(file.id,file);return}
+    const currentTime=Date.parse(file.updated)||0, prevTime=Date.parse(prev.updated)||0;
+    if(currentTime>prevTime||(currentTime===prevTime&&file.size>prev.size))byId.set(file.id,file);
+  });
   return {
-    files,
+    files:[...byId.values()],
     errors:Array.isArray(j.errors)?j.errors:[],
-    rootName:String(j.pastaRaiz||j.rootName||root.name||'Google Drive')
+    rootName:String(j.pastaRaiz||j.rootName||root.name||'Google Drive'),
+    updatedAt:String(j.updatedAt||j.atualizado||'')
   };
 }
 
-function readCache(){
-  try{
-    const value=JSON.parse(localStorage.getItem(DATA_KEY)||'[]');
-    return Array.isArray(value)?value.map(normalizeFile).filter(Boolean):[];
-  }catch{return []}
+function latestUpdated(files){
+  let latest=0;
+  for(const f of files||[])latest=Math.max(latest,Date.parse(f?.updated)||0);
+  return latest;
 }
 
+function compactForCache(file){
+  const f=normalizeFile(file);if(!f)return null;
+  return {id:f.id,name:f.name,mime:f.mime,size:f.size,path:f.path,updated:f.updated};
+}
+
+function readCacheEnvelope(){
+  try{
+    const value=JSON.parse(localStorage.getItem(DATA_KEY)||'null');
+    if(Array.isArray(value)){
+      const files=value.map(normalizeFile).filter(Boolean);
+      return {files,savedAt:0,latestUpdated:latestUpdated(files)};
+    }
+    const files=Array.isArray(value?.files)?value.files.map(normalizeFile).filter(Boolean):[];
+    return {files,savedAt:Number(value?.savedAt||0),latestUpdated:Number(value?.latestUpdated||latestUpdated(files))};
+  }catch{return {files:[],savedAt:0,latestUpdated:0}}
+}
+
+function readCache(){return readCacheEnvelope().files}
+
 function writeCache(files){
-  try{localStorage.setItem(DATA_KEY,JSON.stringify((files||[]).map(normalizeFile).filter(Boolean)))}
-  catch(e){console.warn('JogaHub Drive cache',e)}
+  const compact=(files||[]).map(compactForCache).filter(Boolean);
+  const envelope={version:7,savedAt:Date.now(),latestUpdated:latestUpdated(compact),files:compact};
+  try{localStorage.setItem(DATA_KEY,JSON.stringify(envelope))}
+  catch(e){
+    console.warn('JogaHub Drive cache cheio; mantendo o snapshot empacotado como fallback.',e);
+    try{localStorage.removeItem(DATA_KEY)}catch{}
+  }
 }
 
 function removeAutoEntries(){
@@ -174,7 +206,14 @@ function removeAutoEntries(){
 
 function addFiles(files,sourceRoot,options={}){
   if(typeof FILMES_CATALOGO==='undefined')return {added:0,removed:0,total:0};
-  const normalized=(Array.isArray(files)?files:[]).map(normalizeFile).filter(Boolean).sort((a,b)=>(b.size||0)-(a.size||0));
+  const byId=new Map();
+  (Array.isArray(files)?files:[]).map(normalizeFile).filter(Boolean).forEach(file=>{
+    const prev=byId.get(file.id);
+    if(!prev){byId.set(file.id,file);return}
+    const currentTime=Date.parse(file.updated)||0, prevTime=Date.parse(prev.updated)||0;
+    if(currentTime>prevTime||(currentTime===prevTime&&file.size>prev.size))byId.set(file.id,file);
+  });
+  const normalized=[...byId.values()].sort((a,b)=>(Date.parse(b.updated)||0)-(Date.parse(a.updated)||0)||(b.size||0)-(a.size||0));
   const old=options.replace?removeAutoEntries():[];
   const oldIds=new Set(old.map(x=>x.driveFileId).filter(Boolean));
   const existing=new Set(FILMES_CATALOGO.map(x=>x.driveFileId).filter(Boolean));
@@ -184,7 +223,7 @@ function addFiles(files,sourceRoot,options={}){
 
   for(const f of normalized){
     if(existing.has(f.id))continue;
-    const p=parse(f.name,f.path||'');
+    const p=parse(f.name,f.path||'',sourceRoot?.name||'');
     const seriesKey=p.serie?norm(p.seriesTitle).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
     const logicalSeriesKey=seriesKey||norm(p.seriesTitle||f.path||f.name).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
     const logicalKey=p.serie&&p.episode>0?`serie:${logicalSeriesKey}:s${p.season||1}:e${p.episode}`:`file:${f.id}`;
@@ -261,8 +300,10 @@ async function requestCatalog(baseUrl,folderId){
   const u=new URL(baseUrl);
   if(folderId)u.searchParams.set('folderId',folderId);
   u.searchParams.set('_',Date.now());
+  const controller=typeof AbortController!=='undefined'?new AbortController():null;
+  const timeout=setTimeout(()=>controller?.abort(),9000);
   try{
-    const r=await fetch(u.toString(),{cache:'no-store',redirect:'follow'});
+    const r=await fetch(u.toString(),{cache:'no-store',redirect:'follow',signal:controller?.signal});
     if(!r.ok)throw new Error('HTTP '+r.status);
     return await r.json();
   }catch(fetchError){
@@ -272,25 +313,24 @@ async function requestCatalog(baseUrl,folderId){
       err.cause=fetchError;
       throw err;
     }
-  }
+  }finally{clearTimeout(timeout)}
 }
 
 function hydrateInitial(){
   LEGACY_DATA_KEYS.forEach(key=>localStorage.removeItem(key));
-  const cached=readCache();
-  if(cached.length){
-    addFiles(cached,{name:'Google Drive (cache local)'},{replace:true,persist:false});
-    return cached.length;
-  }
-  if(Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT)&&window.JOGAHUB_DRIVE_SNAPSHOT.length){
-    const snap=window.JOGAHUB_DRIVE_SNAPSHOT.map(normalizeFile).filter(Boolean);
-    addFiles(snap,ROOTS[0],{replace:true,persist:false});
-    return snap.length;
+  const cached=readCacheEnvelope();
+  const snap=Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT)?window.JOGAHUB_DRIVE_SNAPSHOT.map(normalizeFile).filter(Boolean):[];
+  const snapshotLatest=latestUpdated(snap);
+  const useSnapshot=snap.length&&(!cached.files.length||snapshotLatest>cached.latestUpdated);
+  const initial=useSnapshot?snap:cached.files;
+  if(initial.length){
+    addFiles(initial,useSnapshot?ROOTS[0]:{name:'Google Drive (cache local)'},{replace:true,persist:false});
+    return initial.length;
   }
   return 0;
 }
 
-async function sync(){
+async function syncOnce(){
   const base=getConfiguredUrl();
   if(!base||typeof FILMES_CATALOGO==='undefined'){
     window.JOGAHUB_DRIVE_SYNC_COUNT=0;
@@ -323,7 +363,15 @@ async function sync(){
   window.JOGAHUB_DRIVE_SYNC_FOLDERS=folderStats;
   window.JOGAHUB_DRIVE_SYNC_LAST_SYNC=Date.now();
   if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS();
+  try{window.dispatchEvent(new CustomEvent('jogahub:drive-sync',{detail:{found:totalFound,added:totalAdded,removed:totalRemoved,errors}}))}catch{}
   return totalAdded;
+}
+
+let syncPromise=null;
+function sync(){
+  if(syncPromise)return syncPromise;
+  syncPromise=syncOnce().finally(()=>{syncPromise=null});
+  return syncPromise;
 }
 
 window.JOGAHUB_DRIVE_SYNC={
