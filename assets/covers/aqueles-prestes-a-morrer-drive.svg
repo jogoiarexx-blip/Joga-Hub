@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#240b0b"/><stop offset=".55" stop-color="#7b1f18"/><stop offset="1" stop-color="#18100d"/></linearGradient>
+  <radialGradient id="r" cx=".5" cy=".2" r=".9"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-opacity=".45"/></filter>
+</defs>
+<rect width="800" height="1200" fill="url(#g)"/><rect width="800" height="1200" fill="url(#r)"/>
+<g opacity=".95"><path d="M110 760V350h90v410M260 760V300h90v460M450 760V300h90v460M600 760V350h90v410" stroke="#d9b792" stroke-width="26" opacity=".55"/><path d="M75 780H725" stroke="#d9b792" stroke-width="28" opacity=".5"/><circle cx="400" cy="370" r="175" fill="#b23722" opacity=".32"/><path d="M270 680 Q400 520 530 680" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="12"/></g>
+<rect x="54" y="72" width="188" height="42" rx="21" fill="#05080f" fill-opacity=".72" stroke="#fff" stroke-opacity=".22"/>
+<text x="148" y="99" text-anchor="middle" fill="#fff" font-size="18" font-family="Arial,sans-serif" font-weight="700" letter-spacing="3">JOGAHUB</text>
+<g filter="url(#s)">
+<text x="60" y="955" fill="#fff" font-size="66" font-family="Arial,sans-serif" font-weight="900">AQUELES PRESTES</text>
+<text x="62" y="1010" fill="#e6edf7" font-size="28" font-family="Arial,sans-serif" font-weight="600">A MORRER • Série</text>
+</g>
+<rect x="60" y="1060" width="180" height="8" rx="4" fill="#fff" fill-opacity=".86"/>
+<text x="60" y="1110" fill="#fff" fill-opacity=".76" font-size="22" font-family="Arial,sans-serif">CAPA ORIGINAL JOGAHUB</text>
+</svg>

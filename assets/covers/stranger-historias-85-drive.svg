@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#16091f"/><stop offset=".55" stop-color="#5b1559"/><stop offset="1" stop-color="#090f24"/></linearGradient>
+  <radialGradient id="r" cx=".5" cy=".2" r=".9"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-opacity=".45"/></filter>
+</defs>
+<rect width="800" height="1200" fill="url(#g)"/><rect width="800" height="1200" fill="url(#r)"/>
+<g opacity=".95"><path d="M0 760 400 500 800 760" fill="#080914" opacity=".85"/><g stroke="#ff4fd8" stroke-opacity=".42" stroke-width="3"><path d="M0 1200 400 520"/><path d="M100 1200 400 520"/><path d="M200 1200 400 520"/><path d="M300 1200 400 520"/><path d="M400 1200 400 520"/><path d="M500 1200 400 520"/><path d="M600 1200 400 520"/><path d="M700 1200 400 520"/><path d="M800 1200 400 520"/><path d="M0 760H800"/><path d="M0 820H800"/><path d="M0 880H800"/><path d="M0 940H800"/><path d="M0 1000H800"/><path d="M0 1060H800"/><path d="M0 1120H800"/><path d="M0 1180H800"/></g><circle cx="400" cy="360" r="145" fill="#ff375f" opacity=".25"/><rect x="280" y="300" width="240" height="150" rx="20" fill="#111725" stroke="#8ad7ff" stroke-opacity=".45" stroke-width="6"/><circle cx="340" cy="375" r="48" fill="none" stroke="#c6f0ff" stroke-width="10"/><circle cx="460" cy="375" r="48" fill="none" stroke="#c6f0ff" stroke-width="10"/></g>
+<rect x="54" y="72" width="188" height="42" rx="21" fill="#05080f" fill-opacity=".72" stroke="#fff" stroke-opacity=".22"/>
+<text x="148" y="99" text-anchor="middle" fill="#fff" font-size="18" font-family="Arial,sans-serif" font-weight="700" letter-spacing="3">JOGAHUB</text>
+<g filter="url(#s)">
+<text x="60" y="955" fill="#fff" font-size="66" font-family="Arial,sans-serif" font-weight="900">HISTÓRIAS DE 85</text>
+<text x="62" y="1010" fill="#e6edf7" font-size="28" font-family="Arial,sans-serif" font-weight="600">Série • Google Drive</text>
+</g>
+<rect x="60" y="1060" width="180" height="8" rx="4" fill="#fff" fill-opacity=".86"/>
+<text x="60" y="1110" fill="#fff" fill-opacity=".76" font-size="22" font-family="Arial,sans-serif">CAPA ORIGINAL JOGAHUB</text>
+</svg>

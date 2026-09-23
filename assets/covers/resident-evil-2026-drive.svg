@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#19090c"/><stop offset=".55" stop-color="#64131d"/><stop offset="1" stop-color="#0b1115"/></linearGradient>
+  <radialGradient id="r" cx=".5" cy=".2" r=".9"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-opacity=".45"/></filter>
+</defs>
+<rect width="800" height="1200" fill="url(#g)"/><rect width="800" height="1200" fill="url(#r)"/>
+<g opacity=".95"><g transform="translate(400 430)"><circle r="190" fill="none" stroke="#f2494d" stroke-width="18" opacity=".6"/><circle r="72" fill="#0b0e12"/><path d="M0-185 82-55 32-26 0-78-32-26-82-55Z" fill="#f2494d" opacity=".72"/><path d="M160 92 10 82 10 28 70 28 45-28 95-55Z" fill="#f2494d" opacity=".72"/><path d="M-160 92-10 82-10 28-70 28-45-28-95-55Z" fill="#f2494d" opacity=".72"/></g><path d="M70 760 C220 680 580 680 730 760" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="4"/></g>
+<rect x="54" y="72" width="188" height="42" rx="21" fill="#05080f" fill-opacity=".72" stroke="#fff" stroke-opacity=".22"/>
+<text x="148" y="99" text-anchor="middle" fill="#fff" font-size="18" font-family="Arial,sans-serif" font-weight="700" letter-spacing="3">JOGAHUB</text>
+<g filter="url(#s)">
+<text x="60" y="955" fill="#fff" font-size="66" font-family="Arial,sans-serif" font-weight="900">RESIDENT EVIL</text>
+<text x="62" y="1010" fill="#e6edf7" font-size="28" font-family="Arial,sans-serif" font-weight="600">Filme • 2026</text>
+</g>
+<rect x="60" y="1060" width="180" height="8" rx="4" fill="#fff" fill-opacity=".86"/>
+<text x="60" y="1110" fill="#fff" fill-opacity=".76" font-size="22" font-family="Arial,sans-serif">CAPA ORIGINAL JOGAHUB</text>
+</svg>

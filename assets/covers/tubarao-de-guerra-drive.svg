@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#052338"/><stop offset=".55" stop-color="#075e78"/><stop offset="1" stop-color="#071019"/></linearGradient>
+  <radialGradient id="r" cx=".5" cy=".2" r=".9"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-opacity=".45"/></filter>
+</defs>
+<rect width="800" height="1200" fill="url(#g)"/><rect width="800" height="1200" fill="url(#r)"/>
+<g opacity=".95"><circle cx="610" cy="290" r="135" fill="#79d4e8" opacity=".22"/><path d="M0 550 Q180 500 360 560 T800 545 V1200 H0Z" fill="#04131e" opacity=".75"/><path d="M180 650 Q390 540 630 650 Q520 720 290 715Z" fill="#09151e"/><path d="M395 610 q45-115 95 0Z" fill="#09151e"/><path d="M95 440 Q400 300 705 440" fill="none" stroke="#8cecff" stroke-opacity=".35" stroke-width="6"/><circle cx="400" cy="440" r="260" fill="none" stroke="#8cecff" stroke-opacity=".14" stroke-width="3"/></g>
+<rect x="54" y="72" width="188" height="42" rx="21" fill="#05080f" fill-opacity=".72" stroke="#fff" stroke-opacity=".22"/>
+<text x="148" y="99" text-anchor="middle" fill="#fff" font-size="18" font-family="Arial,sans-serif" font-weight="700" letter-spacing="3">JOGAHUB</text>
+<g filter="url(#s)">
+<text x="60" y="955" fill="#fff" font-size="66" font-family="Arial,sans-serif" font-weight="900">TUBARÃO DE GUERRA</text>
+<text x="62" y="1010" fill="#e6edf7" font-size="28" font-family="Arial,sans-serif" font-weight="600">Filme • Google Drive</text>
+</g>
+<rect x="60" y="1060" width="180" height="8" rx="4" fill="#fff" fill-opacity=".86"/>
+<text x="60" y="1110" fill="#fff" fill-opacity=".76" font-size="22" font-family="Arial,sans-serif">CAPA ORIGINAL JOGAHUB</text>
+</svg>
