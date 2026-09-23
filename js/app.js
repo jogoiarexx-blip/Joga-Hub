@@ -31,8 +31,8 @@ rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.48';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.48-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.49';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.49-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -168,7 +168,8 @@ function itemHref(item){
   if(item.type === 'filme' && item.driveFileId){
     const url = `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/preview`;
     const source = item.sourceUrl || `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/view`;
-    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=iframe&id=${encodeURIComponent(item.id || '')}`;
+    const driveMeta = `&driveId=${encodeURIComponent(item.driveFileId)}&driveMime=${encodeURIComponent(item.driveMime || '')}&driveName=${encodeURIComponent(item._driveName || item.title || '')}&driveSize=${encodeURIComponent(item.driveFileSize || 0)}&driveUpdated=${encodeURIComponent(item._driveUpdated || '')}`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=iframe&id=${encodeURIComponent(item.id || '')}${driveMeta}`;
   }
   if(isExternalItem(item)){
     if(item.embed === true){
