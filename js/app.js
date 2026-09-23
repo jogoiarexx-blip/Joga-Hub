@@ -29,10 +29,25 @@ function rebuildCatalogItems(){
 }
 rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
+let driveUiRefreshTimer=0;
+window.addEventListener('jogahub:drive-sync',()=>{
+  clearTimeout(driveUiRefreshTimer);
+  driveUiRefreshTimer=setTimeout(()=>{
+    rebuildCatalogItems();
+    if(document.readyState==='loading')return;
+    try{
+      renderTypeTabs();
+      renderGenreFilters();
+      applyFilters();
+      renderFeatured();
+      if(activeType==='todos')renderHomeDashboard();
+    }catch(error){console.warn('JogaHub Drive UI refresh',error)}
+  },60);
+});
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.49';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.49-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.50';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.50-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
