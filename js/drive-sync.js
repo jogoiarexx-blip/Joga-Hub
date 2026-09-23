@@ -1,10 +1,12 @@
-/* JOGAHUB — sincronizador Google Drive 1.2.49 */
+/* JOGAHUB — sincronizador Google Drive 1.2.50 */
 (function(){
 'use strict';
 
 const CONFIG_KEY='jogahub_drive_sync_url';
-const DATA_KEY='jogahub_drive_catalog_cache_v7_compact';
-const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v6_single_root','jogahub_drive_catalog_cache_v5_single_root','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
+const DATA_KEY='jogahub_drive_catalog_cache_v8_compact';
+const LAST_SUCCESS_KEY='jogahub_drive_last_success_v2';
+const CLIENT_TTL=2*60*1000;
+const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v7_compact','jogahub_drive_catalog_cache_v6_single_root','jogahub_drive_catalog_cache_v5_single_root','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
 const DEFAULT_URL=String(window.JOGAHUB_DRIVE_SYNC_URL||'').trim();
 const root=window.JOGAHUB_DRIVE_ROOT||{
   id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'
@@ -183,12 +185,18 @@ function readCache(){return readCacheEnvelope().files}
 
 function writeCache(files){
   const compact=(files||[]).map(compactForCache).filter(Boolean);
-  const envelope={version:7,savedAt:Date.now(),latestUpdated:latestUpdated(compact),files:compact};
+  const envelope={version:8,savedAt:Date.now(),latestUpdated:latestUpdated(compact),files:compact};
   try{localStorage.setItem(DATA_KEY,JSON.stringify(envelope))}
   catch(e){
     console.warn('JogaHub Drive cache cheio; mantendo o snapshot empacotado como fallback.',e);
     try{localStorage.removeItem(DATA_KEY)}catch{}
   }
+}
+
+function clientCacheFresh(){
+  const cached=readCacheEnvelope();
+  const last=Number(localStorage.getItem(LAST_SUCCESS_KEY)||0);
+  return cached.files.length>0&&last>0&&(Date.now()-last)<CLIENT_TTL;
 }
 
 function removeAutoEntries(){
@@ -204,6 +212,18 @@ function removeAutoEntries(){
   return old;
 }
 
+function filePreference(f){
+  const text=norm((f?.name||'')+' '+(f?.mime||''));let score=0;
+  if(/\.mp4\b|video\/mp4/.test(text))score+=50;
+  else if(/\.webm\b|video\/webm/.test(text))score+=35;
+  else if(/\.m4v\b/.test(text))score+=30;
+  else if(/\.mkv\b|matroska/.test(text))score-=20;
+  else if(/\.avi\b|avi/.test(text))score-=25;
+  if(/x264|h[ ._-]?264|avc/.test(text))score+=18;
+  if(/x265|h[ ._-]?265|hevc/.test(text))score-=6;
+  return score;
+}
+
 function addFiles(files,sourceRoot,options={}){
   if(typeof FILMES_CATALOGO==='undefined')return {added:0,removed:0,total:0};
   const byId=new Map();
@@ -213,7 +233,7 @@ function addFiles(files,sourceRoot,options={}){
     const currentTime=Date.parse(file.updated)||0, prevTime=Date.parse(prev.updated)||0;
     if(currentTime>prevTime||(currentTime===prevTime&&file.size>prev.size))byId.set(file.id,file);
   });
-  const normalized=[...byId.values()].sort((a,b)=>(Date.parse(b.updated)||0)-(Date.parse(a.updated)||0)||(b.size||0)-(a.size||0));
+  const normalized=[...byId.values()].sort((a,b)=>filePreference(b)-filePreference(a)||(Date.parse(b.updated)||0)-(Date.parse(a.updated)||0)||(b.size||0)-(a.size||0));
   const old=options.replace?removeAutoEntries():[];
   const oldIds=new Set(old.map(x=>x.driveFileId).filter(Boolean));
   const existing=new Set(FILMES_CATALOGO.map(x=>x.driveFileId).filter(Boolean));
@@ -362,6 +382,7 @@ async function syncOnce(){
   window.JOGAHUB_DRIVE_SYNC_ERRORS=errors;
   window.JOGAHUB_DRIVE_SYNC_FOLDERS=folderStats;
   window.JOGAHUB_DRIVE_SYNC_LAST_SYNC=Date.now();
+  if(totalFound>0)try{localStorage.setItem(LAST_SUCCESS_KEY,String(Date.now()))}catch{}
   if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS();
   try{window.dispatchEvent(new CustomEvent('jogahub:drive-sync',{detail:{found:totalFound,added:totalAdded,removed:totalRemoved,errors}}))}catch{}
   return totalAdded;
@@ -382,6 +403,7 @@ window.JOGAHUB_DRIVE_SYNC={
   },
   clearCache:function(){
     localStorage.removeItem(DATA_KEY);
+    localStorage.removeItem(LAST_SUCCESS_KEY);
     LEGACY_DATA_KEYS.forEach(key=>localStorage.removeItem(key));
     removeAutoEntries();
     if(Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT))addFiles(window.JOGAHUB_DRIVE_SNAPSHOT,ROOTS[0],{replace:false,persist:false});
@@ -399,6 +421,8 @@ window.JOGAHUB_DRIVE_SYNC={
     usingDefault:!localStorage.getItem(CONFIG_KEY)&&!!DEFAULT_URL,
     url:getConfiguredUrl(),
     cached:readCache().length,
+    cacheFresh:clientCacheFresh(),
+    cacheAgeMs:(()=>{const t=Number(localStorage.getItem(LAST_SUCCESS_KEY)||0);return t?Date.now()-t:null})(),
     found:Number(window.JOGAHUB_DRIVE_SYNC_FOUND||0),
     added:Number(window.JOGAHUB_DRIVE_SYNC_COUNT||0),
     removed:Number(window.JOGAHUB_DRIVE_SYNC_REMOVED||0),
@@ -412,8 +436,17 @@ window.JOGAHUB_DRIVE_SYNC={
 // antes de seus próprios scripts iniciarem.
 hydrateInitial();
 
+function hydrateSharedCache(){
+  const cached=readCache();
+  if(!cached.length)return;
+  addFiles(cached,{name:'Google Drive (cache compartilhado)'},{replace:true,persist:false});
+  if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS();
+  try{window.dispatchEvent(new CustomEvent('jogahub:drive-sync',{detail:{source:'storage',found:cached.length,added:0,removed:0,errors:[]}}))}catch{}
+}
+window.addEventListener('storage',e=>{if(e.key===DATA_KEY&&e.newValue)hydrateSharedCache()});
+window.addEventListener('online',()=>{if(getConfiguredUrl()&&!clientCacheFresh())setTimeout(sync,250)});
 function startLiveSync(){
-  if(getConfiguredUrl())setTimeout(sync,0);
+  if(getConfiguredUrl()&&!clientCacheFresh())setTimeout(sync,0);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startLiveSync,{once:true});
 else startLiveSync();
