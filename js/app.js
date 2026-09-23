@@ -31,8 +31,8 @@ rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.2.46';
-const CURRENT_CONTENT_CACHE = 'jogahub-1.2.46-content';
+const CURRENT_SHELL_CACHE = 'jogahub-1.2.48';
+const CURRENT_CONTENT_CACHE = 'jogahub-1.2.48-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -440,13 +440,16 @@ function seriesCardHTML(group){
   </article>`;
 }
 function mediaIdentity(item){
+  const base=normalize(item.seriesTitle || item.title || item.id).replace(/\b(19|20)\d{2}\b/g,'').replace(/\s+/g,' ').trim();
+  // Para séries, temporada + episódio representam o mesmo conteúdo mesmo que
+  // existam dois arquivos diferentes no Drive. Isso evita EP duplicado na UI.
+  if(item.mediaType==='serie' && Number(item.episode)>0) return `series:${base}:s${item.season||1}:e${item.episode}`;
   if(item.youtubeId) return `yt:${item.youtubeId}`;
   if(item.youtubePlaylistId) return `ytp:${item.youtubePlaylistId}`;
   if(item.archiveId) return `ia:${item.archiveId}`;
   if(item.driveFileId) return `gdrive:${item.driveFileId}`;
   if(item.driveFolderId) return `gdrive-folder:${item.driveFolderId}`;
   if(item.directVideoUrl || item.videoUrl || item.localVideoUrl) return `vid:${item.directVideoUrl || item.videoUrl || item.localVideoUrl}`;
-  const base=normalize(item.seriesTitle || item.title || item.id).replace(/\b(19|20)\d{2}\b/g,'').replace(/\s+/g,' ').trim();
   return item.mediaType==='serie' ? `series:${base}:s${item.season||1}:e${item.episode||0}` : `${item.mediaType||'item'}:${base}`;
 }
 function uniqueMedia(list){
