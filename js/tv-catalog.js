@@ -1,4 +1,4 @@
-/* JogaHub TV Catalog 1.3.9
+/* JogaHub TV Catalog 1.3.10
    Agregador de playlists publicas/gratuitas para GitHub Pages.
    Fontes: Free-TV/IPTV e IPTV-org. */
 (function(){
@@ -74,7 +74,10 @@ const state = {
   source:'todos',
   limit:120,
   hls:null,
-  activeChannel:null
+  activeChannel:null,
+  rootChannel:null,
+  candidates:[],
+  candidateIndex:0
 };
 
 function esc(v){
@@ -244,27 +247,36 @@ function manualChannels(){
 }
 function mergeChannels(groups){
   var best=[];
-  var seenIds=new Set();
-  var seenNames=new Set();
+  var byId=new Map();
+  var byName=new Map();
   var all=manualChannels();
   groups.forEach(function(group){all=all.concat(group.channels||[]);});
   all.sort(function(a,b){return (b.priority||0)-(a.priority||0);});
   all.forEach(function(ch){
     var idKey=ch.tvgId?norm(ch.tvgId):'';
     var nameKey=compactName(ch.name)+'|'+String(ch.country||'').toUpperCase();
-    if((idKey&&seenIds.has(idKey))||(nameKey!=='|'&&seenNames.has(nameKey)))return;
-    if(idKey)seenIds.add(idKey);
-    if(nameKey!=='|')seenNames.add(nameKey);
+    var existing=(idKey&&byId.get(idKey))||byName.get(nameKey);
+    if(existing){
+      existing.alternates=existing.alternates||[];
+      var candidateKey=(ch.embed||ch.stream||ch.site||'')+'|'+String(ch.sourceId||'');
+      var already=existing.alternates.some(function(x){
+        return ((x.embed||x.stream||x.site||'')+'|'+String(x.sourceId||''))===candidateKey;
+      });
+      if(candidateKey!=='|'&&!already)existing.alternates.push(ch);
+      return;
+    }
+    ch.alternates=[];
     best.push(ch);
+    if(idKey)byId.set(idKey,ch);
+    if(nameKey!=='|')byName.set(nameKey,ch);
   });
-  var merged=best;
-  merged.sort(function(a,b){
+  best.sort(function(a,b){
     var br=Number((b.country||'').toUpperCase()==='BR')-Number((a.country||'').toUpperCase()==='BR');
     if(br) return br;
     var pr=(b.priority||0)-(a.priority||0);if(pr)return pr;
     return String(a.name||'').localeCompare(String(b.name||''),'pt-BR');
   });
-  return merged;
+  return best;
 }
 async function loadCatalog(force){
   if(state.loading) return state.channels;
@@ -314,10 +326,12 @@ function filteredChannels(){
 function cardHTML(c){
   var art=c.logo?('<img src="'+esc(c.logo)+'" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">'):'<span>📺</span>';
   var country=c.country?('<span class="tv-chip">'+esc(c.country)+'</span>'):'';
+  var signalCount=1+((c.alternates&&c.alternates.length)||0);
+  var signals=signalCount>1?('<span class="tv-chip fallback">'+signalCount+' sinais</span>'):'';
   return '<article class="tv-channel-card" data-tv-card="'+esc(c.id)+'">'+
     '<button class="tv-channel-main" type="button" data-tv-play="'+esc(c.id)+'" aria-label="Assistir '+esc(c.name)+'">'+
       '<span class="tv-channel-logo">'+art+'</span>'+
-      '<span class="tv-channel-copy"><strong>'+esc(c.name)+'</strong><small>'+esc(c.category)+'</small><em>'+country+'<span class="tv-chip source">'+esc(c.source)+'</span></em></span>'+
+      '<span class="tv-channel-copy"><strong>'+esc(c.name)+'</strong><small>'+esc(c.category)+'</small><em>'+country+'<span class="tv-chip source">'+esc(c.source)+'</span>'+signals+'</em></span>'+
       '<span class="tv-play-icon">▶</span>'+
     '</button>'+
   '</article>';
@@ -426,7 +440,7 @@ function ensureModal(){
   document.getElementById('tvPlayerClose').addEventListener('click',closePlayer);
   wrap.addEventListener('click',function(e){if(e.target===wrap)closePlayer();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!wrap.hidden)closePlayer();});
-  document.getElementById('tvRetry').addEventListener('click',function(){if(state.activeChannel)startChannel(state.activeChannel,true);});
+  document.getElementById('tvRetry').addEventListener('click',function(){var first=state.candidates[0]||state.rootChannel||state.activeChannel;if(first){state.candidateIndex=0;startChannel(first,true);}});
   return wrap;
 }
 function destroyHls(){
@@ -487,19 +501,36 @@ function knownWebPageUrl(url){
     return h==='youtube.com'||h==='m.youtube.com'||h==='youtu.be'||h==='twitch.tv'||h==='dailymotion.com';
   }catch(_){return false;}
 }
+function tryNextCandidate(reason){
+  if(state.candidateIndex+1>=state.candidates.length)return false;
+  state.candidateIndex++;
+  var next=state.candidates[state.candidateIndex];
+  setStatus((reason?reason+' ':'')+'Tentando sinal alternativo '+(state.candidateIndex+1)+' de '+state.candidates.length+'…',false);
+  setTimeout(function(){startChannel(next,true);},180);
+  return true;
+}
 async function playStream(ch){
   var video=document.getElementById('tvVideo');
   var iframe=document.getElementById('tvIframe');
   iframe.style.display='none';video.style.display='block';
-  video.poster=ch.logo||'';
+  video.poster=ch.logo||state.rootChannel?.logo||'';
   setStatus('Conectando ao sinal ao vivo…',false);
   destroyHls();
   var url=ch.stream;
   var nativeHls=video.canPlayType('application/vnd.apple.mpegurl')||video.canPlayType('application/x-mpegURL');
   if(nativeHls){
+    var nativeFailed=false;
     video.src=url;
-    video.addEventListener('loadedmetadata',function onMeta(){video.removeEventListener('loadedmetadata',onMeta);setStatus('',false);video.play().catch(function(){});},{once:true});
-    video.addEventListener('error',function onErr(){video.removeEventListener('error',onErr);setStatus('O navegador não conseguiu abrir este sinal. Use Abrir transmissão como alternativa.',true);},{once:true});
+    video.addEventListener('loadedmetadata',function onMeta(){
+      video.removeEventListener('loadedmetadata',onMeta);
+      setStatus('',false);
+      video.play().catch(function(){});
+    },{once:true});
+    video.addEventListener('error',function onErr(){
+      if(nativeFailed)return;nativeFailed=true;
+      video.removeEventListener('error',onErr);
+      if(!tryNextCandidate('O primeiro sinal falhou.'))setStatus('O navegador não conseguiu abrir este sinal. Use Abrir transmissão como alternativa.',true);
+    },{once:true});
     video.load();return;
   }
   var looksHls=/\.m3u8(?:$|\?)/i.test(url);
@@ -508,49 +539,81 @@ async function playStream(ch){
       var Hls=await loadHlsLibrary();
       if(Hls.isSupported()){
         var hls=new Hls({enableWorker:true,lowLatencyMode:true,maxBufferLength:24,maxMaxBufferLength:48,backBufferLength:30});
+        var networkRetries=0,mediaRetries=0;
         state.hls=hls;
         hls.attachMedia(video);
         hls.on(Hls.Events.MEDIA_ATTACHED,function(){hls.loadSource(url);});
         hls.on(Hls.Events.MANIFEST_PARSED,function(){setStatus('',false);video.play().catch(function(){});});
         hls.on(Hls.Events.ERROR,function(_,data){
           if(!data||!data.fatal)return;
-          if(data.type===Hls.ErrorTypes.NETWORK_ERROR){setStatus('Falha de rede no canal. Tentando reconectar…',true);try{hls.startLoad();}catch(_){}}
-          else if(data.type===Hls.ErrorTypes.MEDIA_ERROR){setStatus('Recuperando o vídeo…',false);try{hls.recoverMediaError();}catch(_){}}
-          else{destroyHls();setStatus('Este sinal bloqueou a reprodução no navegador. Use Abrir transmissão como alternativa.',true);}
+          if(data.type===Hls.ErrorTypes.NETWORK_ERROR&&networkRetries<1){
+            networkRetries++;setStatus('Falha de rede. Reconectando uma vez…',false);try{hls.startLoad();}catch(_){}
+            return;
+          }
+          if(data.type===Hls.ErrorTypes.MEDIA_ERROR&&mediaRetries<1){
+            mediaRetries++;setStatus('Recuperando o vídeo…',false);try{hls.recoverMediaError();}catch(_){}
+            return;
+          }
+          destroyHls();
+          if(!tryNextCandidate('Este sinal não respondeu.'))setStatus('Este sinal bloqueou ou não suporta reprodução no navegador. Use Abrir transmissão como alternativa.',true);
         });
         return;
       }
     }catch(err){
+      if(tryNextCandidate('O motor HLS não conseguiu abrir este sinal.'))return;
       setStatus('Não foi possível iniciar o motor HLS. Tentando reprodução direta…',true);
     }
   }
   video.src=url;video.load();
-  try{await video.play();setStatus('',false);}catch(_){setStatus('Este sinal não é compatível com reprodução direta neste navegador.',true);}
+  try{await video.play();setStatus('',false);}
+  catch(_){
+    if(!tryNextCandidate('A reprodução direta falhou.'))setStatus('Este sinal não é compatível com reprodução direta neste navegador.',true);
+  }
 }
-function startChannel(ch){
+function startChannel(ch,fromFallback){
   state.activeChannel=ch;
+  var display=state.rootChannel||ch;
   var title=document.getElementById('tvPlayerTitle');
   var meta=document.getElementById('tvPlayerMeta');
   var link=document.getElementById('tvOpenSource');
-  if(title)title.textContent=ch.name;
-  if(meta)meta.textContent=[ch.category,ch.country,ch.source].filter(Boolean).join(' • ');
-  if(link)link.href=ch.site||ch.stream||ch.sourcePage||'#';
+  if(title)title.textContent=display.name;
+  if(meta){
+    var signalInfo=state.candidates.length>1?('sinal '+(state.candidateIndex+1)+'/'+state.candidates.length):'';
+    meta.textContent=[display.category,display.country,ch.source,signalInfo].filter(Boolean).join(' • ');
+  }
+  if(link)link.href=ch.site||ch.stream||ch.sourcePage||display.site||display.sourcePage||'#';
   var video=document.getElementById('tvVideo');
   var iframe=document.getElementById('tvIframe');
   destroyHls();
+  try{video.pause();}catch(_){}
+  video.removeAttribute('src');video.load();
+  iframe.src='about:blank';
   var pageEmbed=ch.stream?pageEmbedUrl(ch.stream):'';
   if(ch.embed||pageEmbed){
     video.style.display='none';iframe.style.display='block';iframe.src=ch.embed||pageEmbed;setStatus('',false);
   }else if(ch.stream&&knownWebPageUrl(ch.stream)){
-    video.style.display='none';iframe.style.display='none';setStatus('Este canal usa uma página oficial que não permite player direto. Toque em Abrir transmissão.',true);
-  }else{
+    video.style.display='none';iframe.style.display='none';
+    if(!tryNextCandidate('A página desta fonte não permite player direto.'))setStatus('Este canal usa uma página oficial que não permite player direto. Toque em Abrir transmissão.',true);
+  }else if(ch.stream){
     playStream(ch);
+  }else if(!tryNextCandidate('Este cadastro não possui um stream direto.')){
+    video.style.display='none';iframe.style.display='none';setStatus('Não há sinal reproduzível disponível para este canal agora.',true);
   }
 }
 function openChannel(ch){
   var modal=ensureModal();
   modal.hidden=false;document.body.classList.add('tv-player-open');
-  startChannel(ch);
+  state.rootChannel=ch;
+  var raw=[ch].concat(ch.alternates||[]);
+  var seen=new Set();
+  state.candidates=raw.filter(function(x){
+    var key=x.embed||x.stream||x.site||x.sourcePage||'';
+    if(!key||seen.has(key))return false;
+    seen.add(key);return true;
+  });
+  if(!state.candidates.length)state.candidates=[ch];
+  state.candidateIndex=0;
+  startChannel(state.candidates[0],false);
 }
 
 window.JOGAHUB_TV={
