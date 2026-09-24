@@ -442,7 +442,7 @@ function movieCardHTML(item, compact=false){
   const p = movieProgress(item);
   const state = movieWatchState(item);
   const pct = p && !p.episodeOnly ? Math.max(0, Math.min(100, (p.time/p.duration)*100)) : 0;
-  const sourceBadge=item.driveFileId?'<span class="source-badge drive">☁ Drive</span>':(item.archiveId?'<span class="source-badge archive">Archive</span>':(item.youtubeId||item.youtubePlaylistId?'<span class="source-badge youtube">YouTube</span>':''));
+  const sourceBadge=item.driveFileId?'<span class="source-badge drive">☁ Drive</span>':(item.archiveId?'<span class="source-badge archive">Archive</span>':(item.youtubeId||item.youtubePlaylistId?'<span class="source-badge youtube">YouTube</span>':(item.streamingPick?`<span class="source-badge stream">${escapeHTML(item.sourceLabel)}</span>`:'')));
   const drivePosterTitle=item.driveFileId?`<span class="drive-poster-title">${escapeHTML(item.seriesTitle || item.title)}</span>`:'';
   return `<article class="stream-card${compact?' compact':''}${item.driveFileId?' drive-card':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
     <a class="stream-poster" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)} aria-label="${isCatalogExternal(item)?'Onde assistir':'Assistir'} ${escapeHTML(item.title)}">
@@ -455,6 +455,7 @@ function movieCardHTML(item, compact=false){
     <div class="stream-card-copy">
       <div class="stream-card-title"><b>${escapeHTML(item.seriesTitle || item.title)}</b><button class="favorite-btn stream-fav${isFav?' active':''}" type="button" data-favorite="${escapeHTML(item.id)}" aria-label="${isFav?'Remover da':'Adicionar à'} Minha Lista" aria-pressed="${isFav}">♥</button></div>
       <span>${escapeHTML(movieKindLabel(item))}${item.year ? ` • ${escapeHTML(item.year)}` : ''} • ${escapeHTML(item.genre || '')}</span>${imdbBadge(item,'copy-imdb')}
+      ${item.streamingPick ? `<small>${escapeHTML(item.availabilityStatus)} • ${escapeHTML(item.language)} • ↗ Onde assistir</small>` : ''}
       ${item.seriesTitle && item.title !== item.seriesTitle ? `<small>${escapeHTML(item.title)}</small>` : ''}
     </div>
   </article>`;
@@ -520,12 +521,14 @@ function renderMovieHub(list){
   }else{
     const continuing=take(pool.filter(movieProgress),14);
     const favs=take(pool.filter(i=>favorites.has(i.id)),14);
+    const streaming=take(pool.filter(i=>i.streamingPick),20);
     const topImdb=take(pool.filter(i=>imdbRating(i)>0),20);
     const jackie=take(pool.filter(i=>i.jackieChan),24);
     const classicTv=take(pool.filter(i=>i.classicTv),20);
 
     rows+=section('Continuar assistindo','Vídeos diretos retomam no tempo exato; Google Drive retoma no último episódio aberto.',continuing,'catalog-continuar');
     rows+=section('Minha Lista','Seus favoritos, sem repetir o que já está acima.',favs,'catalog-lista');
+    rows+=section('🎬 Filmes recentes em streaming','Boas notas, áudio ou legendas em português. Links oficiais; assinatura necessária.',streaming,'catalog-streaming');
     rows+=section('⭐ Melhores no IMDb','Ranking do catálogo pela nota IMDb, da maior para a menor.',topImdb,'catalog-imdb');
     rows+=section('🥋 Jackie Chan','Filmes anteriores a 2000 e As Aventuras de Jackie Chan encontrados em fontes reproduzíveis.',jackie);
     rows+=section('📺 Nostalgia da TV','Desenhos, séries e clássicos que ainda não apareceram nas seções anteriores.',classicTv);
@@ -574,6 +577,7 @@ function renderMovieHub(list){
     <nav class="catalog-quick-nav" aria-label="Atalhos do catálogo">
       <button type="button" data-catalog-scroll="catalog-continuar">▶ Continuar</button>
       <button type="button" data-catalog-scroll="catalog-lista">♥ Minha Lista</button>
+      <button type="button" data-catalog-scroll="catalog-streaming">🎬 Streaming</button>
       <button type="button" data-catalog-scroll="catalog-imdb">⭐ IMDb</button>
       <button type="button" data-catalog-scroll="catalog-recentes">🆕 Novidades</button>
       <button type="button" data-catalog-scroll="catalog-drive">☁ Google Drive</button>

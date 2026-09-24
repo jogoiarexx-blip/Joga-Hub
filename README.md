@@ -1,3 +1,10 @@
+## Versão 1.3.6 — filmes recentes em streaming
+
+- Sete filmes de 2021 a 2024 com notas IMDb verificadas em 24/09/2026, áudio ou legendas em português e links oficiais da Netflix e Apple TV.
+- Fileira própria no catálogo, com identificação da plataforma e aviso de assinatura. Os links abrem o serviço oficial; os vídeos não são importados para o Drive.
+- Capas tipográficas locais em SVG, sem depender de servidores de imagens e sem reproduzir cartazes de terceiros.
+- A disponibilidade dos títulos, idiomas, qualidade de reprodução e valores das assinaturas podem variar conforme região, plano e data.
+
 ## Versão 1.3.5 — player offline e sincronização
 
 - Botão de download e leitura offline do player corrigidos com as funções e chaves usadas no catálogo.
