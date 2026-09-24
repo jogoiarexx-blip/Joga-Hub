@@ -1,4 +1,4 @@
-/* JOGAHUB 1.3.2 — home, busca, favoritos e progresso de leitura */
+/* JOGAHUB 1.3.9 — home, busca, favoritos, TV e progresso de leitura */
 
 const TYPES = {
   jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
@@ -68,7 +68,7 @@ rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.3.5';
+const CURRENT_SHELL_CACHE = 'jogahub-1.3.9';
 const CURRENT_CONTENT_CACHE = 'jogahub-1.3.2-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
@@ -649,7 +649,7 @@ function renderTypeTabs(){
     ['filme','🎬 Filmes',itemsForView('filme').length],
     ['serie','📺 Séries',itemsForView('serie').length],
     ['anime','🍥 Animes',itemsForView('anime').length],
-    ['tv','📡 TV ao Vivo',(typeof LIVE_TV_CHANNELS!=='undefined'?LIVE_TV_CHANNELS.length:0)],
+    ['tv','📡 TV ao Vivo',(Number(window.JOGAHUB_TV_COUNT)||((typeof LIVE_TV_CHANNELS!=='undefined')?LIVE_TV_CHANNELS.length:0))],
     ['emulador','🕹️ Emulador',itemsForView('emulador').length],
     ...(radioFeatureEnabled()?[['radio','📻 Rádios','online']]:[])
   ];
