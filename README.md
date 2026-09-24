@@ -1,3 +1,11 @@
+## Versão 1.3.5 — player offline e sincronização
+
+- Botão de download e leitura offline do player corrigidos com as funções e chaves usadas no catálogo.
+- Vídeos salvos são reproduzidos por streaming local, com suporte a solicitações de trechos, sem carregar o filme inteiro na memória.
+- O player usa a versão atual do sincronizador do Drive.
+- Respostas parciais da varredura do Drive preservam os arquivos já exibidos.
+- Vídeos MKV e AVI do Drive abrem diretamente no modo compatível, sem aguardar tentativas de reprodução não suportadas pelo navegador.
+
 ## Versão 1.3.4 — carregamento e catálogo
 
 - Busca externa de filmes e séries começa quando o usuário abre uma área de mídia; a página inicial evita essas quatro consultas.

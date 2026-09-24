@@ -1,5 +1,6 @@
-const SHELL = 'jogahub-1.3.4';
+const SHELL = 'jogahub-1.3.5';
 const CONTENT = 'jogahub-1.3.2-content';
+const MEDIA = 'jogahub-offline-media-v1';
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
 // armazenados sob demanda, evitando um download inicial de quase 9 MB.
@@ -20,12 +21,12 @@ const SHELL_FILES = [
   './js/data-filmes.js?v=132',
   './js/data-drive-filmes.js?v=6',
   './js/drive-snapshot.js?v=2',
-  './js/drive-sync.js?v=12',
+  './js/drive-sync.js?v=13',
   './js/site-upgrades.js?v=5',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=134',
+  './js/app.js?v=135',
   './js/launcher-upgrade.js?v=126',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
@@ -67,6 +68,57 @@ self.addEventListener('fetch', event => {
   if(event.request.method!=='GET') return;
   const url=new URL(event.request.url);
   if(url.origin!==self.location.origin) return;
+
+  // Entrega downloads já salvos por um endereço local. O stream evita criar um
+  // Blob de vários gigabytes na memória e permite que o vídeo solicite trechos.
+  if(url.pathname===new URL('./offline-media',self.registration.scope).pathname){
+    event.respondWith((async()=>{
+      let sourceUrl;
+      try{sourceUrl=new URL(url.searchParams.get('src')||'')}catch{return new Response('Vídeo inválido',{status:400})}
+      if(sourceUrl.protocol!=='https:')return new Response('Vídeo inválido',{status:400});
+      const saved=await (await caches.open(MEDIA)).match(sourceUrl.href);
+      if(!saved)return new Response('Vídeo não encontrado no aparelho',{status:404});
+      const size=Number(url.searchParams.get('size'))||Number(saved.headers.get('content-length'))||0;
+      const range=event.request.headers.get('range');
+      if(!range||!Number.isSafeInteger(size)||size<=0){
+        const headers=new Headers({'Content-Type':saved.headers.get('content-type')||'video/mp4'});
+        if(Number.isSafeInteger(size)&&size>0){
+          headers.set('Content-Length',String(size));headers.set('Accept-Ranges','bytes');
+        }
+        return new Response(saved.body,{status:200,headers});
+      }
+      const match=/^bytes=(\d*)-(\d*)$/.exec(range);
+      if(!match||(!match[1]&&!match[2]))return new Response(null,{status:416,headers:{'Content-Range':`bytes */${size}`}});
+      const start=match[1]?Number(match[1]):Math.max(0,size-Number(match[2]));
+      const end=match[1]&&match[2]?Math.min(size-1,Number(match[2])):size-1;
+      if(!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start>=size||end<start)
+        return new Response(null,{status:416,headers:{'Content-Range':`bytes */${size}`}});
+      const reader=saved.body.getReader();let offset=0;
+      const stream=new ReadableStream({
+        async pull(controller){
+          try{
+            while(true){
+              const {value,done}=await reader.read();
+              if(done){controller.close();return}
+              const from=Math.max(0,start-offset),to=Math.min(value.byteLength,end-offset+1);
+              offset+=value.byteLength;
+              if(to>from)controller.enqueue(value.subarray(from,to));
+              if(offset>end){controller.close();reader.cancel().catch(()=>{});return}
+              if(to>from)return;
+            }
+          }catch(error){controller.error(error)}
+        },
+        cancel(){return reader.cancel()}
+      });
+      const headers=new Headers({
+        'Content-Type':saved.headers.get('content-type')||'video/mp4',
+        'Accept-Ranges':'bytes','Content-Range':`bytes ${start}-${end}/${size}`,
+        'Content-Length':String(end-start+1)
+      });
+      return new Response(stream,{status:206,headers});
+    })());
+    return;
+  }
 
   const isNavigation=event.request.mode==='navigate';
   const isVersionedCode=/\.(?:js|css|webmanifest)$/.test(url.pathname);

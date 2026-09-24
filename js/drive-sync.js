@@ -183,10 +183,15 @@ async function performSync(){
   for(const sourceRoot of ROOTS){
     try{
       const payload=normalizeResponse(await requestCatalog(base,sourceRoot.id));
+      // Uma varredura incompleta não deve apagar episódios que já estavam salvos.
+      if(payload.errors.length){
+        errors=errors.concat(payload.errors);
+        folderStats.push({name:sourceRoot.name,found:payload.files.length,received:payload.files.length,added:0,removed:0,duplicates:0,error:'Varredura incompleta; catálogo anterior preservado'});
+        continue;
+      }
       const result=addFiles(payload.files,{...sourceRoot,name:payload.rootName||sourceRoot.name},{replace:true,persist:true});
       successes++;totalAdded+=result.added;totalRemoved+=result.removed;totalFound+=result.total;totalDuplicates+=result.duplicates;
       folderStats.push({name:sourceRoot.name,found:result.total,received:result.received,added:result.added,removed:result.removed,duplicates:result.duplicates});
-      if(payload.errors.length)errors=errors.concat(payload.errors);
     }catch(e){errors.push({name:sourceRoot.name,error:String(e)});folderStats.push({name:sourceRoot.name,found:0,added:0,removed:0,duplicates:0,error:String(e)});console.warn('JogaHub Drive',sourceRoot.name,e)}
   }
   lastSuccess=successes>0;
