@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.3.10-tv';
+const SHELL = 'jogahub-1.3.11-tv';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
 
@@ -15,7 +15,7 @@ const SHELL_FILES = [
   './css/header-upgrade.css?v=131',
   './css/player6.css?v=60',
   './css/core-upgrades.css?v=132',
-  './css/tv-catalog.css?v=141',
+  './css/tv-catalog.css?v=142',
   './js/data-jogos.js?v=40',
   './js/data-links.js?v=48',
   './js/data-arcana.js?v=3',
@@ -28,7 +28,7 @@ const SHELL_FILES = [
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
   './js/app.js?v=139',
-  './js/tv-catalog.js?v=141',
+  './js/tv-catalog.js?v=142',
   './js/launcher-upgrade.js?v=127',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
