@@ -55,7 +55,8 @@ function installSearchClear(){
 }
 function installObserver(){
   const games=$('#games');if(!games)return;
-  new MutationObserver(()=>requestAnimationFrame(enhanceRenderedContent)).observe(games,{childList:true,subtree:true});
+  let pending=false;
+  new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;enhanceRenderedContent()})}).observe(games,{childList:true,subtree:true});
   enhanceImages(document);
   enhanceRenderedContent();
 }
@@ -79,7 +80,6 @@ function installUpdateNotice(){
 window.addEventListener('jogahub:viewchange',()=>{if(!restoringHistory)updateUrl('push');setTimeout(enhanceRenderedContent,0)});
 window.addEventListener('jogahub:drivesync',event=>{
   const d=event.detail||{};
-  if(typeof window.JOGAHUB_RENDER_CURRENT==='function')window.JOGAHUB_RENDER_CURRENT();
   let message=!d.success?'Falha ao atualizar o Drive':d.added?d.added+' novo(s) item(ns)':d.removed?d.removed+' item(ns) removido(s)':d.duplicates?d.duplicates+' duplicado(s) ocultado(s)':'Catálogo conferido';
   paintStatus(message);setTimeout(enhanceRenderedContent,0);
 });

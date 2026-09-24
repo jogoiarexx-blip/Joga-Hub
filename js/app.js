@@ -52,7 +52,7 @@ rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.3.2';
+const CURRENT_SHELL_CACHE = 'jogahub-1.3.3';
 const CURRENT_CONTENT_CACHE = 'jogahub-1.3.2-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
@@ -293,7 +293,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.3.2</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.3.3</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}
@@ -997,7 +997,8 @@ async function loadArchiveJackieChan(){
   try{
     const res=await fetch(`https://archive.org/advancedsearch.php?${params.toString()}`,{mode:'cors',cache:'no-store'});
     if(!res.ok) throw new Error(`Archive Jackie HTTP ${res.status}`);
-    const docs=(await res.json())?.response?.docs||[];    const existing=new Set(ITEMS.map(i=>i.archiveId||i.id));
+    const docs=(await res.json())?.response?.docs||[];
+    const existing=new Set(ITEMS.map(i=>i.archiveId||i.id));
     let ep=2;
     const additions=[];
     for(const d of docs){
@@ -1180,8 +1181,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('downloadsModal')?.addEventListener('click',e=>{if(e.target.id==='downloadsModal')e.currentTarget.hidden=true;const b=e.target.closest('[data-remove-media]');if(b)removeMediaDownload(b.dataset.removeMedia)});
   syncNavigation();
   const initialSearch=initialParams.get('q');if(initialSearch){document.getElementById('search').value=initialSearch;applyFilters()}
-  let searchFrame=0;
-  document.getElementById('search').addEventListener('input',()=>{cancelAnimationFrame(searchFrame);searchFrame=requestAnimationFrame(applyFilters)});
+  let searchTimer=0;
+  document.getElementById('search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(applyFilters,120)});
   document.getElementById('typeTabs').addEventListener('click', e => {
     const btn=e.target.closest('.type-btn'); if(!btn) return;
     setView(btn.dataset.type);

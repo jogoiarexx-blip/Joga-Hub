@@ -1,3 +1,11 @@
+## Versão 1.3.3 — desempenho e funcionamento
+
+- Busca com pequeno atraso para evitar redesenhar o catálogo em cada tecla.
+- Sincronização do Drive sem redesenhos e consultas duplicadas; falhas de atualização são indicadas no painel.
+- Instalação offline com quatro downloads simultâneos; páginas essenciais disponíveis sem rede.
+- Arquivos baixados explicitamente são consultados no cache offline, preservando downloads anteriores.
+- Navegação offline não substitui páginas internas ausentes pela página inicial.
+
 # JogaHub 1.3.2
 
 Central de jogos, filmes, séries, animes, TV e rádios para GitHub Pages.

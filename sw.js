@@ -1,14 +1,11 @@
-const SHELL = 'jogahub-1.3.2';
+const SHELL = 'jogahub-1.3.3';
 const CONTENT = 'jogahub-1.3.2-content';
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
 // armazenados sob demanda, evitando um download inicial de quase 9 MB.
 const SHELL_FILES = [
-  './',
   './index.html',
-  './instalar.html',
   './link-player.html',
-  './install-game.html',
   './manifest.webmanifest?v=142',
   './css/style.css?v=147',
   './css/hud-pro.css?v=125',
@@ -23,17 +20,17 @@ const SHELL_FILES = [
   './js/data-filmes.js?v=132',
   './js/data-drive-filmes.js?v=6',
   './js/drive-snapshot.js?v=2',
-  './js/drive-sync.js?v=10',
-  './js/site-upgrades.js?v=4',
+  './js/drive-sync.js?v=12',
+  './js/site-upgrades.js?v=5',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=132',
+  './js/app.js?v=133',
   './js/launcher-upgrade.js?v=126',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
   './js/header-upgrade.js?v=131',
-  './js/core-upgrades.js?v=131',
+  './js/core-upgrades.js?v=132',
   './assets/favicon.png',
   './assets/logo.webp',
   './assets/icon-192.png',
@@ -43,11 +40,14 @@ const SHELL_FILES = [
 self.addEventListener('install', event => {
   event.waitUntil((async()=>{
     const cache=await caches.open(SHELL);
-    await Promise.all(SHELL_FILES.map(async url=>{
-      try{
-        const response=await fetch(url,{cache:'reload'});
-        if(response.ok) await cache.put(url,response);
-      }catch(_){ /* Um recurso opcional não deve impedir a instalação. */ }
+    // Limita as solicitações simultâneas, especialmente em conexões móveis.
+    let next=0;
+    await Promise.all(Array.from({length:Math.min(4,SHELL_FILES.length)},async()=>{
+      while(next<SHELL_FILES.length){
+        const url=SHELL_FILES[next++];
+        try{const response=await fetch(url,{cache:'reload'});if(response.ok)await cache.put(url,response)}
+        catch(_){ /* Falhas isoladas não impedem a instalação. */ }
+      }
     }));
     await self.skipWaiting();
   })());
@@ -72,6 +72,8 @@ self.addEventListener('fetch', event => {
   const isVersionedCode=/\.(?:js|css|webmanifest)$/.test(url.pathname);
   if(isNavigation){
     event.respondWith((async()=>{
+      const downloaded=await (await caches.open(CONTENT)).match(event.request);
+      if(downloaded)return downloaded;
       const controller=typeof AbortController==='function'?new AbortController():null;
       const timer=controller?setTimeout(()=>controller.abort(),3500):0;
       try{
@@ -79,7 +81,7 @@ self.addEventListener('fetch', event => {
         if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(event.request,fresh.clone());}
         return fresh;
       }catch(_){
-        return (await caches.match(event.request)) || await caches.match('./index.html') || Response.error();
+        return (await caches.match(event.request)) || ((url.pathname===new URL('./',self.registration.scope).pathname||url.pathname===new URL('./index.html',self.registration.scope).pathname)?await caches.match('./index.html'):null) || Response.error();
       }finally{if(timer)clearTimeout(timer)}
     })());
     return;
@@ -93,18 +95,21 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Imagens e fontes usam cache-first e passam a ficar offline depois do uso.
-  if(/\.(?:webp|png|svg|woff2?|ttf|otf)$/.test(url.pathname)){
-    event.respondWith((async()=>{
+  // Downloads explícitos precisam ser encontrados também quando o aparelho está offline.
+  event.respondWith((async()=>{
+    const content=await caches.open(CONTENT);
+    const downloaded=await content.match(event.request);
+    if(downloaded)return downloaded;
+    const isImage=/\.(?:webp|png|svg|woff2?|ttf|otf)$/.test(url.pathname);
+    if(isImage){
       const cached=await caches.match(event.request);
-      if(cached) return cached;
-      try{
-        const fresh=await fetch(event.request);
-        if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(event.request,fresh.clone());}
-        return fresh;
-      }catch(_){return Response.error();}
-    })());
-  }
+      if(cached)return cached;
+      try{const fresh=await fetch(event.request);if(fresh.ok){const shell=await caches.open(SHELL);await shell.put(event.request,fresh.clone())}return fresh}catch(_){return Response.error()}
+    }
+    return fetch(event.request);
+  })());
+  return;
+
 });
 
 self.addEventListener('message', event => {
