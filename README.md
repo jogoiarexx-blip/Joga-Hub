@@ -1,3 +1,9 @@
+## Versão 1.3.8 — carregamento da fonte e capas
+
+- Fonte Google declarada diretamente no HTML com conexões antecipadas para os servidores de CSS e arquivos de fonte; o `@import` em `style.css` foi removido.
+- Capas e miniaturas com carregamento lazy declaram `decoding="async"` no HTML gerado, antes da melhoria adicional aplicada pelo script de interface.
+- CSS e scripts afetados têm URLs versionadas; o cache do Service Worker foi atualizado.
+
 ## Versão 1.3.7 — filmes completos no player
 
 - Removidos os sete atalhos de assinatura adicionados por engano na versão anterior.

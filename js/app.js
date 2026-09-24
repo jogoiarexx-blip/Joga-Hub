@@ -123,7 +123,7 @@ async function loadRadios(force=false){
   try{const r=await fetch(u.toString(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();RADIO_STATIONS=(Array.isArray(data)?data:[]).filter(x=>/^https:\/\//i.test(radioStationUrl(x)));radioLoaded=true;return RADIO_STATIONS;}catch(e){RADIO_STATIONS=[];radioLoaded=false;return [];}
 }
 function radioCardHTML(st){
-  const icon=st.favicon&&/^https:\/\//i.test(st.favicon)?`<img src="${escapeHTML(st.favicon)}" alt="" loading="lazy" onerror="this.style.display='none'">`:'<span>📻</span>';
+  const icon=st.favicon&&/^https:\/\//i.test(st.favicon)?`<img src="${escapeHTML(st.favicon)}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'">`:'<span>📻</span>';
   return `<article class="radio-card"><div class="radio-art">${icon}</div><div class="radio-copy"><h3>${escapeHTML(st.name||'Rádio')}</h3><p>${escapeHTML((st.tags||'Rádio online').split(',').slice(0,4).join(' • '))}</p><small>${escapeHTML([st.state,st.codec,st.bitrate?st.bitrate+' kbps':''].filter(Boolean).join(' • '))}</small></div><div class="radio-actions"><button type="button" data-radio-play="${escapeHTML(st.stationuuid||'')}">▶ Ouvir</button>${st.homepage?`<a href="${escapeHTML(st.homepage)}" target="_blank" rel="noopener">site ↗</a>`:''}</div></article>`;
 }
 async function renderRadio(){
@@ -292,7 +292,7 @@ function homeTile(item, label=''){
   const p=movieProgress(item), state=item.type==='filme'?movieWatchState(item):null;
   const meta=item.type==='filme'?(item.seriesTitle||item.title):item.title;
   return `<a class="home-tile" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)}>
-    <div class="home-tile-art">${item.thumb?`<img src="${escapeHTML(item.thumb)}" alt="${escapeHTML(meta)}" loading="lazy">`:`<span>${item.type==='filme'?'🎬':'🎮'}</span>`}<i>${item.type==='filme'?(isCatalogExternal(item)?'↗':'▶'):'🎮'}</i>${p&&!p.episodeOnly?`<b style="width:${Math.round(p.time/p.duration*100)}%"></b>`:''}</div>
+    <div class="home-tile-art">${item.thumb?`<img src="${escapeHTML(item.thumb)}" alt="${escapeHTML(meta)}" loading="lazy" decoding="async">`:`<span>${item.type==='filme'?'🎬':'🎮'}</span>`}<i>${item.type==='filme'?(isCatalogExternal(item)?'↗':'▶'):'🎮'}</i>${p&&!p.episodeOnly?`<b style="width:${Math.round(p.time/p.duration*100)}%"></b>`:''}</div>
     <small>${escapeHTML(label|| (item.type==='filme'?'Assistir':'Jogar'))}</small><strong>${escapeHTML(meta)}</strong>${item.type==='filme'?`<em class="home-imdb"><b>IMDb</b> ${imdbRating(item)?imdbRating(item).toFixed(1):'—'}</em>`:''}${state?`<em class="home-watch-state">${escapeHTML(state.label)}</em>`:''}
   </a>`;
 }
@@ -408,7 +408,7 @@ function cardHTML(item){
   const favorites = loadFavorites();
   const isFav = favorites.has(item.id);
   const thumb = item.thumb
-    ? `<div class="card-thumb"><img src="${escapeHTML(item.thumb)}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy"></div>`
+    ? `<div class="card-thumb"><img src="${escapeHTML(item.thumb)}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy" decoding="async"></div>`
     : `<div class="card-thumb card-thumb-placeholder"><span>${meta.icon}</span></div>`;
   const onlineBadge = (isExternalItem(item) || item.archiveId || item.youtubePlaylistId || item.youtubeId || item.driveFileId) ? `<span class="online-badge">🌐 online</span>` : '';
   const yearBadge = item.year ? `<span class="year-badge">${escapeHTML(item.year)}</span>` : '';
@@ -446,7 +446,7 @@ function movieCardHTML(item, compact=false){
   const drivePosterTitle=item.driveFileId?`<span class="drive-poster-title">${escapeHTML(item.seriesTitle || item.title)}</span>`:'';
   return `<article class="stream-card${compact?' compact':''}${item.driveFileId?' drive-card':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
     <a class="stream-poster" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)} aria-label="${isCatalogExternal(item)?'Onde assistir':'Assistir'} ${escapeHTML(item.title)}">
-      <img src="${escapeHTML(item.thumb || '')}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy">
+      <img src="${escapeHTML(item.thumb || '')}" alt="Capa de ${escapeHTML(item.title)}" loading="lazy" decoding="async">
       ${sourceBadge}${drivePosterTitle}
       <span class="stream-play">${isCatalogExternal(item)?'↗':'▶'}</span>
       ${imdbBadge(item,'poster-imdb')}${state?`<span class="stream-state${state.finished?' watched':''}">${state.label}</span>`:''}
@@ -470,7 +470,7 @@ function seriesCardHTML(group){
   const availability=first.availabilityStatus ? `<small class="series-availability">${escapeHTML(first.availabilityStatus)}</small>` : '';
   return `<article class="stream-card series-summary${catalogOnly?' catalog-only':''}" style="--accent:${first.accent || 'var(--gold)'}">
     <a class="stream-poster" href="${escapeHTML(itemHref(next))}"${itemLinkAttrs(next)} aria-label="${catalogOnly?'Onde assistir':'Abrir'} ${escapeHTML(group.title)}">
-      <img src="${escapeHTML(first.thumb || '')}" alt="Capa de ${escapeHTML(group.title)}" loading="lazy"><span class="stream-play">${catalogOnly?'↗':'▶'}</span>
+      <img src="${escapeHTML(first.thumb || '')}" alt="Capa de ${escapeHTML(group.title)}" loading="lazy" decoding="async"><span class="stream-play">${catalogOnly?'↗':'▶'}</span>
       <span class="series-count">${episodes ? `${episodes} ep.` : 'Série'}</span>
       ${catalogOnly?'<span class="catalog-badge">CATÁLOGO</span>':''}
     </a>

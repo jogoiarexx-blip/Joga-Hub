@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.3.7';
+const SHELL = 'jogahub-1.3.8';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
 
@@ -8,7 +8,7 @@ const SHELL_FILES = [
   './index.html',
   './link-player.html',
   './manifest.webmanifest?v=142',
-  './css/style.css?v=147',
+  './css/style.css?v=148',
   './css/hud-pro.css?v=125',
   './css/sidebar-upgrade.css?v=128',
   './css/responsive-layout.css?v=131',
@@ -26,8 +26,8 @@ const SHELL_FILES = [
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=137',
-  './js/launcher-upgrade.js?v=126',
+  './js/app.js?v=138',
+  './js/launcher-upgrade.js?v=127',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
   './js/header-upgrade.js?v=131',
