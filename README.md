@@ -1,3 +1,13 @@
+## Versão 1.3.11 — guia de programação e favoritos da TV
+
+- EPG brasileiro integrado à aba TV: mostra o programa que está passando agora e o próximo programa quando a grade estiver disponível.
+- Fonte principal do guia: IPTV-org EPG Brasil, com uma segunda grade brasileira como fallback.
+- O player exibe horário, programa atual, próximo programa e progresso aproximado da atração atual.
+- Cada canal ganhou favorito próprio, salvo localmente no aparelho.
+- Filtro **Favoritos** na TV mostra apenas os canais marcados.
+- Cards brasileiros com EPG disponível exibem **Agora** e **Próximo** sem abrir o player.
+- Atualizar a TV também atualiza a grade de programação.
+
 ## Versão 1.3.10 — TV com fallback automático
 
 - Canais duplicados entre as fontes agora preservam os sinais alternativos em vez de descartar as URLs extras.
