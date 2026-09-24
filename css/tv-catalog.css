@@ -1,0 +1,33 @@
+/* JogaHub TV Catalog 1.3.9 */
+.tv-catalog-wrap{padding-bottom:20px}
+.tv-catalog-hero{background:linear-gradient(135deg,rgba(227,27,35,.13),rgba(38,216,255,.07),rgba(122,92,255,.06))}
+.tv-live-dot{font:900 10px var(--font-mono);letter-spacing:.05em;color:#ff6670}
+.tv-catalog-controls{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(3,minmax(140px,.7fr)) auto;gap:10px;margin:0 0 12px}
+.tv-catalog-controls select,.tv-catalog-controls button,.tv-search{min-height:44px;border:1px solid rgba(255,255,255,.11);border-radius:13px;background:#0d111b;color:#fff}
+.tv-catalog-controls select{padding:0 11px;font:700 11px var(--font-mono);min-width:0}
+.tv-search{display:flex;align-items:center;gap:8px;padding:0 12px}
+.tv-search span{font-size:20px;color:#6fdcff}.tv-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#fff;font:600 13px var(--font-ui)}
+.tv-search input::placeholder{color:#727a8c}
+.tv-refresh-btn{padding:0 15px;font-weight:850;cursor:pointer}.tv-refresh-btn:hover{border-color:rgba(111,220,255,.45);background:#121927}.tv-refresh-btn:disabled{opacity:.6;cursor:wait}
+.tv-catalog-meta{margin:0 0 13px;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.035);color:var(--text-dim,#9da7b9);font:10px var(--font-mono)}
+.tv-catalog-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tv-channel-card{min-width:0;border:1px solid rgba(255,255,255,.08);border-radius:17px;background:linear-gradient(180deg,rgba(18,24,38,.96),rgba(10,13,22,.96));overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.2)}
+.tv-channel-card:hover{border-color:rgba(83,207,255,.30);transform:translateY(-1px)}
+.tv-channel-main{width:100%;min-width:0;display:grid;grid-template-columns:58px minmax(0,1fr) 34px;align-items:center;gap:11px;padding:12px;border:0;background:transparent;color:#fff;text-align:left;cursor:pointer}
+.tv-channel-logo{width:58px;height:58px;border-radius:13px;overflow:hidden;display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,rgba(38,216,255,.23),rgba(122,92,255,.12),#080d17);font-size:24px}
+.tv-channel-logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.tv-channel-copy{min-width:0}.tv-channel-copy strong,.tv-channel-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tv-channel-copy strong{font-size:13px}.tv-channel-copy small{margin-top:5px;color:#9ba8bc;font-size:10px}
+.tv-channel-copy em{display:flex;gap:5px;align-items:center;min-width:0;margin-top:7px;font-style:normal}.tv-chip{display:inline-flex;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 6px;border-radius:999px;background:rgba(38,216,255,.10);color:#7cddff;font:800 8px var(--font-mono)}.tv-chip.source{background:rgba(122,92,255,.12);color:#c1b8ff}
+.tv-play-icon{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#e31b23,#ff5e68);box-shadow:0 8px 20px rgba(227,27,35,.24);font-size:11px}
+.tv-load-more{display:block;margin:18px auto 0;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:#121827;color:#fff;padding:11px 18px;font-weight:850;cursor:pointer}
+.tv-load-more[hidden]{display:none}.tv-catalog-loading{grid-column:1/-1;padding:42px 16px;text-align:center;color:#9ba8bc}
+.tv-player-modal{position:fixed;inset:0;z-index:2500;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);display:grid;place-items:center;padding:16px}.tv-player-modal[hidden]{display:none}
+.tv-player-shell{width:min(1080px,100%);max-height:calc(100vh - 24px);overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:22px;background:#080b12;box-shadow:0 30px 100px rgba(0,0,0,.72)}
+.tv-player-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:16px 18px}.tv-player-head h2{margin:3px 0 4px;font-size:clamp(1.2rem,3vw,1.8rem)}.tv-player-head p{margin:0;color:#9ba8bc;font-size:12px}.tv-player-head button{width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);color:#fff;cursor:pointer}
+.tv-player-stage{position:relative;aspect-ratio:16/9;background:#000}.tv-player-stage video,.tv-player-stage iframe{width:100%;height:100%;border:0;display:block;background:#000}.tv-player-stage iframe{display:none}
+.tv-player-status{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);max-width:calc(100% - 30px);padding:9px 12px;border-radius:10px;background:rgba(4,8,14,.88);color:#dbe8f5;text-align:center;font:10px var(--font-mono);pointer-events:none}.tv-player-status[hidden]{display:none}.tv-player-status.error{border:1px solid rgba(255,87,97,.35);color:#ffadb3}
+.tv-player-actions{display:flex;gap:10px;padding:14px 18px 18px}.tv-player-actions button,.tv-player-actions a{flex:1;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;background:#111827;color:#fff;text-decoration:none;text-align:center;font:800 10px var(--font-mono);cursor:pointer}.tv-player-actions a{background:linear-gradient(90deg,#1a9fc9,#675cff);border:0}
+body.tv-player-open{overflow:hidden}
+@media(max-width:1050px){.tv-catalog-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tv-catalog-controls{grid-template-columns:minmax(200px,1fr) repeat(2,minmax(130px,.65fr));}.tv-refresh-btn{grid-column:auto}.tv-catalog-controls #tvSourceFilter{grid-column:span 2}}
+@media(max-width:760px){.tv-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tv-catalog-controls{grid-template-columns:1fr 1fr}.tv-search{grid-column:1/-1}.tv-catalog-controls #tvSourceFilter{grid-column:auto}.tv-refresh-btn{grid-column:auto}.tv-channel-main{grid-template-columns:50px minmax(0,1fr) 30px;padding:10px;gap:9px}.tv-channel-logo{width:50px;height:50px}.tv-player-modal{padding:6px}.tv-player-shell{border-radius:16px}.tv-player-actions{padding:10px;flex-direction:column}}
+@media(max-width:480px){.tv-catalog-grid{grid-template-columns:1fr}.tv-catalog-controls{grid-template-columns:1fr}.tv-search,.tv-catalog-controls #tvSourceFilter{grid-column:auto}.tv-channel-main{grid-template-columns:58px minmax(0,1fr) 34px}.tv-channel-logo{width:58px;height:58px}}
