@@ -1,3 +1,10 @@
+## Versão 1.3.4 — carregamento e catálogo
+
+- Busca externa de filmes e séries começa quando o usuário abre uma área de mídia; a página inicial evita essas quatro consultas.
+- Itens recebidos de duas fontes de busca com o mesmo arquivo do Internet Archive aparecem uma única vez.
+- Atualizações simultâneas do catálogo compartilham um redesenho por quadro.
+- O cache do player identifica a página pelo caminho; episódios com parâmetros diferentes abrem offline sem guardar cópias do mesmo HTML.
+
 ## Versão 1.3.3 — desempenho e funcionamento
 
 - Busca com pequeno atraso para evitar redesenhar o catálogo em cada tecla.

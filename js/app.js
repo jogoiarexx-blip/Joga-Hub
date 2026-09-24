@@ -36,10 +36,26 @@ function itemSearchIndex(item){
   return value;
 }
 function registerRuntimeItems(additions){
+  const seenIds=new Set([...ITEMS,...RUNTIME_ITEMS].map(item=>item.id));
+  const seenMedia=new Set([...ITEMS,...RUNTIME_ITEMS].map(item=>
+    item.archiveId?'archive:'+item.archiveId:item.youtubeId?'youtube:'+item.youtubeId:'').filter(Boolean));
+  let changed=false;
   for(const item of additions||[]){
-    if(item?.id&&!RUNTIME_ITEMS.some(existing=>existing.id===item.id))RUNTIME_ITEMS.push(item);
+    const mediaKey=item?.archiveId?'archive:'+item.archiveId:item?.youtubeId?'youtube:'+item.youtubeId:'';
+    if(!item?.id||seenIds.has(item.id)||(mediaKey&&seenMedia.has(mediaKey)))continue;
+    RUNTIME_ITEMS.push(item);seenIds.add(item.id);
+    if(mediaKey)seenMedia.add(mediaKey);
+    changed=true;
   }
-  rebuildCatalogItems();
+  if(changed)scheduleCatalogRefresh();
+}
+let catalogRefreshFrame=0;
+function scheduleCatalogRefresh(){
+  if(catalogRefreshFrame)return;
+  catalogRefreshFrame=requestAnimationFrame(()=>{
+    catalogRefreshFrame=0;
+    window.JOGAHUB_RENDER_CURRENT();
+  });
 }
 function rebuildCatalogItems(){
   SEARCH_INDEX.clear();
@@ -52,7 +68,7 @@ rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.3.3';
+const CURRENT_SHELL_CACHE = 'jogahub-1.3.4';
 const CURRENT_CONTENT_CACHE = 'jogahub-1.3.2-content';
 let deferredInstallPrompt = null;
 let activeType = 'todos';
@@ -293,7 +309,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.3.3</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.3.4</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}
@@ -867,7 +883,7 @@ function syncNavigation(){
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===activeType));
   document.querySelectorAll('.type-btn').forEach(b=>{const on=b.dataset.type===activeType;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
 }
-function setView(view,options={}){activeType=view||'todos';if(activeType==='radio'&&!radioFeatureEnabled())activeType='todos';renderTypeTabs();renderGenreFilters();renderFeatured();if(!['tv','radio'].includes(activeType)){renderHomeDashboard();}else{const h=document.getElementById('homeDashboard');if(h)h.hidden=true;}const b=document.getElementById('banner');if(b)b.hidden=false;syncNavigation();applyFilters();if(!options.noScroll)window.scrollTo({top:0,behavior:'smooth'});window.dispatchEvent(new CustomEvent('jogahub:viewchange',{detail:{view:activeType}}));}
+function setView(view,options={}){activeType=view||'todos';if(activeType==='radio'&&!radioFeatureEnabled())activeType='todos';renderTypeTabs();renderGenreFilters();renderFeatured();if(!['tv','radio'].includes(activeType)){renderHomeDashboard();}else{const h=document.getElementById('homeDashboard');if(h)h.hidden=true;}const b=document.getElementById('banner');if(b)b.hidden=false;syncNavigation();applyFilters();loadMediaDiscoveriesOnce();if(!options.noScroll)window.scrollTo({top:0,behavior:'smooth'});window.dispatchEvent(new CustomEvent('jogahub:viewchange',{detail:{view:activeType}}));}
 window.JOGAHUB_RENDER_CURRENT=function(){
   rebuildCatalogItems();renderTypeTabs();renderGenreFilters();renderFeatured();
   if(!['tv','radio'].includes(activeType))renderHomeDashboard();
@@ -946,7 +962,6 @@ async function loadArchiveOpenDubbed(){
     }));
     if(additions.length){
       registerRuntimeItems(additions);
-      renderTypeTabs(); renderGenreFilters(); renderFeatured(); renderHomeDashboard(); applyFilters();
     }
     document.documentElement.dataset.archivePt = additions.length ? String(additions.length) : '0';
   }catch(err){
@@ -981,7 +996,7 @@ async function loadArchivePicaPau(){
       sourceLabel:archiveHasOpenLicense(d)?'Internet Archive — licença aberta/domínio público':'Internet Archive — publicação pública; direitos não verificados',
       classicTv:true, nostalgiaTags:['Pica-Pau','Internet Archive','desenho clássico','português']
     }));
-    if(additions.length){ registerRuntimeItems(additions); renderTypeTabs(); renderGenreFilters(); renderFeatured(); renderHomeDashboard(); applyFilters(); }
+    if(additions.length) registerRuntimeItems(additions);
     document.documentElement.dataset.archivePicaPau=String(additions.length);
   }catch(err){ console.warn('Archive Pica-Pau:',err); document.documentElement.dataset.archivePicaPau='erro'; }
 }
@@ -1021,7 +1036,7 @@ async function loadArchiveJackieChan(){
       });
       existing.add(d.identifier);
     }
-    if(additions.length){registerRuntimeItems(additions);renderTypeTabs();renderGenreFilters();renderFeatured();renderHomeDashboard();applyFilters();}
+    if(additions.length) registerRuntimeItems(additions);
     document.documentElement.dataset.archiveJackie=String(additions.length);
   }catch(err){console.warn('Archive Jackie Chan:',err);document.documentElement.dataset.archiveJackie='erro';}
 }
@@ -1053,10 +1068,24 @@ async function loadYouTubeJackieChanDiscoveries(){
         sourceUrl:`https://www.youtube.com/watch?v=${vid}`,sourceLabel:`YouTube — ${r.snippet?.channelTitle||'publicação pública'}; direitos não verificados`,nostalgiaTags:['Jackie Chan','YouTube','filme anterior a 2000']});
       existingIds.add(vid);
     }
-    if(additions.length){registerRuntimeItems(additions);renderTypeTabs();renderGenreFilters();renderFeatured();renderHomeDashboard();applyFilters();}
+    if(additions.length) registerRuntimeItems(additions);
     document.documentElement.dataset.youtubeJackie=String(additions.length);
   }catch(err){console.warn('YouTube Jackie Chan:',err);}
 }
+
+let mediaDiscoveryStarted=false;
+function loadMediaDiscoveriesOnce(){
+  if(mediaDiscoveryStarted||!['filme','serie','anime'].includes(activeType)||!navigator.onLine)return;
+  mediaDiscoveryStarted=true;
+  // A home carrega primeiro; pesquisas externas começam apenas na área de mídia.
+  setTimeout(()=>{
+    loadArchiveOpenDubbed();
+    loadArchivePicaPau();
+    loadArchiveJackieChan();
+    loadYouTubeJackieChanDiscoveries();
+  },0);
+}
+window.addEventListener('online',loadMediaDiscoveriesOnce);
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', async () => {
@@ -1127,10 +1156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTypeTabs();
   renderGenreFilters();
   applyFilters();
-  loadArchiveOpenDubbed();
-  loadArchivePicaPau();
-  loadArchiveJackieChan();
-  loadYouTubeJackieChanDiscoveries();
+  loadMediaDiscoveriesOnce();
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   setJogaHubInstallState(isStandalone ? 'installed' : 'available');
   getJogaHubInstallButtons().forEach(btn => btn.addEventListener('click', installJogaHub));

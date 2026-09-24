@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.3.3';
+const SHELL = 'jogahub-1.3.4';
 const CONTENT = 'jogahub-1.3.2-content';
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
@@ -25,7 +25,7 @@ const SHELL_FILES = [
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=133',
+  './js/app.js?v=134',
   './js/launcher-upgrade.js?v=126',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
@@ -74,14 +74,16 @@ self.addEventListener('fetch', event => {
     event.respondWith((async()=>{
       const downloaded=await (await caches.open(CONTENT)).match(event.request);
       if(downloaded)return downloaded;
+      // Em páginas estáticas, ?id= e ?view= alteram a tela, mas não o HTML.
+      const pageKey=new URL(url.pathname,self.location.origin).href;
       const controller=typeof AbortController==='function'?new AbortController():null;
       const timer=controller?setTimeout(()=>controller.abort(),3500):0;
       try{
         const fresh=await fetch(event.request,{cache:'no-store',...(controller?{signal:controller.signal}:{})});
-        if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(event.request,fresh.clone());}
+        if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(pageKey,fresh.clone());}
         return fresh;
       }catch(_){
-        return (await caches.match(event.request)) || ((url.pathname===new URL('./',self.registration.scope).pathname||url.pathname===new URL('./index.html',self.registration.scope).pathname)?await caches.match('./index.html'):null) || Response.error();
+        return (await caches.match(pageKey)) || ((url.pathname===new URL('./',self.registration.scope).pathname)?await caches.match('./index.html'):null) || Response.error();
       }finally{if(timer)clearTimeout(timer)}
     })());
     return;
