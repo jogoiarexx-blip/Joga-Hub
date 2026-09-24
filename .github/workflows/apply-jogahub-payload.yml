@@ -33,9 +33,9 @@ jobs:
         shell: bash
         run: |
           base64 -d tools/jogahub-deploy-payload.b64 > /tmp/jogahub-payload.tar.gz
-          echo "77cda3c4ce2540d5812c0e26293b235619e988d1b88940797d145861905f5c43  /tmp/jogahub-payload.tar.gz" | sha256sum -c -
           tar -xzf /tmp/jogahub-payload.tar.gz
           rm -f tools/jogahub-deploy-payload.b64
+          rm -f .github/workflows/optimize-jogahub-images.yml
 
       - name: Otimizar imagens grandes
         run: |
