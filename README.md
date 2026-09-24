@@ -1,3 +1,11 @@
+## Versão 1.3.10 — TV com fallback automático
+
+- Canais duplicados entre as fontes agora preservam os sinais alternativos em vez de descartar as URLs extras.
+- O card informa quando um canal possui mais de um sinal disponível.
+- Se um stream HLS falhar, o player tenta uma reconexão curta e depois avança automaticamente para a próxima fonte do mesmo canal.
+- Falhas de mídia, CORS, páginas sem player direto e streams incompatíveis também tentam a próxima alternativa antes de exibir erro.
+- O botão **Tentar novamente** volta ao primeiro sinal do canal.
+
 ## Versão 1.3.9 — catálogo de TV ao vivo
 
 - Nova aba de TV com catálogo agregado de fontes públicas e gratuitas: Free-TV/IPTV, IPTV-org Brasil e IPTV-org mundial por categorias.
