@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.3.9';
+const SHELL = 'jogahub-1.3.9-tv2';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
 
@@ -28,7 +28,7 @@ const SHELL_FILES = [
   './js/data-tv.js?v=125',
   './js/offline-assets.js?v=40',
   './js/app.js?v=139',
-  './js/tv-catalog.js?v=139',
+  './js/tv-catalog.js?v=140',
   './js/launcher-upgrade.js?v=127',
   './js/sidebar-upgrade.js?v=128',
   './js/responsive-layout.js?v=131',
