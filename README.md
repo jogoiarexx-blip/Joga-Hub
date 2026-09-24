@@ -1,9 +1,9 @@
-## Versão 1.3.6 — filmes recentes em streaming
+## Versão 1.3.7 — filmes completos no player
 
-- Sete filmes de 2021 a 2024 com notas IMDb verificadas em 24/09/2026, áudio ou legendas em português e links oficiais da Netflix e Apple TV.
-- Fileira própria no catálogo, com identificação da plataforma e aviso de assinatura. Os links abrem o serviço oficial; os vídeos não são importados para o Drive.
-- Capas tipográficas locais em SVG, sem depender de servidores de imagens e sem reproduzir cartazes de terceiros.
-- A disponibilidade dos títulos, idiomas, qualidade de reprodução e valores das assinaturas podem variar conforme região, plano e data.
+- Removidos os sete atalhos de assinatura adicionados por engano na versão anterior.
+- Seis longas dublados com notas 7,1–7,8 e publicações oficiais do Filmelier TV no YouTube entram na fileira **Filmes completos para assistir aqui**.
+- Ao tocar na capa, o vídeo abre no player interno do JogaHub, com a integração existente do YouTube. O vídeo permanece hospedado pelo canal; a incorporação depende da permissão e disponibilidade definidas pelo YouTube.
+- Capas tipográficas locais em SVG sem depender de terceiros; notas conferidas em 24/09/2026.
 
 ## Versão 1.3.5 — player offline e sincronização
 
