@@ -114,8 +114,9 @@ function countryFrom(attrs,source){
   if(m) return m[1].toUpperCase();
   return source.country||'';
 }
-function categoryFrom(attrs){
+function categoryFrom(attrs,source){
   var raw=String(attrs['group-title']||'').split(/[;,|]/)[0].trim();
+  if(source&&source.id==='free-tv') return 'Geral';
   var key=norm(raw).replace(/[^a-z]+/g,'');
   if(!key) return 'Outros';
   var aliases={
@@ -170,7 +171,7 @@ function parseM3U(text,source){
       var tvgId=attrs2['tvg-id']||'';
       var title=cleanTitle(info.title);
       var country=countryFrom(attrs2,source);
-      var category=categoryFrom(attrs2);
+      var category=categoryFrom(attrs2,source);
       var logo=attrs2['tvg-logo']||'';
       var key=tvgId?('id:'+norm(tvgId)):('name:'+compactName(title));
       out.push({
@@ -333,7 +334,7 @@ function renderLoadingState(){
 }
 function controlsHTML(){
   var cats=categoryOptions().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
-  var countries=countryOptions().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
+  var countries=countryOptions().filter(function(x){return x!=='BR';}).map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
   var sources=sourceOptions().map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>';}).join('');
   return '<div class="tv-catalog-controls">'+
     '<label class="tv-search"><span>⌕</span><input id="tvCatalogSearch" type="search" autocomplete="off" placeholder="buscar canal, categoria ou país..."></label>'+
@@ -444,6 +445,37 @@ function setStatus(text,error){
   var el=document.getElementById('tvPlayerStatus');if(!el)return;
   el.textContent=text||'';el.classList.toggle('error',!!error);el.hidden=!text;
 }
+function pageEmbedUrl(url){
+  try{
+    var u=new URL(url);
+    var host=u.hostname.replace(/^www\./,'').toLowerCase();
+    if(host==='twitch.tv'){
+      var channel=u.pathname.split('/').filter(Boolean)[0];
+      if(channel)return 'https://player.twitch.tv/?channel='+encodeURIComponent(channel)+'&parent='+encodeURIComponent(location.hostname)+'&autoplay=false';
+    }
+    if(host==='youtube.com'||host==='m.youtube.com'){
+      var v=u.searchParams.get('v');
+      if(v)return 'https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v)+'?autoplay=0&rel=0';
+      var m=u.pathname.match(/^\/channel\/(UC[\w-]+)\/live\/?$/i);
+      if(m)return 'https://www.youtube-nocookie.com/embed/live_stream?channel='+encodeURIComponent(m[1])+'&autoplay=0&rel=0';
+    }
+    if(host==='youtu.be'){
+      var id=u.pathname.split('/').filter(Boolean)[0];
+      if(id)return 'https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=0&rel=0';
+    }
+    if(host==='dailymotion.com'){
+      var dm=u.pathname.match(/\/video\/([^_/?]+)/i);
+      if(dm)return 'https://www.dailymotion.com/embed/video/'+encodeURIComponent(dm[1]);
+    }
+  }catch(_){}
+  return '';
+}
+function knownWebPageUrl(url){
+  try{
+    var h=new URL(url).hostname.replace(/^www\./,'').toLowerCase();
+    return h==='youtube.com'||h==='m.youtube.com'||h==='youtu.be'||h==='twitch.tv'||h==='dailymotion.com';
+  }catch(_){return false;}
+}
 async function playStream(ch){
   var video=document.getElementById('tvVideo');
   var iframe=document.getElementById('tvIframe');
@@ -495,8 +527,11 @@ function startChannel(ch){
   var video=document.getElementById('tvVideo');
   var iframe=document.getElementById('tvIframe');
   destroyHls();
-  if(ch.embed){
-    video.style.display='none';iframe.style.display='block';iframe.src=ch.embed;setStatus('',false);
+  var pageEmbed=ch.stream?pageEmbedUrl(ch.stream):'';
+  if(ch.embed||pageEmbed){
+    video.style.display='none';iframe.style.display='block';iframe.src=ch.embed||pageEmbed;setStatus('',false);
+  }else if(ch.stream&&knownWebPageUrl(ch.stream)){
+    video.style.display='none';iframe.style.display='none';setStatus('Este canal usa uma página oficial que não permite player direto. Toque em Abrir transmissão.',true);
   }else{
     playStream(ch);
   }
