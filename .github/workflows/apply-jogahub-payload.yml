@@ -1,11 +1,9 @@
 name: Aplicar pacote JogaHub
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'tools/jogahub-deploy-payload.b64'
-      - '.github/workflows/apply-jogahub-payload.yml'
+  workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
@@ -16,6 +14,7 @@ concurrency:
 
 jobs:
   apply:
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'DEPLOY JOGAHUB 1.3.3'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
