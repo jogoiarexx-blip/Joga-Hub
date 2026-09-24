@@ -1,4 +1,4 @@
-/* JogaHub 1.2.29 — painel lateral + layouts dedicados PC / Tablet / Celular */
+/* JogaHub 1.3.12 — painel lateral + layouts dedicados PC / Tablet / Celular */
 (() => {
   const KEY='jogahub.sidebar.collapsed.v1';
   const qs=(s,r=document)=>r.querySelector(s);
@@ -9,9 +9,11 @@
     filme:['🎬','Filmes','catálogo para assistir'],
     serie:['📺','Séries','maratonar agora'],
     anime:['🍥','Animes','coleção otaku'],
-    emulador:['🕹️','Emuladores','retrô e clássicos']
+    tv:['📡','TV ao Vivo','canais online'],
+    emulador:['🕹️','Emuladores','retrô e clássicos'],
+    radio:['📻','Rádios','estações online']
   };
-  const filterTitles={todos:'Explorar',jogo:'Categorias de jogos',filme:'Filtros de filmes',serie:'Filtros de séries',anime:'Filtros de animes',emulador:'Emuladores'};
+  const filterTitles={todos:'Explorar',jogo:'Categorias de jogos',filme:'Filtros de filmes',serie:'Filtros de séries',anime:'Filtros de animes',tv:'Canais ao vivo',emulador:'Emuladores',radio:'Rádios online'};
 
   function installResponsiveStyle(){
     if(qs('#jogahubResponsive129')) return;
@@ -171,7 +173,14 @@
   }
   function syncSidebar(){
     const view=currentView(); document.body.dataset.view=view;
-    qsa('.sidebar-view-btn').forEach(b=>b.classList.toggle('active',b.dataset.sidebarView===view));
+    qsa('.sidebar-view-btn').forEach(b=>{
+      b.classList.toggle('active',b.dataset.sidebarView===view);
+      if(b.dataset.sidebarView==='radio'){
+        let enabled=true;
+        try{if(typeof radioFeatureEnabled==='function')enabled=radioFeatureEnabled()}catch{}
+        b.hidden=!enabled;
+      }
+    });
     const h=qs('#sidebarFilterHead strong'); if(h)h.textContent=filterTitles[view]||'Explorar';
     const f=qs('#featuredLink'); if(f)f.dataset.bannerView=view;
   }
