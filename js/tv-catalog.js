@@ -1,4 +1,4 @@
-/* JogaHub TV Catalog 1.3.10
+/* JogaHub TV Catalog 1.3.11
    Agregador de playlists publicas/gratuitas para GitHub Pages.
    Fontes: Free-TV/IPTV e IPTV-org. */
 (function(){
@@ -31,6 +31,18 @@ const TV_SOURCES = [
     priority:20
   }
 ];
+
+const TV_EPG_SOURCES = [
+  {
+    label:'IPTV-org EPG Brasil',
+    url:'https://iptv-org.github.io/epg/guides/br/mi.tv.epg.xml'
+  },
+  {
+    label:'EPG Brasil fallback',
+    url:'https://raw.githubusercontent.com/iptv-com/epg/main/guides/brazil.xml'
+  }
+];
+const TV_FAVORITES_KEY='jogahub.tv.favorites.v1';
 
 const TV_CATEGORY_LABELS = {
   animation:'Animação',
@@ -77,7 +89,15 @@ const state = {
   activeChannel:null,
   rootChannel:null,
   candidates:[],
-  candidateIndex:0
+  candidateIndex:0,
+  onlyFavorites:false,
+  epgLoading:false,
+  epgLoaded:false,
+  epgError:'',
+  epgSource:'',
+  epgById:new Map(),
+  epgNameToId:new Map(),
+  epgPromise:null
 };
 
 function esc(v){
@@ -94,6 +114,23 @@ function compactName(v){
     .replace(/\b(?:1080p|720p|576p|480p|360p|hd|sd|fhd|uhd|4k)\b/g,' ')
     .replace(/[^a-z0-9]+/g,' ')
     .trim();
+}
+function loadTvFavorites(){
+  try{return new Set(JSON.parse(localStorage.getItem(TV_FAVORITES_KEY)||'[]'));}catch(_){return new Set();}
+}
+function saveTvFavorites(set){
+  try{localStorage.setItem(TV_FAVORITES_KEY,JSON.stringify(Array.from(set)));}catch(_){}
+}
+function channelFavoriteKey(c){
+  if(c&&c.tvgId)return 'id:'+norm(c.tvgId);
+  return 'name:'+compactName(c&&c.name)+'|'+String(c&&c.country||'').toUpperCase();
+}
+function isTvFavorite(c){return loadTvFavorites().has(channelFavoriteKey(c));}
+function toggleTvFavorite(c){
+  var fav=loadTvFavorites(),key=channelFavoriteKey(c);
+  if(fav.has(key))fav.delete(key);else fav.add(key);
+  saveTvFavorites(fav);
+  return fav.has(key);
 }
 function hash(str){
   var h=2166136261;
@@ -208,6 +245,133 @@ async function fetchText(url){
     if(timer)clearTimeout(timer);
   }
 }
+function parseXmltvDate(value){
+  var s=String(value||'').trim();
+  var m=s.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?(?:\s*([+-])(\d{2})(\d{2}))?/);
+  if(!m)return NaN;
+  var base=Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]),Number(m[5]),Number(m[6]||0));
+  if(m[7]){
+    var offset=(Number(m[8])*60+Number(m[9]||0))*60000;
+    base+=m[7]==='+'?-offset:offset;
+  }
+  return base;
+}
+function parseEpgXml(text){
+  var doc=new DOMParser().parseFromString(String(text||''),'application/xml');
+  if(doc.querySelector('parsererror'))throw new Error('XMLTV inválido');
+  var byId=new Map(),nameToId=new Map();
+  Array.from(doc.querySelectorAll('channel')).forEach(function(node){
+    var rawId=node.getAttribute('id')||'';
+    var id=norm(rawId);
+    if(!id)return;
+    var display=node.querySelector('display-name');
+    var name=display?display.textContent.trim():'';
+    if(name)nameToId.set(compactName(name),id);
+  });
+  var now=Date.now(),min=now-8*60*60*1000,max=now+48*60*60*1000;
+  Array.from(doc.querySelectorAll('programme')).forEach(function(node){
+    var id=norm(node.getAttribute('channel')||'');
+    var start=parseXmltvDate(node.getAttribute('start'));
+    var stop=parseXmltvDate(node.getAttribute('stop'));
+    if(!id||!Number.isFinite(start)||!Number.isFinite(stop)||stop<min||start>max)return;
+    var titleNode=node.querySelector('title');
+    var descNode=node.querySelector('desc');
+    var categoryNode=node.querySelector('category');
+    var item={
+      start:start,
+      stop:stop,
+      title:titleNode?titleNode.textContent.trim():'Programação',
+      desc:descNode?descNode.textContent.trim():'',
+      category:categoryNode?categoryNode.textContent.trim():''
+    };
+    if(!byId.has(id))byId.set(id,[]);
+    byId.get(id).push(item);
+  });
+  byId.forEach(function(list){list.sort(function(a,b){return a.start-b.start;});});
+  state.epgById=byId;state.epgNameToId=nameToId;
+}
+async function loadEpg(force){
+  if(state.epgLoaded&&!force)return true;
+  if(state.epgLoading&&state.epgPromise)return state.epgPromise;
+  state.epgLoading=true;state.epgError='';
+  state.epgPromise=(async function(){
+    var last='';
+    for(var i=0;i<TV_EPG_SOURCES.length;i++){
+      var source=TV_EPG_SOURCES[i];
+      try{
+        var xml=await fetchText(source.url);
+        parseEpgXml(xml);
+        state.epgLoaded=true;state.epgSource=source.label;state.epgError='';
+        return true;
+      }catch(err){last=String(err&&err.message||err);}
+    }
+    state.epgLoaded=false;state.epgSource='';state.epgError=last||'Guia indisponível';
+    return false;
+  })();
+  try{return await state.epgPromise;}finally{state.epgLoading=false;}
+}
+function epgIdForChannel(c){
+  var ids=[];
+  if(c&&c.tvgId)ids.push(c.tvgId);
+  (c&&c.alternates||[]).forEach(function(x){if(x.tvgId)ids.push(x.tvgId);});
+  for(var i=0;i<ids.length;i++){
+    var id=norm(ids[i]);if(state.epgById.has(id))return id;
+  }
+  var byName=state.epgNameToId.get(compactName(c&&c.name));
+  return byName&&state.epgById.has(byName)?byName:'';
+}
+function nowNextForChannel(c){
+  var id=epgIdForChannel(c);if(!id)return {now:null,next:null};
+  var list=state.epgById.get(id)||[],now=Date.now(),current=null,next=null;
+  for(var i=0;i<list.length;i++){
+    var p=list[i];
+    if(p.start<=now&&p.stop>now)current=p;
+    if(p.start>now){next=p;break;}
+  }
+  return {now:current,next:next};
+}
+function epgTime(ms){
+  if(!Number.isFinite(ms))return '';
+  try{return new Date(ms).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}catch(_){return '';}
+}
+function epgCardHTML(c){
+  var pair=nowNextForChannel(c);
+  if(!pair.now&&!pair.next)return '';
+  var nowLine=pair.now?('<span><b>Agora</b> '+esc(pair.now.title)+'</span>'):'';
+  var nextLine=pair.next?('<small><b>Próximo '+esc(epgTime(pair.next.start))+'</b> · '+esc(pair.next.title)+'</small>'):'';
+  return '<div class="tv-card-epg">'+nowLine+nextLine+'</div>';
+}
+function updatePlayerGuide(c){
+  var box=document.getElementById('tvPlayerGuide');if(!box)return;
+  var pair=nowNextForChannel(c||state.rootChannel);
+  var nowTitle=document.getElementById('tvNowTitle'),nowTime=document.getElementById('tvNowTime');
+  var nextTitle=document.getElementById('tvNextTitle'),nextTime=document.getElementById('tvNextTime');
+  var source=document.getElementById('tvGuideSource'),bar=document.getElementById('tvNowProgress');
+  if(source)source.textContent=state.epgLoaded?(state.epgSource||'EPG'):(state.epgLoading?'Carregando guia…':'Guia indisponível');
+  if(pair.now){
+    if(nowTitle)nowTitle.textContent=pair.now.title||'Programação atual';
+    if(nowTime)nowTime.textContent=epgTime(pair.now.start)+' – '+epgTime(pair.now.stop)+(pair.now.category?' • '+pair.now.category:'');
+    var span=Math.max(1,pair.now.stop-pair.now.start),pct=Math.max(0,Math.min(100,((Date.now()-pair.now.start)/span)*100));
+    if(bar)bar.style.width=pct.toFixed(1)+'%';
+  }else{
+    if(nowTitle)nowTitle.textContent='Programação atual não disponível';
+    if(nowTime)nowTime.textContent='';
+    if(bar)bar.style.width='0%';
+  }
+  if(pair.next){
+    if(nextTitle)nextTitle.textContent=pair.next.title||'Próximo programa';
+    if(nextTime)nextTime.textContent=epgTime(pair.next.start)+' – '+epgTime(pair.next.stop)+(pair.next.category?' • '+pair.next.category:'');
+  }else{
+    if(nextTitle)nextTitle.textContent='Próxima programação não disponível';
+    if(nextTime)nextTime.textContent='';
+  }
+}
+function updatePlayerFavoriteButton(){
+  var btn=document.getElementById('tvPlayerFavorite');if(!btn)return;
+  var on=!!state.rootChannel&&isTvFavorite(state.rootChannel);
+  btn.classList.toggle('active',on);
+  btn.textContent=on?'♥ Favoritado':'♡ Favoritar canal';
+}
 async function fetchSource(source){
   try{
     var text=await fetchText(source.url);
@@ -313,6 +477,7 @@ function categoryOptions(){
 function filteredChannels(){
   var q=norm(state.query);
   return state.channels.filter(function(c){
+    if(state.onlyFavorites&&!isTvFavorite(c))return false;
     if(state.category!=='todos'&&c.category!==state.category)return false;
     if(state.country!=='todos'&&(c.country||'').toUpperCase()!==state.country)return false;
     if(state.source!=='todos'&&c.sourceId!==state.source)return false;
@@ -328,10 +493,12 @@ function cardHTML(c){
   var country=c.country?('<span class="tv-chip">'+esc(c.country)+'</span>'):'';
   var signalCount=1+((c.alternates&&c.alternates.length)||0);
   var signals=signalCount>1?('<span class="tv-chip fallback">'+signalCount+' sinais</span>'):'';
+  var fav=isTvFavorite(c);
   return '<article class="tv-channel-card" data-tv-card="'+esc(c.id)+'">'+
+    '<button class="tv-favorite-btn'+(fav?' active':'')+'" type="button" data-tv-favorite="'+esc(c.id)+'" aria-label="'+(fav?'Remover '+esc(c.name)+' dos favoritos':'Adicionar '+esc(c.name)+' aos favoritos')+'" aria-pressed="'+String(fav)+'">'+(fav?'♥':'♡')+'</button>'+
     '<button class="tv-channel-main" type="button" data-tv-play="'+esc(c.id)+'" aria-label="Assistir '+esc(c.name)+'">'+
       '<span class="tv-channel-logo">'+art+'</span>'+
-      '<span class="tv-channel-copy"><strong>'+esc(c.name)+'</strong><small>'+esc(c.category)+'</small><em>'+country+'<span class="tv-chip source">'+esc(c.source)+'</span>'+signals+'</em></span>'+
+      '<span class="tv-channel-copy"><strong>'+esc(c.name)+'</strong><small>'+esc(c.category)+'</small><em>'+country+'<span class="tv-chip source">'+esc(c.source)+'</span>'+signals+'</em>'+epgCardHTML(c)+'</span>'+
       '<span class="tv-play-icon">▶</span>'+
     '</button>'+
   '</article>';
@@ -346,7 +513,9 @@ function renderGrid(){
   grid.innerHTML=shown.map(cardHTML).join('');
   if(meta){
     var suffix=state.errors.length?(' • '+state.errors.length+' fonte(s) temporariamente indisponível(is)'):'';
-    meta.textContent=list.length+' canais encontrados • '+state.channels.length+' no catálogo'+suffix;
+    var favCount=loadTvFavorites().size;
+    var epg=state.epgLoaded?(' • guia: '+state.epgSource):(state.epgLoading?' • carregando guia…':(state.epgError?' • guia temporariamente indisponível':''));
+    meta.textContent=list.length+' canais encontrados • '+state.channels.length+' no catálogo • '+favCount+' favorito(s)'+suffix+epg;
   }
   if(more){
     more.hidden=shown.length>=list.length;
@@ -362,10 +531,11 @@ function controlsHTML(){
   var countries=countryOptions().filter(function(x){return x!=='BR';}).map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
   var sources=sourceOptions().map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>';}).join('');
   return '<div class="tv-catalog-controls">'+
-    '<label class="tv-search"><span>⌕</span><input id="tvCatalogSearch" type="search" autocomplete="off" placeholder="buscar canal, categoria ou país..."></label>'+
+    '<label class="tv-search"><span>⌕</span><input id="tvCatalogSearch" type="search" autocomplete="off" value="'+esc(state.query)+'" placeholder="buscar canal, categoria ou país..."></label>'+
     '<select id="tvCategoryFilter" aria-label="Categoria"><option value="todos">Todas as categorias</option>'+cats+'</select>'+
     '<select id="tvCountryFilter" aria-label="País"><option value="todos">Todos os países</option><option value="BR">🇧🇷 Brasil</option>'+countries+'</select>'+
     '<select id="tvSourceFilter" aria-label="Fonte"><option value="todos">Todas as fontes</option>'+sources+'</select>'+
+    '<button id="tvFavoritesFilter" class="tv-favorites-filter'+(state.onlyFavorites?' active':'')+'" type="button" aria-pressed="'+String(state.onlyFavorites)+'">'+(state.onlyFavorites?'♥ Favoritos':'♡ Favoritos')+'</button>'+
     '<button id="tvRefreshCatalog" class="tv-refresh-btn" type="button">↻ Atualizar</button>'+
   '</div>';
 }
@@ -373,28 +543,47 @@ function bindControls(){
   var search=document.getElementById('tvCatalogSearch');
   if(search)search.addEventListener('input',function(e){state.query=e.target.value;state.limit=120;renderGrid();});
   var cat=document.getElementById('tvCategoryFilter');
-  if(cat)cat.addEventListener('change',function(e){state.category=e.target.value;state.limit=120;renderGrid();});
+  if(cat){cat.value=state.category;cat.addEventListener('change',function(e){state.category=e.target.value;state.limit=120;renderGrid();});}
   var country=document.getElementById('tvCountryFilter');
-  if(country)country.addEventListener('change',function(e){state.country=e.target.value;state.limit=120;renderGrid();});
+  if(country){country.value=state.country;country.addEventListener('change',function(e){state.country=e.target.value;state.limit=120;renderGrid();});}
   var source=document.getElementById('tvSourceFilter');
-  if(source)source.addEventListener('change',function(e){state.source=e.target.value;state.limit=120;renderGrid();});
+  if(source){source.value=state.source;source.addEventListener('change',function(e){state.source=e.target.value;state.limit=120;renderGrid();});}
+  var favFilter=document.getElementById('tvFavoritesFilter');
+  if(favFilter)favFilter.addEventListener('click',function(){
+    state.onlyFavorites=!state.onlyFavorites;state.limit=120;
+    favFilter.classList.toggle('active',state.onlyFavorites);
+    favFilter.setAttribute('aria-pressed',String(state.onlyFavorites));
+    favFilter.textContent=state.onlyFavorites?'♥ Favoritos':'♡ Favoritos';
+    renderGrid();
+  });
   var refresh=document.getElementById('tvRefreshCatalog');
   if(refresh)refresh.addEventListener('click',async function(){
     refresh.disabled=true;refresh.textContent='Atualizando...';
-    await loadCatalog(true);
+    await Promise.all([loadCatalog(true),loadEpg(true)]);
     hydrateCatalogControls();
     renderGrid();
+    if(state.rootChannel)updatePlayerGuide(state.rootChannel);
     refresh.disabled=false;refresh.textContent='↻ Atualizar';
   });
   var more=document.getElementById('tvLoadMore');
   if(more)more.addEventListener('click',function(){state.limit+=120;renderGrid();});
   var grid=document.getElementById('tvCatalogGrid');
-  if(grid)grid.addEventListener('click',function(e){
-    var btn=e.target.closest('[data-tv-play]');
-    if(!btn)return;
-    var ch=state.channels.find(function(x){return x.id===btn.dataset.tvPlay;});
-    if(ch)openChannel(ch);
-  });
+  if(grid&&!grid.dataset.tvEventsBound){
+    grid.dataset.tvEventsBound='1';
+    grid.addEventListener('click',function(e){
+      var favBtn=e.target.closest('[data-tv-favorite]');
+      if(favBtn){
+        e.preventDefault();e.stopPropagation();
+        var favChannel=state.channels.find(function(x){return x.id===favBtn.dataset.tvFavorite;});
+        if(favChannel){toggleTvFavorite(favChannel);renderGrid();updatePlayerFavoriteButton();}
+        return;
+      }
+      var btn=e.target.closest('[data-tv-play]');
+      if(!btn)return;
+      var ch=state.channels.find(function(x){return x.id===btn.dataset.tvPlay;});
+      if(ch)openChannel(ch);
+    });
+  }
 }
 function hydrateCatalogControls(){
   var box=document.getElementById('tvCatalogControlHost');
@@ -417,7 +606,7 @@ function renderTvCatalog(){
   '</section>';
   if(meta)meta.textContent='';
   if(empty)empty.style.display='none';
-  loadCatalog(false).then(function(){
+  Promise.all([loadCatalog(false),loadEpg(false)]).then(function(){
     hydrateCatalogControls();
     renderGrid();
   }).catch(function(err){
@@ -434,13 +623,18 @@ function ensureModal(){
   wrap.innerHTML='<section class="tv-player-shell" role="dialog" aria-modal="true" aria-labelledby="tvPlayerTitle">'+
     '<div class="tv-player-head"><div><span class="eyebrow">TV ao Vivo</span><h2 id="tvPlayerTitle">Canal</h2><p id="tvPlayerMeta"></p></div><button id="tvPlayerClose" type="button" aria-label="Fechar">✕</button></div>'+
     '<div class="tv-player-stage"><video id="tvVideo" controls playsinline preload="metadata"></video><iframe id="tvIframe" title="TV ao vivo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div id="tvPlayerStatus" class="tv-player-status">Preparando transmissão…</div></div>'+
-    '<div class="tv-player-actions"><button id="tvRetry" type="button">↻ Tentar novamente</button><a id="tvOpenSource" href="#" target="_blank" rel="noopener">Abrir transmissão ↗</a></div>'+
+    '<div id="tvPlayerGuide" class="tv-player-guide"><div class="tv-guide-program current"><span>AGORA</span><strong id="tvNowTitle">Carregando programação…</strong><small id="tvNowTime"></small><i><b id="tvNowProgress"></b></i></div><div class="tv-guide-program next"><span>PRÓXIMO</span><strong id="tvNextTitle">—</strong><small id="tvNextTime"></small></div><em id="tvGuideSource">EPG</em></div>'+
+    '<div class="tv-player-actions"><button id="tvPlayerFavorite" type="button">♡ Favoritar canal</button><button id="tvRetry" type="button">↻ Tentar novamente</button><a id="tvOpenSource" href="#" target="_blank" rel="noopener">Abrir transmissão ↗</a></div>'+
   '</section>';
   document.body.appendChild(wrap);
   document.getElementById('tvPlayerClose').addEventListener('click',closePlayer);
   wrap.addEventListener('click',function(e){if(e.target===wrap)closePlayer();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!wrap.hidden)closePlayer();});
   document.getElementById('tvRetry').addEventListener('click',function(){var first=state.candidates[0]||state.rootChannel||state.activeChannel;if(first){state.candidateIndex=0;startChannel(first,true);}});
+  document.getElementById('tvPlayerFavorite').addEventListener('click',function(){
+    if(!state.rootChannel)return;
+    toggleTvFavorite(state.rootChannel);updatePlayerFavoriteButton();renderGrid();
+  });
   return wrap;
 }
 function destroyHls(){
@@ -582,6 +776,7 @@ function startChannel(ch,fromFallback){
     meta.textContent=[display.category,display.country,ch.source,signalInfo].filter(Boolean).join(' • ');
   }
   if(link)link.href=ch.site||ch.stream||ch.sourcePage||display.site||display.sourcePage||'#';
+  updatePlayerGuide(display);updatePlayerFavoriteButton();
   var video=document.getElementById('tvVideo');
   var iframe=document.getElementById('tvIframe');
   destroyHls();
@@ -614,6 +809,7 @@ function openChannel(ch){
   if(!state.candidates.length)state.candidates=[ch];
   state.candidateIndex=0;
   startChannel(state.candidates[0],false);
+  if(!state.epgLoaded&&!state.epgLoading)loadEpg(false).then(function(){updatePlayerGuide(ch);renderGrid();});
 }
 
 window.JOGAHUB_TV={
@@ -621,6 +817,8 @@ window.JOGAHUB_TV={
   load:loadCatalog,
   count:function(){return state.channels.length||manualChannels().length;},
   channels:function(){return state.channels.slice();},
+  favorites:function(){return Array.from(loadTvFavorites());},
+  epg:function(c){return nowNextForChannel(c);},
   open:openChannel
 };
 try{renderLiveTv=renderTvCatalog;}catch(_){window.renderLiveTv=renderTvCatalog;}
