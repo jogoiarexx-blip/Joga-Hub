@@ -1,3 +1,13 @@
+## Versão 1.3.9 — catálogo de TV ao vivo
+
+- Nova aba de TV com catálogo agregado de fontes públicas e gratuitas: Free-TV/IPTV, IPTV-org Brasil e IPTV-org mundial por categorias.
+- Canais duplicados são consolidados e os sinais do Brasil aparecem primeiro quando disponíveis.
+- Busca interna, filtros por categoria, país e fonte, paginação leve e carregamento sob demanda para não criar centenas de players de uma vez.
+- Player único com HLS nativo quando disponível e fallback por hls.js nos navegadores compatíveis.
+- URLs HTTP inseguras são descartadas porque o GitHub Pages usa HTTPS e bloquearia conteúdo misto.
+- Os 4 sinais oficiais já cadastrados continuam como prioridade sobre entradas importadas com o mesmo nome.
+- O catálogo externo não é salvo no pré-cache; as listas são atualizadas quando a área de TV é aberta ou quando o usuário toca em Atualizar.
+
 ## Versão 1.3.8 — carregamento da fonte e capas
 
 - Fonte Google declarada diretamente no HTML com conexões antecipadas para os servidores de CSS e arquivos de fonte; o `@import` em `style.css` foi removido.
