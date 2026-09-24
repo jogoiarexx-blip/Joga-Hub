@@ -195,9 +195,15 @@ function parseM3U(text,source){
   return out;
 }
 async function fetchText(url){
-  var res=await fetch(url,{cache:'no-store',mode:'cors'});
-  if(!res.ok) throw new Error('HTTP '+res.status);
-  return res.text();
+  var controller=typeof AbortController==='function'?new AbortController():null;
+  var timer=controller?setTimeout(function(){controller.abort();},15000):0;
+  try{
+    var res=await fetch(url,{cache:'no-store',mode:'cors',signal:controller?controller.signal:undefined});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.text();
+  }finally{
+    if(timer)clearTimeout(timer);
+  }
 }
 async function fetchSource(source){
   try{
@@ -237,16 +243,21 @@ function manualChannels(){
   });
 }
 function mergeChannels(groups){
-  var best=new Map();
+  var best=[];
+  var seenIds=new Set();
+  var seenNames=new Set();
   var all=manualChannels();
   groups.forEach(function(group){all=all.concat(group.channels||[]);});
   all.sort(function(a,b){return (b.priority||0)-(a.priority||0);});
   all.forEach(function(ch){
-    var k=ch.dedupeKey||('name:'+compactName(ch.name));
-    if(!k||k==='name:') k='url:'+(ch.stream||ch.embed||ch.id);
-    if(!best.has(k)) best.set(k,ch);
+    var idKey=ch.tvgId?norm(ch.tvgId):'';
+    var nameKey=compactName(ch.name)+'|'+String(ch.country||'').toUpperCase();
+    if((idKey&&seenIds.has(idKey))||(nameKey!=='|'&&seenNames.has(nameKey)))return;
+    if(idKey)seenIds.add(idKey);
+    if(nameKey!=='|')seenNames.add(nameKey);
+    best.push(ch);
   });
-  var merged=Array.from(best.values());
+  var merged=best;
   merged.sort(function(a,b){
     var br=Number((b.country||'').toUpperCase()==='BR')-Number((a.country||'').toUpperCase()==='BR');
     if(br) return br;
