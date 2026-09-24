@@ -1,3 +1,12 @@
+## Versão 1.3.12 — barra lateral em PCs com tela baixa
+
+- Corrigida a barra lateral em monitores 1366×768, 1600×900 e outras resoluções com menos altura vertical.
+- A lateral agora possui rolagem própria no desktop e nunca depende de caber inteira dentro da altura da janela.
+- Em telas com até 900 px de altura, cabeçalho, botões, ícones e filtros ficam automaticamente mais compactos.
+- Em telas com até 760 px de altura, os subtítulos dos atalhos são ocultados para preservar espaço.
+- Adicionados à lateral os atalhos **TV ao Vivo** e **Rádios**, que não faziam parte da lista lateral.
+- A opção Rádios continua respeitando a configuração de ativar/ocultar rádios do JogaHub.
+
 ## Versão 1.3.11 — guia de programação e favoritos da TV
 
 - EPG brasileiro integrado à aba TV: mostra o programa que está passando agora e o próximo programa quando a grade estiver disponível.
