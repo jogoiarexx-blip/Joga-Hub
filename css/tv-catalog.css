@@ -43,3 +43,5 @@ body.tv-player-open{overflow:hidden}
 @media(max-width:1050px){.tv-catalog-controls{grid-template-columns:minmax(200px,1fr) repeat(2,minmax(130px,.65fr)) auto auto}.tv-catalog-controls #tvSourceFilter{grid-column:span 2}}
 @media(max-width:760px){.tv-player-guide{grid-template-columns:1fr;padding:10px 10px 0}.tv-player-guide>em{grid-column:auto}.tv-catalog-controls{grid-template-columns:1fr 1fr}.tv-favorites-filter,.tv-refresh-btn{grid-column:auto}}
 @media(max-width:480px){.tv-catalog-controls{grid-template-columns:1fr}.tv-favorites-filter,.tv-refresh-btn{grid-column:auto}}
+
+.tv-chip.verified{background:rgba(72,207,120,.12);color:#9af0ba}

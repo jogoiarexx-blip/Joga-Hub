@@ -1,6 +1,12 @@
-const SHELL = 'jogahub-1.3.12-sidebar';
+const SHELL = 'jogahub-1.3.14-shell';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
+
+function isObsoleteHubCache(name){
+  if(name.startsWith('nexora-') || name.startsWith('linkora-')) return true;
+  // O cache compartilhado dos apps em /apps/ deve ser preservado.
+  return /^jogahub-1\.\d+\.\d+(?:-.+)?$/.test(name) && name!==SHELL && name!==CONTENT && name!==MEDIA;
+}
 
 // Apenas a estrutura essencial entra no pré-cache. Capas e banners são
 // armazenados sob demanda, evitando um download inicial de quase 9 MB.
@@ -15,7 +21,7 @@ const SHELL_FILES = [
   './css/header-upgrade.css?v=131',
   './css/player6.css?v=60',
   './css/core-upgrades.css?v=132',
-  './css/tv-catalog.css?v=142',
+  './css/tv-catalog.css?v=144',
   './js/data-jogos.js?v=40',
   './js/data-links.js?v=48',
   './js/data-arcana.js?v=3',
@@ -25,11 +31,11 @@ const SHELL_FILES = [
   './js/drive-sync.js?v=13',
   './js/site-upgrades.js?v=5',
   './js/imdb-ratings.js?v=2',
-  './js/data-tv.js?v=125',
+  './js/data-tv.js?v=144',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=139',
-  './js/tv-catalog.js?v=142',
-  './js/launcher-upgrade.js?v=127',
+  './js/app.js?v=144',
+  './js/tv-catalog.js?v=144',
+  './js/launcher-upgrade.js?v=144',
   './js/sidebar-upgrade.js?v=129',
   './js/responsive-layout.js?v=131',
   './js/header-upgrade.js?v=131',
@@ -60,7 +66,7 @@ self.addEventListener('activate', event => {
   event.waitUntil((async()=>{
     const names=await caches.keys();
     await Promise.all(names
-      .filter(name=>(name.startsWith('nexora-')||name.startsWith('linkora-')||name.startsWith('jogahub-')) && name!==SHELL && name!==CONTENT && name!=='jogahub-offline-media-v1')
+      .filter(isObsoleteHubCache)
       .map(name=>caches.delete(name)));
     await self.clients.claim();
   })());
@@ -144,9 +150,15 @@ self.addEventListener('fetch', event => {
   }
   if(isVersionedCode){
     event.respondWith((async()=>{
-      const cached=await caches.match(event.request);
-      if(cached)return cached;
-      try{const fresh=await fetch(event.request,{cache:'no-store'});if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(event.request,fresh.clone())}return fresh}catch(_){return Response.error()}
+      const controller=typeof AbortController==='function'?new AbortController():null;
+      const timer=controller?setTimeout(()=>controller.abort(),4000):0;
+      try{
+        const fresh=await fetch(event.request,{cache:'no-store',...(controller?{signal:controller.signal}:{})});
+        if(fresh.ok){const cache=await caches.open(SHELL);await cache.put(event.request,fresh.clone())}
+        return fresh;
+      }catch(_){
+        return (await caches.match(event.request)) || Response.error();
+      }finally{if(timer)clearTimeout(timer)}
     })());
     return;
   }

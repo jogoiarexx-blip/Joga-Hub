@@ -1,4 +1,4 @@
-/* JOGAHUB 1.3.9 — home, busca, favoritos, TV e progresso de leitura */
+/* JOGAHUB 1.3.14 — home, busca, favoritos, TV e progresso de leitura */
 
 const TYPES = {
   jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
@@ -66,10 +66,19 @@ function rebuildCatalogItems(){
 }
 rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
+const APP_VERSION = '1.3.14';
+window.JOGAHUB_VERSION = APP_VERSION;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
-const CURRENT_SHELL_CACHE = 'jogahub-1.3.9';
+const CURRENT_SHELL_CACHE = `jogahub-${APP_VERSION}-shell`;
+// Cache de conteúdo baixado é estável entre versões do app para não apagar downloads do usuário.
 const CURRENT_CONTENT_CACHE = 'jogahub-1.3.2-content';
+function isObsoleteHubCache(name){
+  if(name.startsWith('nexora-') || name.startsWith('linkora-')) return true;
+  // Limpa apenas caches antigos do shell principal. Não toca nos caches dos apps em /apps/.
+  return /^jogahub-1\.\d+\.\d+(?:-.+)?$/.test(name)
+    && name !== CURRENT_SHELL_CACHE && name !== CURRENT_CONTENT_CACHE && name !== MEDIA_CACHE;
+}
 let deferredInstallPrompt = null;
 let activeType = 'todos';
 
@@ -309,7 +318,7 @@ function renderHomeDashboard(){
   const continuing=media.filter(movieProgress).slice(0,8);
   const favorites=ITEMS.filter(i=>loadFavorites().has(i.id)).slice(0,10);
   const row=(title,sub,items,label)=>items.length?`<section class="home-row"><div class="home-row-head"><div><h2>${title}</h2><p>${sub}</p></div></div><div class="home-track">${items.map(i=>homeTile(i,label)).join('')}</div></section>`:'';
-  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v1.3.5</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
+  box.innerHTML=`<div class="home-welcome premium-welcome"><div><span class="eyebrow">JogaHub v${APP_VERSION}</span><h2>Seu entretenimento, organizado do seu jeito.</h2><p>Jogos, filmes, séries, animes, TV, rádio e emulação em uma experiência mais rápida, limpa e moderna.</p><div class="home-quick-actions"><button type="button" data-home-view="jogo">🎮 Jogar</button><button type="button" data-home-view="serie">📺 Séries</button><button type="button" data-home-view="filme">🎬 Filmes</button><button type="button" data-home-view="radio">📻 Rádios</button></div></div><div class="home-stats"><span><b>${games.length}</b> jogos</span><span><b>${films.length}</b> filmes</span><span><b>${series.length}</b> séries</span><span><b>${anime.length}</b> animes</span></div></div>
     ${row('▶ Continue assistindo','Retome rapidamente o conteúdo que você abriu por último.',continuing,'Continuar')}
     ${row('♥ Minha Lista','Seus favoritos em acesso rápido.',favorites,'Favorito')}
     ${row('🎮 Jogos','Os jogos do JogaHub em destaque.',games.slice(0,14),'Jogar')}

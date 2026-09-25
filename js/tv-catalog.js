@@ -1,4 +1,4 @@
-/* JogaHub TV Catalog 1.3.11
+/* JogaHub TV Catalog 1.3.14
    Agregador de playlists publicas/gratuitas para GitHub Pages.
    Fontes: Free-TV/IPTV e IPTV-org. */
 (function(){
@@ -6,29 +6,13 @@
 
 const TV_SOURCES = [
   {
-    id:'free-tv',
-    label:'Free-TV',
-    url:'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8',
-    project:'https://github.com/Free-TV/IPTV',
+    id:'nexus-online',
+    label:'IPTV verificada',
+    url:'https://dearbulut.github.io/iptv/playlists/online.m3u',
+    project:'https://github.com/dearbulut/iptv',
     country:'',
-    priority:40
-  },
-  {
-    id:'iptv-br',
-    label:'IPTV-org Brasil',
-    url:'https://iptv-org.github.io/iptv/countries/br.m3u',
-    project:'https://github.com/iptv-org/iptv',
-    country:'BR',
-    priority:50
-  },
-  {
-    id:'iptv-world',
-    label:'IPTV-org Mundial',
-    url:'https://iptv-org.github.io/iptv/index.category.m3u',
-    fallback:'https://iptv-org.github.io/iptv/index.m3u',
-    project:'https://github.com/iptv-org/iptv',
-    country:'',
-    priority:20
+    priority:70,
+    verified:true
   }
 ];
 
@@ -132,6 +116,26 @@ function toggleTvFavorite(c){
   saveTvFavorites(fav);
   return fav.has(key);
 }
+const TV_FAILED_KEY='jogahub.tv.failed.v1';
+const TV_FAILED_TTL=2*60*60*1000;
+function getFailedChannels(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(TV_FAILED_KEY)||'{}'),now=Date.now(),clean={};
+    for(const [id,ts] of Object.entries(raw))if(Number(ts)>0&&now-Number(ts)<TV_FAILED_TTL)clean[id]=Number(ts);
+    if(Object.keys(clean).length!==Object.keys(raw).length)localStorage.setItem(TV_FAILED_KEY,JSON.stringify(clean));
+    return clean;
+  }catch{return {}}
+}
+function markChannelFailed(id){if(!id)return;const failed=getFailedChannels();failed[id]=Date.now();localStorage.setItem(TV_FAILED_KEY,JSON.stringify(failed))}
+function clearFailedChannels(){localStorage.removeItem(TV_FAILED_KEY)}
+function isChannelFailed(id){return Boolean(getFailedChannels()[id])}
+function failActiveChannel(message){
+  const id=state?.current?.id;if(id)markChannelFailed(id);
+  stopPlayback();
+  if(id){state.channels=state.channels.filter(c=>c.id!==id);render();}
+  setStatus(message||'Canal temporariamente ocultado porque nenhum sinal disponível funcionou.','error');
+}
+
 function hash(str){
   var h=2166136261;
   str=String(str||'');
@@ -192,44 +196,35 @@ function categoryFrom(attrs,source){
   return TV_CATEGORY_LABELS[mapped]||raw||'Outros';
 }
 function parseM3U(text,source){
-  var lines=String(text||'').replace(/^\uFEFF/,'').split(/\r?\n/);
-  var out=[];
-  var info=null;
-  for(var i=0;i<lines.length;i++){
-    var line=lines[i].trim();
-    if(!line) continue;
-    if(line.indexOf('#EXTINF:')===0){
-      var attrs=parseAttrs(line);
-      var comma=line.indexOf(',');
-      info={attrs:attrs,title:comma>=0?line.slice(comma+1).trim():'Canal'};
+  const out=[];let meta=null,vlcReferrer='',vlcUserAgent='';
+  for(const raw of String(text||'').split(/\r?\n/)){
+    const line=raw.trim();if(!line)continue;
+    if(line.startsWith('#EXTINF:')){
+      const attrs={};for(const m of line.matchAll(/([\w-]+)="([^"]*)"/g))attrs[m[1]]=m[2];
+      const comma=line.indexOf(',');
+      meta={attrs,name:cleanName(comma>=0?line.slice(comma+1):attrs['tvg-name']||'Canal')};
+      vlcReferrer='';vlcUserAgent='';
       continue;
     }
-    if(line.charAt(0)==='#') continue;
-    if(info && /^https?:\/\//i.test(line)){
-      if(!/^https:\/\//i.test(line)){info=null;continue;}
-      var attrs2=info.attrs||{};
-      var tvgId=attrs2['tvg-id']||'';
-      var title=cleanTitle(info.title);
-      var country=countryFrom(attrs2,source);
-      var category=categoryFrom(attrs2,source);
-      var logo=attrs2['tvg-logo']||'';
-      var key=tvgId?('id:'+norm(tvgId)):('name:'+compactName(title));
-      out.push({
-        id:'tv-'+source.id+'-'+hash(key+'|'+line),
-        dedupeKey:key,
-        tvgId:tvgId,
-        name:title,
-        category:category,
-        country:country,
-        logo:/^https:\/\//i.test(logo)?logo:'',
-        stream:line,
-        source:source.label,
-        sourceId:source.id,
-        sourcePage:source.project,
-        priority:source.priority||0,
-        imported:true
-      });
-      info=null;
+    if(line.startsWith('#EXTVLCOPT:http-referrer=')){vlcReferrer=line.slice(line.indexOf('=')+1).trim();continue}
+    if(line.startsWith('#EXTVLCOPT:http-user-agent=')){vlcUserAgent=line.slice(line.indexOf('=')+1).trim();continue}
+    if(!line.startsWith('#')&&meta){
+      let stream=line;try{stream=new URL(line,location.href).href}catch{}
+      const attrs=meta.attrs||{},name=meta.name||attrs['tvg-name']||'Canal';
+      const score=Number(attrs['nexus-score']||attrs['score']||0);
+      const requiresHeaders=Boolean(vlcReferrer||vlcUserAgent);
+      const isDash=/\.mpd(?:$|[?#])/i.test(stream);
+      if(/^https:\/\//i.test(stream) && !requiresHeaders && !isDash){
+        out.push({
+          id:`tv-${source.id}-${hash((attrs['tvg-id']||name)+'|'+stream)}`,name,
+          logo:safeHttps(attrs['tvg-logo']),group:normalizeGroup(attrs['group-title']),
+          country:(attrs['tvg-country']||source.country||'').toUpperCase(),
+          language:attrs['tvg-language']||'',stream,source:source.label,sourceId:source.id,
+          sourceProject:source.project,priority:(source.priority||0)+(score?Math.min(20,Math.floor(score/5)):0),
+          healthScore:score||null,verified:Boolean(source.verified)
+        });
+      }
+      meta=null;vlcReferrer='';vlcUserAgent='';
     }
   }
   return out;

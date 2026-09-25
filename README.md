@@ -1,3 +1,12 @@
+## Versão 1.3.14 — TV verificada e PWA corrigido
+
+- A TV ao vivo passou a consumir uma playlist monitorada de sinais saudáveis, em vez de carregar indiscriminadamente listas brutas.
+- Streams HTTP, DASH e sinais que exigem headers especiais de VLC são descartados porque não são compatíveis com o player web atual.
+- Canais que esgotam todos os sinais disponíveis são ocultados por duas horas; o botão Atualizar limpa esse bloqueio e tenta novamente.
+- Canais oficiais fixos revisados: TV Cultura, SBT Central e TV Brasil, todos apontando para players oficiais.
+- Cache/PWA unificado na 1.3.14, preservando mídia offline e caches dos apps internos.
+- Código JavaScript/CSS versionado usa rede primeiro e cache como fallback, reduzindo o risco de ficar preso em versão antiga.
+
 ## Versão 1.3.12 — barra lateral em PCs com tela baixa
 
 - Corrigida a barra lateral em monitores 1366×768, 1600×900 e outras resoluções com menos altura vertical.
