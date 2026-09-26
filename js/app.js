@@ -1,4 +1,4 @@
-/* JOGAHUB 1.3.14 — home, busca, favoritos, TV e progresso de leitura */
+/* JOGAHUB 1.3.15 — home, busca, favoritos, TV e progresso de leitura */
 
 const TYPES = {
   jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
@@ -66,7 +66,7 @@ function rebuildCatalogItems(){
 }
 rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
-const APP_VERSION = '1.3.14';
+const APP_VERSION = '1.3.15';
 window.JOGAHUB_VERSION = APP_VERSION;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
