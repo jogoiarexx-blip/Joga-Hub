@@ -1,4 +1,4 @@
-/* JOGAHUB 1.3.15 — home, busca, favoritos, TV e progresso de leitura */
+/* JOGAHUB 1.3.16 — home, busca, favoritos, TV e progresso de leitura */
 
 const TYPES = {
   jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
@@ -66,7 +66,7 @@ function rebuildCatalogItems(){
 }
 rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
-const APP_VERSION = '1.3.15';
+const APP_VERSION = '1.3.16';
 window.JOGAHUB_VERSION = APP_VERSION;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
@@ -88,9 +88,11 @@ const RADIO_VOLUME_KEY='jogahub.radio.volume';
 const RADIO_API='https://de1.api.radio-browser.info/json/stations/search';
 let RADIO_STATIONS=[];
 let radioLoaded=false;
+let radioPlayerState='idle';
+let radioLastAudibleVolume=Math.max(0.05,Math.min(1,Number(localStorage.getItem(RADIO_VOLUME_KEY)||70)/100));
 const radioAudio=new Audio();
 radioAudio.preload='none';
-radioAudio.volume=Math.max(0,Math.min(1,Number(localStorage.getItem(RADIO_VOLUME_KEY)||70)/100));
+radioAudio.volume=radioLastAudibleVolume;
 function radioFeatureEnabled(){return localStorage.getItem(RADIO_ENABLED_KEY)!=='0';}
 function setRadioFeatureEnabled(enabled){
   localStorage.setItem(RADIO_ENABLED_KEY,enabled?'1':'0');
@@ -104,27 +106,126 @@ function syncRadioFeatureVisibility(){
   const toggle=document.getElementById('radioFeatureToggle');if(toggle)toggle.checked=enabled;
 }
 function radioStationUrl(st){return st?.url_resolved||st?.url||'';}
+function radioMetaText(st){
+  return [st?.state,st?.codec,st?.bitrate?st.bitrate+' kbps':'',(st?.tags||'').split(',').filter(Boolean).slice(0,2).join(' • ')].filter(Boolean).join(' • ')||'Rádio online';
+}
+function radioStateLabel(){
+  return radioPlayerState==='live'?'● AO VIVO':radioPlayerState==='loading'?'CONECTANDO…':radioPlayerState==='buffering'?'CARREGANDO…':radioPlayerState==='paused'?'PAUSADA':radioPlayerState==='error'?'SINAL INDISPONÍVEL':'RÁDIO';
+}
+function setRadioPlayerState(state){
+  radioPlayerState=state;
+  const current=currentRadioStation();
+  if(radioAudio.src&&current)updateRadioDock(current);
+}
 function updateRadioDock(st){
-  const dock=document.getElementById('radioDock'); if(!dock)return;
-  dock.hidden=!st || radioAudio.paused;
-  const name=document.getElementById('radioDockName'); if(name&&st)name.textContent=st.name||'Rádio';
-  const play=document.getElementById('radioDockPlay'); if(play)play.textContent=radioAudio.paused?'▶':'⏸';
-  const vol=document.getElementById('radioDockVolume'); if(vol)vol.value=String(Math.round(radioAudio.volume*100));
+  const dock=document.getElementById('radioDock');if(!dock)return;
+  const hasSource=!!radioAudio.src;
+  dock.hidden=!st||!hasSource;
+  if(!st||!hasSource)return;
+  dock.dataset.state=radioPlayerState;
+  const name=document.getElementById('radioDockName');if(name)name.textContent=st.name||'Rádio';
+  const meta=document.getElementById('radioDockMeta');if(meta)meta.textContent=radioMetaText(st);
+  const live=document.getElementById('radioDockLive');if(live){live.textContent=radioStateLabel();live.dataset.state=radioPlayerState;}
+  const art=document.getElementById('radioDockArt'),fallback=document.getElementById('radioDockFallback');
+  const artUrl=st.favicon&&/^https:\/\//i.test(st.favicon)?st.favicon:'';
+  if(art){
+    if(artUrl){
+      if(art.dataset.src!==artUrl){art.dataset.src=artUrl;art.src=artUrl;}
+      art.hidden=false;if(fallback)fallback.hidden=true;
+      art.onerror=()=>{art.hidden=true;if(fallback)fallback.hidden=false;};
+    }else{art.hidden=true;if(fallback)fallback.hidden=false;}
+  }
+  const play=document.getElementById('radioDockPlay');
+  if(play){const playing=!radioAudio.paused;play.textContent=playing?'⏸':'▶';play.setAttribute('aria-label',playing?'Pausar rádio':'Continuar rádio');play.title=playing?'Pausar':'Continuar';}
+  const mute=document.getElementById('radioDockMute');
+  if(mute){const muted=radioAudio.muted||radioAudio.volume===0;mute.textContent=muted?'🔇':radioAudio.volume<.5?'🔉':'🔊';mute.setAttribute('aria-label',muted?'Ativar som':'Silenciar');mute.title=muted?'Ativar som':'Silenciar';}
+  const vol=document.getElementById('radioDockVolume');if(vol)vol.value=String(Math.round(radioAudio.volume*100));
+  const volValue=document.getElementById('radioDockVolumeValue');if(volValue)volValue.textContent=(radioAudio.muted?0:Math.round(radioAudio.volume*100))+'%';
 }
 function currentRadioStation(){try{return JSON.parse(localStorage.getItem(RADIO_STATION_KEY)||'null')}catch{return null}}
+function saveRadioStation(st){
+  localStorage.setItem(RADIO_STATION_KEY,JSON.stringify({
+    stationuuid:st.stationuuid,name:st.name,url:st.url,url_resolved:st.url_resolved,
+    favicon:st.favicon,homepage:st.homepage,tags:st.tags,countrycode:st.countrycode,
+    state:st.state,codec:st.codec,bitrate:st.bitrate
+  }));
+}
+function setupRadioMediaSession(st){
+  if(!('mediaSession' in navigator))return;
+  try{
+    navigator.mediaSession.metadata=new MediaMetadata({
+      title:st.name||'Rádio',
+      artist:radioMetaText(st),
+      album:'JogaHub • Rádio ao vivo',
+      artwork:st.favicon&&/^https:\/\//i.test(st.favicon)?[{src:st.favicon}]:[]
+    });
+    navigator.mediaSession.setActionHandler('play',()=>playRadioStation(currentRadioStation()));
+    navigator.mediaSession.setActionHandler('pause',()=>{radioAudio.pause();});
+    navigator.mediaSession.setActionHandler('stop',stopRadio);
+    navigator.mediaSession.setActionHandler('previoustrack',()=>{playAdjacentRadio(-1);});
+    navigator.mediaSession.setActionHandler('nexttrack',()=>{playAdjacentRadio(1);});
+  }catch{}
+}
 async function playRadioStation(st){
   if(!st||!radioFeatureEnabled())return;
-  const url=radioStationUrl(st); if(!url)return;
-  const same=radioAudio.src===url || radioAudio.src===new URL(url,location.href).href;
-  if(!same){radioAudio.src=url;radioAudio.load();}
-  localStorage.setItem(RADIO_STATION_KEY,JSON.stringify({stationuuid:st.stationuuid,name:st.name,url:st.url,url_resolved:st.url_resolved,favicon:st.favicon,homepage:st.homepage,tags:st.tags,countrycode:st.countrycode}));
-  try{await radioAudio.play();updateRadioDock(st);paintRadioPlayingState();if(st.stationuuid)fetch(`https://de1.api.radio-browser.info/json/url/${encodeURIComponent(st.stationuuid)}`).catch(()=>{});}catch(e){alert('Não foi possível iniciar esta rádio. Tente outra estação.');}
+  const url=radioStationUrl(st);if(!url)return;
+  let same=false;
+  try{same=radioAudio.src===url||radioAudio.src===new URL(url,location.href).href}catch{}
+  saveRadioStation(st);setupRadioMediaSession(st);
+  if(!same){
+    radioPlayerState='loading';
+    radioAudio.src=url;radioAudio.load();
+  }else if(radioAudio.paused)radioPlayerState='loading';
+  updateRadioDock(st);
+  try{
+    await radioAudio.play();
+    if(st.stationuuid)fetch(`https://de1.api.radio-browser.info/json/url/${encodeURIComponent(st.stationuuid)}`).catch(()=>{});
+  }catch(e){
+    radioPlayerState='error';updateRadioDock(st);
+    alert('Não foi possível iniciar esta rádio. Tente outra estação.');
+  }
 }
-function stopRadio(){radioAudio.pause();radioAudio.removeAttribute('src');radioAudio.load();document.getElementById('radioDock')?.setAttribute('hidden','');paintRadioPlayingState();}
+async function playAdjacentRadio(direction){
+  if(!RADIO_STATIONS.length)await loadRadios();
+  if(!RADIO_STATIONS.length)return;
+  const current=currentRadioStation();
+  let index=RADIO_STATIONS.findIndex(st=>st.stationuuid===current?.stationuuid);
+  if(index<0)index=0;else index=(index+(direction<0?-1:1)+RADIO_STATIONS.length)%RADIO_STATIONS.length;
+  await playRadioStation(RADIO_STATIONS[index]);
+}
+function toggleRadioMute(){
+  if(radioAudio.muted||radioAudio.volume===0){
+    radioAudio.muted=false;
+    if(radioAudio.volume===0)radioAudio.volume=radioLastAudibleVolume||.7;
+  }else{
+    if(radioAudio.volume>0)radioLastAudibleVolume=radioAudio.volume;
+    radioAudio.muted=true;
+  }
+  updateRadioDock(currentRadioStation());
+}
+function setRadioVolume(value){
+  const v=Math.max(0,Math.min(100,Number(value)||0));
+  radioAudio.volume=v/100;
+  if(v>0){radioAudio.muted=false;radioLastAudibleVolume=radioAudio.volume;}
+  localStorage.setItem(RADIO_VOLUME_KEY,String(v));
+  updateRadioDock(currentRadioStation());
+}
+function stopRadio(){
+  radioAudio.pause();radioAudio.removeAttribute('src');radioAudio.load();
+  radioPlayerState='idle';localStorage.removeItem(RADIO_STATION_KEY);
+  document.getElementById('radioDock')?.setAttribute('hidden','');
+  paintRadioPlayingState();
+  if('mediaSession' in navigator){try{navigator.mediaSession.metadata=null;navigator.mediaSession.playbackState='none'}catch{}}
+}
 function paintRadioPlayingState(){
-  const current=currentRadioStation();const playing=!radioAudio.paused&&!!radioAudio.src;
-  document.querySelectorAll('[data-radio-play]').forEach(btn=>{const on=playing&&current?.stationuuid===btn.dataset.radioPlay;btn.classList.toggle('playing',on);btn.textContent=on?'⏸ Tocando':'▶ Ouvir';});
-  updateRadioDock(playing?current:null);
+  const current=currentRadioStation(),hasSource=!!radioAudio.src,playing=hasSource&&!radioAudio.paused;
+  document.querySelectorAll('[data-radio-play]').forEach(btn=>{
+    const on=playing&&current?.stationuuid===btn.dataset.radioPlay;
+    btn.classList.toggle('playing',on);btn.textContent=on?'⏸ Tocando':'▶ Ouvir';
+  });
+  if(hasSource&&radioPlayerState==='idle')radioPlayerState=playing?'live':'paused';
+  updateRadioDock(hasSource?current:null);
+  if('mediaSession' in navigator){try{navigator.mediaSession.playbackState=playing?'playing':hasSource?'paused':'none'}catch{}}
 }
 async function loadRadios(force=false){
   if(radioLoaded&&!force)return RADIO_STATIONS;
@@ -1211,10 +1312,20 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('closeSettings')?.addEventListener('click',()=>document.getElementById('settingsModal').hidden=true);
   document.getElementById('settingsModal')?.addEventListener('click',e=>{if(e.target.id==='settingsModal')e.currentTarget.hidden=true;});
   document.getElementById('radioFeatureToggle')?.addEventListener('change',e=>setRadioFeatureEnabled(e.target.checked));
-  document.getElementById('radioDockPlay')?.addEventListener('click',async()=>{const st=currentRadioStation();if(!st)return;if(radioAudio.paused)await playRadioStation(st);else{radioAudio.pause();paintRadioPlayingState();}});
+  document.getElementById('radioDockPlay')?.addEventListener('click',async()=>{const st=currentRadioStation();if(!st)return;if(radioAudio.paused)await playRadioStation(st);else radioAudio.pause();});
+  document.getElementById('radioDockPrev')?.addEventListener('click',()=>playAdjacentRadio(-1));
+  document.getElementById('radioDockNext')?.addEventListener('click',()=>playAdjacentRadio(1));
+  document.getElementById('radioDockMute')?.addEventListener('click',toggleRadioMute);
   document.getElementById('radioDockStop')?.addEventListener('click',stopRadio);
-  document.getElementById('radioDockVolume')?.addEventListener('input',e=>{const v=Math.max(0,Math.min(100,Number(e.target.value)||0));radioAudio.volume=v/100;localStorage.setItem(RADIO_VOLUME_KEY,String(v));});
-  radioAudio.addEventListener('play',paintRadioPlayingState);radioAudio.addEventListener('pause',paintRadioPlayingState);radioAudio.addEventListener('error',()=>paintRadioPlayingState());
+  document.getElementById('radioDockVolume')?.addEventListener('input',e=>setRadioVolume(e.target.value));
+  radioAudio.addEventListener('loadstart',()=>setRadioPlayerState('loading'));
+  radioAudio.addEventListener('waiting',()=>setRadioPlayerState('buffering'));
+  radioAudio.addEventListener('stalled',()=>setRadioPlayerState('buffering'));
+  radioAudio.addEventListener('playing',()=>{setRadioPlayerState('live');paintRadioPlayingState();});
+  radioAudio.addEventListener('play',paintRadioPlayingState);
+  radioAudio.addEventListener('pause',()=>{if(radioAudio.src)setRadioPlayerState('paused');paintRadioPlayingState();});
+  radioAudio.addEventListener('error',()=>{if(radioAudio.src)setRadioPlayerState('error');paintRadioPlayingState();});
+  radioAudio.addEventListener('volumechange',()=>updateRadioDock(currentRadioStation()));
   syncRadioFeatureVisibility();
   document.getElementById('closeDownloads')?.addEventListener('click',()=>document.getElementById('downloadsModal').hidden=true);
   document.getElementById('downloadsModal')?.addEventListener('click',e=>{if(e.target.id==='downloadsModal')e.currentTarget.hidden=true;const b=e.target.closest('[data-remove-media]');if(b)removeMediaDownload(b.dataset.removeMedia)});
