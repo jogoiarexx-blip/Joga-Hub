@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '17 */3 * * *'
+  push:
+    paths:
+      - 'tools/update-drive-snapshot.mjs'
+      - '.github/workflows/update-drive-catalog.yml'
 
 permissions:
   contents: write
@@ -26,6 +30,8 @@ jobs:
           node-version: '22'
 
       - name: Atualizar snapshot do Drive
+        env:
+          DRIVE_SYNC_URL: ${{ vars.DRIVE_SYNC_URL }}
         run: node tools/update-drive-snapshot.mjs
 
       - name: Publicar somente se houver mudança
