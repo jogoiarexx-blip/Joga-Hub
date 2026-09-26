@@ -46,10 +46,29 @@ const items = context.FILMES_CATALOGO.filter(item => String(item.id || '').start
 if (!items.length) throw new Error('Nenhum item do Drive foi montado');
 
 const rawRootVideos = rawFiles.filter(file => String(file.path || '').split('/').filter(Boolean).length === 1);
+const normalizeMovieKey = name => {
+  let value = String(name || '')
+    .replace(/\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i, '')
+    .replace(/[._]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const cut = value.search(/\b(?:19|20)\d{2}\b|\b(?:2160p|1440p|1080p|720p|576p|480p|4k|uhd|hdr|webrip|web[- ]?dl|bluray|brrip|dvdrip|hdtv|camrip|cam|telesync|x264|x265|h\.264|h\.265|hevc|aac|dts|dual|dublado|legendado|multi)\b/i);
+  if (cut > 1) value = value.slice(0, cut);
+  return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+};
 for (const file of rawRootVideos) {
-  const item = items.find(entry => entry.driveFileId === file.id);
-  if (!item) throw new Error('Filme da raiz ausente: ' + file.name);
-  if (item.mediaType !== 'filme') throw new Error('Filme da raiz classificado como série: ' + file.name);
+  const direct = items.find(entry => entry.driveFileId === file.id);
+  if (direct) {
+    if (direct.mediaType !== 'filme') throw new Error('Filme da raiz classificado como série: ' + file.name);
+    continue;
+  }
+  // O catálogo deduplica versões do mesmo filme (ex.: CAM/TELESYNC) e pode
+  // manter apenas o arquivo preferido. Nesse caso, valide pela identidade lógica.
+  const key = normalizeMovieKey(file.name);
+  const equivalent = rawRootVideos
+    .filter(other => other.id !== file.id && normalizeMovieKey(other.name) === key)
+    .some(other => items.some(entry => entry.driveFileId === other.id && entry.mediaType === 'filme'));
+  if (!equivalent) throw new Error('Filme da raiz ausente sem equivalente deduplicado: ' + file.name);
 }
 
 const logical = new Set();
