@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - 'tools/update-drive-snapshot.mjs'
+      - 'js/data-drive-filmes.js'
       - '.github/workflows/update-drive-catalog.yml'
 
 permissions:
