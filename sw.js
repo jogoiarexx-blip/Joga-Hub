@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.3.14-shell';
+const SHELL = 'jogahub-1.3.15-shell';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
 
@@ -27,13 +27,13 @@ const SHELL_FILES = [
   './js/data-arcana.js?v=3',
   './js/data-filmes.js?v=137',
   './js/data-drive-filmes.js?v=6',
-  './js/drive-snapshot.js?v=2',
-  './js/drive-sync.js?v=13',
+  './js/drive-snapshot.js?v=3',
+  './js/drive-sync.js?v=14',
   './js/site-upgrades.js?v=5',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=144',
   './js/offline-assets.js?v=40',
-  './js/app.js?v=144',
+  './js/app.js?v=145',
   './js/tv-catalog.js?v=144',
   './js/launcher-upgrade.js?v=144',
   './js/sidebar-upgrade.js?v=129',
