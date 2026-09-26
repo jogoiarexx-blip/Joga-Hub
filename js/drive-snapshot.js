@@ -1,14 +1,114 @@
 /* JogaHub — snapshot automático do Google Drive. Gerado por GitHub Actions/Drive sync. */
 window.JOGAHUB_DRIVE_SNAPSHOT = [
   {
+    "id": "1wxR6P8D6b4hhWHnelP7e2ki4z8dTpnDR",
+    "name": "09 - Spooky Little Girl.mp4",
+    "mime": "video/mp4",
+    "size": "264160996",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1wxR6P8D6b4hhWHnelP7e2ki4z8dTpnDR/view",
+    "player": "https://drive.google.com/file/d/1wxR6P8D6b4hhWHnelP7e2ki4z8dTpnDR/preview",
+    "updated": "2026-09-25T23:48:20.725Z"
+  },
+  {
+    "id": "1WHGketCkbtDMC9Z8RxmBoIdOR0TDyaTG",
+    "name": "04 - Halloween (Parte 1).mp4",
+    "mime": "video/mp4",
+    "size": "255522834",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1WHGketCkbtDMC9Z8RxmBoIdOR0TDyaTG/view",
+    "player": "https://drive.google.com/file/d/1WHGketCkbtDMC9Z8RxmBoIdOR0TDyaTG/preview",
+    "updated": "2026-09-25T23:48:20.699Z"
+  },
+  {
+    "id": "1QxFxNx_tlyhUfp-ldQvQtCHOvvI45zPn",
+    "name": "07 - Open House.mp4",
+    "mime": "video/mp4",
+    "size": "264955344",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1QxFxNx_tlyhUfp-ldQvQtCHOvvI45zPn/view",
+    "player": "https://drive.google.com/file/d/1QxFxNx_tlyhUfp-ldQvQtCHOvvI45zPn/preview",
+    "updated": "2026-09-25T23:48:18.311Z"
+  },
+  {
+    "id": "1r5Z52BupzzikxZtGBDPZ9Ug2FbL1mIHK",
+    "name": "03 - Murder House.mp4",
+    "mime": "video/mp4",
+    "size": "277727237",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1r5Z52BupzzikxZtGBDPZ9Ug2FbL1mIHK/view",
+    "player": "https://drive.google.com/file/d/1r5Z52BupzzikxZtGBDPZ9Ug2FbL1mIHK/preview",
+    "updated": "2026-09-25T23:48:14.864Z"
+  },
+  {
+    "id": "17fJlXAWtcSMVNBqIkcp-RmyrlrtF0IHg",
+    "name": "05 - Halloween (Parte 2).mp4",
+    "mime": "video/mp4",
+    "size": "267394525",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/17fJlXAWtcSMVNBqIkcp-RmyrlrtF0IHg/view",
+    "player": "https://drive.google.com/file/d/17fJlXAWtcSMVNBqIkcp-RmyrlrtF0IHg/preview",
+    "updated": "2026-09-25T23:48:12.674Z"
+  },
+  {
+    "id": "1mS0q_pXVigVXQfS-RuljHpYRsY_mlkmg",
+    "name": "11 - Birth.mp4",
+    "mime": "video/mp4",
+    "size": "273219124",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1mS0q_pXVigVXQfS-RuljHpYRsY_mlkmg/view",
+    "player": "https://drive.google.com/file/d/1mS0q_pXVigVXQfS-RuljHpYRsY_mlkmg/preview",
+    "updated": "2026-09-25T23:48:06.273Z"
+  },
+  {
+    "id": "1QKS_sK2-nPjMm2HeGaijhRIt3EqNjxzg",
+    "name": "10 - Smoldering Children.mp4",
+    "mime": "video/mp4",
+    "size": "276781001",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1QKS_sK2-nPjMm2HeGaijhRIt3EqNjxzg/view",
+    "player": "https://drive.google.com/file/d/1QKS_sK2-nPjMm2HeGaijhRIt3EqNjxzg/preview",
+    "updated": "2026-09-25T23:47:59.457Z"
+  },
+  {
     "id": "1S8HwOQ0sA1FW3js5TpGCgAw9jzYU8mmg",
     "name": "The Odyssey 2026 1080p AMZN WEB-DL DDP5 1 H 264-Kitsune.mkv",
     "mime": "video/matroska",
     "size": "4673211458",
     "path": "filmes e serie",
-    "url": "https://drive.google.com/file/d/1S8HwOQ0sA1FW3js5TpGCgAw9jzYU8mmg/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1S8HwOQ0sA1FW3js5TpGCgAw9jzYU8mmg/view",
     "player": "https://drive.google.com/file/d/1S8HwOQ0sA1FW3js5TpGCgAw9jzYU8mmg/preview",
     "updated": "2026-09-25T23:47:53.164Z"
+  },
+  {
+    "id": "10UAnH-ZaAc94Y04oPru9L6YVlvyX3EWr",
+    "name": "02 - Home Invasion.mp4",
+    "mime": "video/mp4",
+    "size": "278019808",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/10UAnH-ZaAc94Y04oPru9L6YVlvyX3EWr/view",
+    "player": "https://drive.google.com/file/d/10UAnH-ZaAc94Y04oPru9L6YVlvyX3EWr/preview",
+    "updated": "2026-09-25T23:45:40.781Z"
+  },
+  {
+    "id": "1Kep78rrJ8j2pBDJJgKAgl5nt3Szy9ey4",
+    "name": "08 - Rubber Man.mp4",
+    "mime": "video/mp4",
+    "size": "284034955",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1Kep78rrJ8j2pBDJJgKAgl5nt3Szy9ey4/view",
+    "player": "https://drive.google.com/file/d/1Kep78rrJ8j2pBDJJgKAgl5nt3Szy9ey4/preview",
+    "updated": "2026-09-25T23:45:07.087Z"
+  },
+  {
+    "id": "19i2BK4w9V4tJ9IDhoj2wd_1unQ-cgmkx",
+    "name": "06 - Piggy Piggy.mp4",
+    "mime": "video/mp4",
+    "size": "288490833",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/19i2BK4w9V4tJ9IDhoj2wd_1unQ-cgmkx/view",
+    "player": "https://drive.google.com/file/d/19i2BK4w9V4tJ9IDhoj2wd_1unQ-cgmkx/preview",
+    "updated": "2026-09-25T23:43:42.857Z"
   },
   {
     "id": "1jKIkI_mZVLbyK3hbxFomx0bGElL_MSa-",
@@ -16,7 +116,7 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "336048546",
     "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
-    "url": "https://drive.google.com/file/d/1jKIkI_mZVLbyK3hbxFomx0bGElL_MSa-/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1jKIkI_mZVLbyK3hbxFomx0bGElL_MSa-/view",
     "player": "https://drive.google.com/file/d/1jKIkI_mZVLbyK3hbxFomx0bGElL_MSa-/preview",
     "updated": "2026-09-25T23:42:50.446Z"
   },
@@ -26,9 +126,19 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "5924949154",
     "path": "filmes e serie",
-    "url": "https://drive.google.com/file/d/1U4bfMv4gE2KxqtVbRh73NT5SmJpHuN_Q/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1U4bfMv4gE2KxqtVbRh73NT5SmJpHuN_Q/view",
     "player": "https://drive.google.com/file/d/1U4bfMv4gE2KxqtVbRh73NT5SmJpHuN_Q/preview",
     "updated": "2026-09-25T23:42:45.099Z"
+  },
+  {
+    "id": "1iFxnrsZtQmC8CxnfEr4TmT-RFCzVchE_",
+    "name": "12 - Afterbirth.mp4",
+    "mime": "video/mp4",
+    "size": "339677801",
+    "path": "filmes e serie/Series/American Horror Story 1ª Temporada [2011 DUAL ÁUDIO] 720p PT BR",
+    "url": "https://drive.google.com/file/d/1iFxnrsZtQmC8CxnfEr4TmT-RFCzVchE_/view",
+    "player": "https://drive.google.com/file/d/1iFxnrsZtQmC8CxnfEr4TmT-RFCzVchE_/preview",
+    "updated": "2026-09-25T23:39:35.525Z"
   },
   {
     "id": "1j0SkDtZbGfc_gx1XCpin_Cb_pSkZOo96",
@@ -36,7 +146,7 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "4636564672",
     "path": "filmes e serie",
-    "url": "https://drive.google.com/file/d/1j0SkDtZbGfc_gx1XCpin_Cb_pSkZOo96/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1j0SkDtZbGfc_gx1XCpin_Cb_pSkZOo96/view",
     "player": "https://drive.google.com/file/d/1j0SkDtZbGfc_gx1XCpin_Cb_pSkZOo96/preview",
     "updated": "2026-09-25T23:37:50.181Z"
   },
@@ -46,7 +156,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "1908432137",
     "path": "filmes e serie",
-    "url": "https://drive.google.com/file/d/18t-wG0lJSA5YhrrsRGvw4WVnkm-noPs0/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/18t-wG0lJSA5YhrrsRGvw4WVnkm-noPs0/view",
+    "player": "https://drive.google.com/file/d/18t-wG0lJSA5YhrrsRGvw4WVnkm-noPs0/preview",
     "updated": "2026-09-23T12:41:51.090Z"
   },
   {
@@ -55,7 +166,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "632285961",
     "path": "filmes e serie/Series/O cavaleiro dos 7 reinos",
-    "url": "https://drive.google.com/file/d/1l3_aW-ZBgagmEV0N_MsipT-QTvEr5SB4/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1l3_aW-ZBgagmEV0N_MsipT-QTvEr5SB4/view",
+    "player": "https://drive.google.com/file/d/1l3_aW-ZBgagmEV0N_MsipT-QTvEr5SB4/preview",
     "updated": "2026-09-23T11:33:52.960Z"
   },
   {
@@ -64,7 +176,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "828050735",
     "path": "filmes e serie/Series/O cavaleiro dos 7 reinos",
-    "url": "https://drive.google.com/file/d/1Xe4e6m1ceDZcbJt4vptDDPrx5IZQ29vU/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1Xe4e6m1ceDZcbJt4vptDDPrx5IZQ29vU/view",
+    "player": "https://drive.google.com/file/d/1Xe4e6m1ceDZcbJt4vptDDPrx5IZQ29vU/preview",
     "updated": "2026-09-23T11:24:45.570Z"
   },
   {
@@ -73,7 +186,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354130990",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1xuoyndFS6DnB6E1a8oihQ8XC1IVK2g-j/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1xuoyndFS6DnB6E1a8oihQ8XC1IVK2g-j/view",
+    "player": "https://drive.google.com/file/d/1xuoyndFS6DnB6E1a8oihQ8XC1IVK2g-j/preview",
     "updated": "2026-09-23T00:49:20.454Z"
   },
   {
@@ -82,7 +196,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354339048",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1clAnTAF2LigGdihK01KvfET2G9HbPI_F/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1clAnTAF2LigGdihK01KvfET2G9HbPI_F/view",
+    "player": "https://drive.google.com/file/d/1clAnTAF2LigGdihK01KvfET2G9HbPI_F/preview",
     "updated": "2026-09-23T00:49:19.630Z"
   },
   {
@@ -91,7 +206,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354267014",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1xxpm9uD2tkYsNOKleZv_qP406IBZQhsD/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1xxpm9uD2tkYsNOKleZv_qP406IBZQhsD/view",
+    "player": "https://drive.google.com/file/d/1xxpm9uD2tkYsNOKleZv_qP406IBZQhsD/preview",
     "updated": "2026-09-23T00:49:18.404Z"
   },
   {
@@ -100,7 +216,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354242894",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1jEWtVLJra1qyU6Bx5bkNl8xXqyuKBpDN/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1jEWtVLJra1qyU6Bx5bkNl8xXqyuKBpDN/view",
+    "player": "https://drive.google.com/file/d/1jEWtVLJra1qyU6Bx5bkNl8xXqyuKBpDN/preview",
     "updated": "2026-09-23T00:49:16.143Z"
   },
   {
@@ -109,7 +226,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354221147",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1YHS6BdbPwvA7jW5_MQWcO6aepT9Jh0Pk/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1YHS6BdbPwvA7jW5_MQWcO6aepT9Jh0Pk/view",
+    "player": "https://drive.google.com/file/d/1YHS6BdbPwvA7jW5_MQWcO6aepT9Jh0Pk/preview",
     "updated": "2026-09-23T00:49:14.846Z"
   },
   {
@@ -118,7 +236,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354077874",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1rFeluJ1969fg8ORvWwoy_E5JZBM9Lrqv/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1rFeluJ1969fg8ORvWwoy_E5JZBM9Lrqv/view",
+    "player": "https://drive.google.com/file/d/1rFeluJ1969fg8ORvWwoy_E5JZBM9Lrqv/preview",
     "updated": "2026-09-23T00:49:07.935Z"
   },
   {
@@ -127,7 +246,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354333277",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/15G5ZIQpJD4pfUmHWlvisfoQ-s9n2Kci6/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/15G5ZIQpJD4pfUmHWlvisfoQ-s9n2Kci6/view",
+    "player": "https://drive.google.com/file/d/15G5ZIQpJD4pfUmHWlvisfoQ-s9n2Kci6/preview",
     "updated": "2026-09-23T00:49:05.853Z"
   },
   {
@@ -136,7 +256,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354086775",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1zufj7acYS02p5pPdSIX_KuNy1ajXiE9l/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1zufj7acYS02p5pPdSIX_KuNy1ajXiE9l/view",
+    "player": "https://drive.google.com/file/d/1zufj7acYS02p5pPdSIX_KuNy1ajXiE9l/preview",
     "updated": "2026-09-23T00:49:03.760Z"
   },
   {
@@ -145,7 +266,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354211756",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1m4WtyoaKWsNcm8lFVWlJyrkRbTVvcI9G/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1m4WtyoaKWsNcm8lFVWlJyrkRbTVvcI9G/view",
+    "player": "https://drive.google.com/file/d/1m4WtyoaKWsNcm8lFVWlJyrkRbTVvcI9G/preview",
     "updated": "2026-09-23T00:49:03.419Z"
   },
   {
@@ -154,8 +276,129 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354315407",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1FIwjK5hCm-EzTdZ24pOFu834qoQNZscV/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1FIwjK5hCm-EzTdZ24pOFu834qoQNZscV/view",
+    "player": "https://drive.google.com/file/d/1FIwjK5hCm-EzTdZ24pOFu834qoQNZscV/preview",
     "updated": "2026-09-23T00:48:49.552Z"
+  },
+  {
+    "id": "1Jrjtva2UfLPw4fYrizeuZF8T6bYFYgBt",
+    "name": "S03E03 - I.F.T.srt",
+    "mime": "application/octet-stream",
+    "size": "30685",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1Jrjtva2UfLPw4fYrizeuZF8T6bYFYgBt/view",
+    "player": "https://drive.google.com/file/d/1Jrjtva2UfLPw4fYrizeuZF8T6bYFYgBt/preview",
+    "updated": "2026-09-23T00:47:51.949Z"
+  },
+  {
+    "id": "1RG4hMA6CdQ01iaR-frzkBcZXjKmFN4x5",
+    "name": "S03E02 - Caballo Sin Nombre.srt",
+    "mime": "application/octet-stream",
+    "size": "30685",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1RG4hMA6CdQ01iaR-frzkBcZXjKmFN4x5/view",
+    "player": "https://drive.google.com/file/d/1RG4hMA6CdQ01iaR-frzkBcZXjKmFN4x5/preview",
+    "updated": "2026-09-23T00:47:51.948Z"
+  },
+  {
+    "id": "1SpHmr4Ylv2Kzek45chr2-iQrSBYNUVJ7",
+    "name": "S03E01 - No Mas.srt",
+    "mime": "application/octet-stream",
+    "size": "33663",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1SpHmr4Ylv2Kzek45chr2-iQrSBYNUVJ7/view",
+    "player": "https://drive.google.com/file/d/1SpHmr4Ylv2Kzek45chr2-iQrSBYNUVJ7/preview",
+    "updated": "2026-09-23T00:47:51.947Z"
+  },
+  {
+    "id": "1BN2pxktKWZ0GyI9au4otUuoC50qTssG4",
+    "name": "S03E07 - One Minute.srt",
+    "mime": "application/octet-stream",
+    "size": "32694",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1BN2pxktKWZ0GyI9au4otUuoC50qTssG4/view",
+    "player": "https://drive.google.com/file/d/1BN2pxktKWZ0GyI9au4otUuoC50qTssG4/preview",
+    "updated": "2026-09-23T00:47:51.947Z"
+  },
+  {
+    "id": "11FkmBbRmhB797gA4Ropar-27j-cV0-Cx",
+    "name": "S03E04 - Green Light.srt",
+    "mime": "application/octet-stream",
+    "size": "35486",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/11FkmBbRmhB797gA4Ropar-27j-cV0-Cx/view",
+    "player": "https://drive.google.com/file/d/11FkmBbRmhB797gA4Ropar-27j-cV0-Cx/preview",
+    "updated": "2026-09-23T00:47:51.946Z"
+  },
+  {
+    "id": "1Ta9686PlFnNg58k5bBP8DJ86C2NXKXyF",
+    "name": "S03E10 - Fly.srt",
+    "mime": "application/octet-stream",
+    "size": "34509",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1Ta9686PlFnNg58k5bBP8DJ86C2NXKXyF/view",
+    "player": "https://drive.google.com/file/d/1Ta9686PlFnNg58k5bBP8DJ86C2NXKXyF/preview",
+    "updated": "2026-09-23T00:47:51.946Z"
+  },
+  {
+    "id": "1JJDR06MWYJxPOf-QnTCkGzblF2kltPA6",
+    "name": "S03E05 - Mas.srt",
+    "mime": "application/octet-stream",
+    "size": "37160",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1JJDR06MWYJxPOf-QnTCkGzblF2kltPA6/view",
+    "player": "https://drive.google.com/file/d/1JJDR06MWYJxPOf-QnTCkGzblF2kltPA6/preview",
+    "updated": "2026-09-23T00:47:51.944Z"
+  },
+  {
+    "id": "1ARHn6wHcEpLQhYbeRoUKeiJrX1CSHgu1",
+    "name": "S03E13 - Full Measure.srt",
+    "mime": "application/octet-stream",
+    "size": "36990",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1ARHn6wHcEpLQhYbeRoUKeiJrX1CSHgu1/view",
+    "player": "https://drive.google.com/file/d/1ARHn6wHcEpLQhYbeRoUKeiJrX1CSHgu1/preview",
+    "updated": "2026-09-23T00:47:51.944Z"
+  },
+  {
+    "id": "1zggQF8jslkM4ivqLyULXMw_d3KTspdkN",
+    "name": "S03E06 - Sunset.srt",
+    "mime": "application/octet-stream",
+    "size": "37403",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1zggQF8jslkM4ivqLyULXMw_d3KTspdkN/view",
+    "player": "https://drive.google.com/file/d/1zggQF8jslkM4ivqLyULXMw_d3KTspdkN/preview",
+    "updated": "2026-09-23T00:47:51.943Z"
+  },
+  {
+    "id": "1QU7cTY73CxvO2OKri6uYOl2xa7_RyNAH",
+    "name": "S03E12 - Half Measures.srt",
+    "mime": "application/octet-stream",
+    "size": "41551",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1QU7cTY73CxvO2OKri6uYOl2xa7_RyNAH/view",
+    "player": "https://drive.google.com/file/d/1QU7cTY73CxvO2OKri6uYOl2xa7_RyNAH/preview",
+    "updated": "2026-09-23T00:47:51.943Z"
+  },
+  {
+    "id": "1inK0QXEsbt2kNcLCYPdWqlJUEFrgapnx",
+    "name": "S03E08 - I See You.srt",
+    "mime": "application/octet-stream",
+    "size": "43811",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1inK0QXEsbt2kNcLCYPdWqlJUEFrgapnx/view",
+    "player": "https://drive.google.com/file/d/1inK0QXEsbt2kNcLCYPdWqlJUEFrgapnx/preview",
+    "updated": "2026-09-23T00:47:51.570Z"
+  },
+  {
+    "id": "1z1OY1SgWF5334ezxCgzdi2DrGACBo4cV",
+    "name": "S03E11 - Abiquiu.srt",
+    "mime": "application/octet-stream",
+    "size": "44372",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1z1OY1SgWF5334ezxCgzdi2DrGACBo4cV/view",
+    "player": "https://drive.google.com/file/d/1z1OY1SgWF5334ezxCgzdi2DrGACBo4cV/preview",
+    "updated": "2026-09-23T00:47:51.570Z"
   },
   {
     "id": "1Ex4jjQX_QfXtq9-bEwGQ3cKIeihrY0fz",
@@ -163,7 +406,18 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "36447725",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1Ex4jjQX_QfXtq9-bEwGQ3cKIeihrY0fz/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1Ex4jjQX_QfXtq9-bEwGQ3cKIeihrY0fz/view",
+    "player": "https://drive.google.com/file/d/1Ex4jjQX_QfXtq9-bEwGQ3cKIeihrY0fz/preview",
+    "updated": "2026-09-23T00:47:51.568Z"
+  },
+  {
+    "id": "1ELspBqnSXxW3WsMMSWSRM2w5IK8uSc1X",
+    "name": "S03E09 - Kafkaesque.srt",
+    "mime": "application/octet-stream",
+    "size": "51053",
+    "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1ELspBqnSXxW3WsMMSWSRM2w5IK8uSc1X/view",
+    "player": "https://drive.google.com/file/d/1ELspBqnSXxW3WsMMSWSRM2w5IK8uSc1X/preview",
     "updated": "2026-09-23T00:47:51.568Z"
   },
   {
@@ -172,7 +426,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354210641",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/18gSc9eDEUx-0VgBaHuBC0iBtZd5huRCC/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/18gSc9eDEUx-0VgBaHuBC0iBtZd5huRCC/view",
+    "player": "https://drive.google.com/file/d/18gSc9eDEUx-0VgBaHuBC0iBtZd5huRCC/preview",
     "updated": "2026-09-23T00:47:33.711Z"
   },
   {
@@ -181,7 +436,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "280071848",
     "path": "filmes e serie/Series/O cavaleiro dos 7 reinos",
-    "url": "https://drive.google.com/file/d/1V6XZr45YQH0LNjiNM5xUHLNq3WE-jEpc/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1V6XZr45YQH0LNjiNM5xUHLNq3WE-jEpc/view",
+    "player": "https://drive.google.com/file/d/1V6XZr45YQH0LNjiNM5xUHLNq3WE-jEpc/preview",
     "updated": "2026-09-21T13:14:49.006Z"
   },
   {
@@ -190,7 +446,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "2795409849",
     "path": "filmes e serie",
-    "url": "https://drive.google.com/file/d/1R0hcqxHOvkuWLKiYDsQMtV4d3WWERYCh/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1R0hcqxHOvkuWLKiYDsQMtV4d3WWERYCh/view",
+    "player": "https://drive.google.com/file/d/1R0hcqxHOvkuWLKiYDsQMtV4d3WWERYCh/preview",
     "updated": "2026-09-21T13:13:10.114Z"
   },
   {
@@ -199,7 +456,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "298408116",
     "path": "filmes e serie/Series/O cavaleiro dos 7 reinos",
-    "url": "https://drive.google.com/file/d/1G1KEE6RPFXemZXlHwKV4krA99Eyf__h6/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1G1KEE6RPFXemZXlHwKV4krA99Eyf__h6/view",
+    "player": "https://drive.google.com/file/d/1G1KEE6RPFXemZXlHwKV4krA99Eyf__h6/preview",
     "updated": "2026-09-21T13:11:07.805Z"
   },
   {
@@ -208,7 +466,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "459548046",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/14-a1XdknhZn6_sUzF_GXcu5fjbqaAyjw/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/14-a1XdknhZn6_sUzF_GXcu5fjbqaAyjw/view",
+    "player": "https://drive.google.com/file/d/14-a1XdknhZn6_sUzF_GXcu5fjbqaAyjw/preview",
     "updated": "2026-09-21T13:07:13.216Z"
   },
   {
@@ -217,7 +476,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "540666015",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/1EGf-fhvUI0LUZ1M9N5WQec86YOSW3dt1/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1EGf-fhvUI0LUZ1M9N5WQec86YOSW3dt1/view",
+    "player": "https://drive.google.com/file/d/1EGf-fhvUI0LUZ1M9N5WQec86YOSW3dt1/preview",
     "updated": "2026-09-21T13:07:12.059Z"
   },
   {
@@ -226,7 +486,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "470589317",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/1wSrnWmnfdf0OiQgkRS1MBjFUN8SatwBi/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1wSrnWmnfdf0OiQgkRS1MBjFUN8SatwBi/view",
+    "player": "https://drive.google.com/file/d/1wSrnWmnfdf0OiQgkRS1MBjFUN8SatwBi/preview",
     "updated": "2026-09-21T13:07:11.723Z"
   },
   {
@@ -235,7 +496,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "565277123",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/1_fO35fNHv_qHWm9MZx9l51HRazMatG3t/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1_fO35fNHv_qHWm9MZx9l51HRazMatG3t/view",
+    "player": "https://drive.google.com/file/d/1_fO35fNHv_qHWm9MZx9l51HRazMatG3t/preview",
     "updated": "2026-09-21T13:07:11.722Z"
   },
   {
@@ -244,7 +506,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "610954704",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/1c-pvok-dX1hwsEjHSvEy8DRNdXyOorQz/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1c-pvok-dX1hwsEjHSvEy8DRNdXyOorQz/view",
+    "player": "https://drive.google.com/file/d/1c-pvok-dX1hwsEjHSvEy8DRNdXyOorQz/preview",
     "updated": "2026-09-21T13:07:11.414Z"
   },
   {
@@ -253,7 +516,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "594247159",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/1gyHRqMde7siryY3C-CSujVrn5ivipVRD/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1gyHRqMde7siryY3C-CSujVrn5ivipVRD/view",
+    "player": "https://drive.google.com/file/d/1gyHRqMde7siryY3C-CSujVrn5ivipVRD/preview",
     "updated": "2026-09-21T13:07:10.606Z"
   },
   {
@@ -262,7 +526,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "506418195",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/19tJcR_tc-CR-OLZt6GjMe12QPb3KyqCg/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/19tJcR_tc-CR-OLZt6GjMe12QPb3KyqCg/view",
+    "player": "https://drive.google.com/file/d/19tJcR_tc-CR-OLZt6GjMe12QPb3KyqCg/preview",
     "updated": "2026-09-21T13:07:10.247Z"
   },
   {
@@ -271,7 +536,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "484599622",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/1d3mqfri2BFdI1qnhSdooTZV66Z3ignDs/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1d3mqfri2BFdI1qnhSdooTZV66Z3ignDs/view",
+    "player": "https://drive.google.com/file/d/1d3mqfri2BFdI1qnhSdooTZV66Z3ignDs/preview",
     "updated": "2026-09-21T13:07:06.949Z"
   },
   {
@@ -280,7 +546,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "555371490",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/1qJLQqUTzH1cxKozmAiXUUV6b5oJLgycq/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1qJLQqUTzH1cxKozmAiXUUV6b5oJLgycq/view",
+    "player": "https://drive.google.com/file/d/1qJLQqUTzH1cxKozmAiXUUV6b5oJLgycq/preview",
     "updated": "2026-09-21T13:07:06.454Z"
   },
   {
@@ -289,7 +556,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "602874236",
     "path": "filmes e serie/Series/Aqueles.Prestes.a.Morrer.2024.S01.WEB-DL.1080p.x265.DUAL.2.0-SF",
-    "url": "https://drive.google.com/file/d/11B-9y8oxqVVeJr_uV7xN0SRtLg_PWvvQ/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/11B-9y8oxqVVeJr_uV7xN0SRtLg_PWvvQ/view",
+    "player": "https://drive.google.com/file/d/11B-9y8oxqVVeJr_uV7xN0SRtLg_PWvvQ/preview",
     "updated": "2026-09-21T13:07:01.845Z"
   },
   {
@@ -298,7 +566,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "353036562",
     "path": "filmes e serie/Series/O cavaleiro dos 7 reinos",
-    "url": "https://drive.google.com/file/d/1QhKqAI1ogD3tXatee3AXvQ1X_i6QwohR/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1QhKqAI1ogD3tXatee3AXvQ1X_i6QwohR/view",
+    "player": "https://drive.google.com/file/d/1QhKqAI1ogD3tXatee3AXvQ1X_i6QwohR/preview",
     "updated": "2026-09-21T13:06:58.283Z"
   },
   {
@@ -307,7 +576,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "181115907",
     "path": "filmes e serie/Series/O cavaleiro dos 7 reinos",
-    "url": "https://drive.google.com/file/d/1qsLSx3OnGgaf8jucdCB99GB7lrn-UZRf/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1qsLSx3OnGgaf8jucdCB99GB7lrn-UZRf/view",
+    "player": "https://drive.google.com/file/d/1qsLSx3OnGgaf8jucdCB99GB7lrn-UZRf/preview",
     "updated": "2026-09-21T13:01:59.527Z"
   },
   {
@@ -316,7 +586,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "1816132698",
     "path": "filmes e serie",
-    "url": "https://drive.google.com/file/d/1n5o1h9ySLJ9hSzy_8Qrk_53vF94bZGbt/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1n5o1h9ySLJ9hSzy_8Qrk_53vF94bZGbt/view",
+    "player": "https://drive.google.com/file/d/1n5o1h9ySLJ9hSzy_8Qrk_53vF94bZGbt/preview",
     "updated": "2026-09-21T12:57:46.668Z"
   },
   {
@@ -325,7 +596,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "1141367665",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/1HofTkv9IXK4Yc8HfSeu4-JPfYNHdpuyV/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1HofTkv9IXK4Yc8HfSeu4-JPfYNHdpuyV/view",
+    "player": "https://drive.google.com/file/d/1HofTkv9IXK4Yc8HfSeu4-JPfYNHdpuyV/preview",
     "updated": "2026-09-11T16:43:40.000Z"
   },
   {
@@ -334,7 +606,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "947963550",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/1mdc2G34-PqMdSocCdmSBanNPqjYPLkE9/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1mdc2G34-PqMdSocCdmSBanNPqjYPLkE9/view",
+    "player": "https://drive.google.com/file/d/1mdc2G34-PqMdSocCdmSBanNPqjYPLkE9/preview",
     "updated": "2026-09-10T16:43:58.000Z"
   },
   {
@@ -343,7 +616,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "945832369",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/13OE2oHL0m7E8cH8PDLoiAsk75jWZY3ji/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/13OE2oHL0m7E8cH8PDLoiAsk75jWZY3ji/view",
+    "player": "https://drive.google.com/file/d/13OE2oHL0m7E8cH8PDLoiAsk75jWZY3ji/preview",
     "updated": "2026-09-10T15:33:04.000Z"
   },
   {
@@ -352,7 +626,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "382694138",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/1_MRlxxbLpZC6oWzRopHUP0GuWwv8EGTm/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1_MRlxxbLpZC6oWzRopHUP0GuWwv8EGTm/view",
+    "player": "https://drive.google.com/file/d/1_MRlxxbLpZC6oWzRopHUP0GuWwv8EGTm/preview",
     "updated": "2026-09-10T01:03:44.000Z"
   },
   {
@@ -361,7 +636,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "633170940",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/1Gm-aWXqLY4_C0y4fpQBmdECMW6KIwOQu/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1Gm-aWXqLY4_C0y4fpQBmdECMW6KIwOQu/view",
+    "player": "https://drive.google.com/file/d/1Gm-aWXqLY4_C0y4fpQBmdECMW6KIwOQu/preview",
     "updated": "2026-09-09T17:56:41.000Z"
   },
   {
@@ -370,7 +646,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "679700744",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/1L5iRDqM1PQzwC-xRA5sOGi5JK5s2jJqo/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1L5iRDqM1PQzwC-xRA5sOGi5JK5s2jJqo/view",
+    "player": "https://drive.google.com/file/d/1L5iRDqM1PQzwC-xRA5sOGi5JK5s2jJqo/preview",
     "updated": "2026-09-09T17:45:24.000Z"
   },
   {
@@ -379,7 +656,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "680165299",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/1n7SHnNOmnL0kWHGFrTi9Mhr1EoWgscib/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1n7SHnNOmnL0kWHGFrTi9Mhr1EoWgscib/view",
+    "player": "https://drive.google.com/file/d/1n7SHnNOmnL0kWHGFrTi9Mhr1EoWgscib/preview",
     "updated": "2026-09-09T17:33:23.000Z"
   },
   {
@@ -388,7 +666,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "650042635",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1J2wnyukjhwkexfhN7y5-eG1Rx_E1S64S/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1J2wnyukjhwkexfhN7y5-eG1Rx_E1S64S/view",
+    "player": "https://drive.google.com/file/d/1J2wnyukjhwkexfhN7y5-eG1Rx_E1S64S/preview",
     "updated": "2026-09-09T17:03:50.000Z"
   },
   {
@@ -397,7 +676,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "566716812",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1UqGiM43gU1JQnOsBbvVRCZRljRq6YwC-/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1UqGiM43gU1JQnOsBbvVRCZRljRq6YwC-/view",
+    "player": "https://drive.google.com/file/d/1UqGiM43gU1JQnOsBbvVRCZRljRq6YwC-/preview",
     "updated": "2026-09-09T17:03:50.000Z"
   },
   {
@@ -406,7 +686,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "567615284",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1ZIkJsYigMot3NL19xlGaOx87Z0_nZyfi/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1ZIkJsYigMot3NL19xlGaOx87Z0_nZyfi/view",
+    "player": "https://drive.google.com/file/d/1ZIkJsYigMot3NL19xlGaOx87Z0_nZyfi/preview",
     "updated": "2026-09-09T17:03:50.000Z"
   },
   {
@@ -415,7 +696,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "577152637",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/102-BLC8GXYqpvCzrmzrR53O06lCf8WZW/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/102-BLC8GXYqpvCzrmzrR53O06lCf8WZW/view",
+    "player": "https://drive.google.com/file/d/102-BLC8GXYqpvCzrmzrR53O06lCf8WZW/preview",
     "updated": "2026-09-09T17:03:47.000Z"
   },
   {
@@ -424,7 +706,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "559837411",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1UFqOiUGUAZ8jDL_ORKzWVAJwa3TMTU7g/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1UFqOiUGUAZ8jDL_ORKzWVAJwa3TMTU7g/view",
+    "player": "https://drive.google.com/file/d/1UFqOiUGUAZ8jDL_ORKzWVAJwa3TMTU7g/preview",
     "updated": "2026-09-09T17:03:46.000Z"
   },
   {
@@ -433,7 +716,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "605822203",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1XMxanreGTmWqqpzEcKdYrclhRJSVImLt/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1XMxanreGTmWqqpzEcKdYrclhRJSVImLt/view",
+    "player": "https://drive.google.com/file/d/1XMxanreGTmWqqpzEcKdYrclhRJSVImLt/preview",
     "updated": "2026-09-09T17:03:44.000Z"
   },
   {
@@ -442,7 +726,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "549947013",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1sojRHJVa5aaBsTyTOyG5CZarxSt2eLIa/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1sojRHJVa5aaBsTyTOyG5CZarxSt2eLIa/view",
+    "player": "https://drive.google.com/file/d/1sojRHJVa5aaBsTyTOyG5CZarxSt2eLIa/preview",
     "updated": "2026-09-09T17:03:43.000Z"
   },
   {
@@ -451,7 +736,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "566223242",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1Qp24Ii2yFtlFuU2WmSHP9Assyc69stNP/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1Qp24Ii2yFtlFuU2WmSHP9Assyc69stNP/view",
+    "player": "https://drive.google.com/file/d/1Qp24Ii2yFtlFuU2WmSHP9Assyc69stNP/preview",
     "updated": "2026-09-09T17:03:43.000Z"
   },
   {
@@ -460,7 +746,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "594712976",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1_kPGshkRkI5u0ogKwFsUtPWNsOqmX93p/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1_kPGshkRkI5u0ogKwFsUtPWNsOqmX93p/view",
+    "player": "https://drive.google.com/file/d/1_kPGshkRkI5u0ogKwFsUtPWNsOqmX93p/preview",
     "updated": "2026-09-09T17:03:43.000Z"
   },
   {
@@ -469,7 +756,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/matroska",
     "size": "613346235",
     "path": "filmes e serie/Series/Stranger Things - Histórias de 85 S01 2026 WEB-DL 1080p x265 DUAL 5.1",
-    "url": "https://drive.google.com/file/d/1JnhIJeAsGz-4QuiqP4irEyDL0G8hllMa/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1JnhIJeAsGz-4QuiqP4irEyDL0G8hllMa/view",
+    "player": "https://drive.google.com/file/d/1JnhIJeAsGz-4QuiqP4irEyDL0G8hllMa/preview",
     "updated": "2026-09-09T17:03:42.000Z"
   },
   {
@@ -478,7 +766,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "575974090",
     "path": "filmes e serie/Series/pinguim",
-    "url": "https://drive.google.com/file/d/1vpFzw3xR48xJ_LuUEo4S01fmx2Q3K8wc/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1vpFzw3xR48xJ_LuUEo4S01fmx2Q3K8wc/view",
+    "player": "https://drive.google.com/file/d/1vpFzw3xR48xJ_LuUEo4S01fmx2Q3K8wc/preview",
     "updated": "2026-09-09T16:54:26.000Z"
   },
   {
@@ -487,7 +776,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "352350762",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1bpHtLyPvVAk6Klss-f-9AQJPz1K_L6PW/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1bpHtLyPvVAk6Klss-f-9AQJPz1K_L6PW/view",
+    "player": "https://drive.google.com/file/d/1bpHtLyPvVAk6Klss-f-9AQJPz1K_L6PW/preview",
     "updated": "2026-09-05T15:31:57.000Z"
   },
   {
@@ -496,7 +786,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355241421",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1qd0yWo_8NkkcCkhk-wPZbL6fCymGRhfM/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1qd0yWo_8NkkcCkhk-wPZbL6fCymGRhfM/view",
+    "player": "https://drive.google.com/file/d/1qd0yWo_8NkkcCkhk-wPZbL6fCymGRhfM/preview",
     "updated": "2026-09-05T15:31:48.000Z"
   },
   {
@@ -505,7 +796,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355303713",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1-_ff9SVA_4urhsyq7ItJG3PykoWDxqRr/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1-_ff9SVA_4urhsyq7ItJG3PykoWDxqRr/view",
+    "player": "https://drive.google.com/file/d/1-_ff9SVA_4urhsyq7ItJG3PykoWDxqRr/preview",
     "updated": "2026-09-05T15:31:47.000Z"
   },
   {
@@ -514,7 +806,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355308233",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1LBm5dATVpv4jExSDxWAvAdNrGHhXfoaC/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1LBm5dATVpv4jExSDxWAvAdNrGHhXfoaC/view",
+    "player": "https://drive.google.com/file/d/1LBm5dATVpv4jExSDxWAvAdNrGHhXfoaC/preview",
     "updated": "2026-09-05T15:31:37.000Z"
   },
   {
@@ -523,7 +816,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354331153",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1p3KUUSRN9OpoVlSnQ8YHppEOWRBoFHmP/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1p3KUUSRN9OpoVlSnQ8YHppEOWRBoFHmP/view",
+    "player": "https://drive.google.com/file/d/1p3KUUSRN9OpoVlSnQ8YHppEOWRBoFHmP/preview",
     "updated": "2026-09-05T15:31:33.000Z"
   },
   {
@@ -532,7 +826,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355446589",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1-IYJsvl3yw7npmM5AblwTD-eYa9nEqEP/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1-IYJsvl3yw7npmM5AblwTD-eYa9nEqEP/view",
+    "player": "https://drive.google.com/file/d/1-IYJsvl3yw7npmM5AblwTD-eYa9nEqEP/preview",
     "updated": "2026-09-05T15:27:43.000Z"
   },
   {
@@ -541,7 +836,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355341267",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1s13GRD4zspEfZwSdbKh6H2vfqyWOso0R/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1s13GRD4zspEfZwSdbKh6H2vfqyWOso0R/view",
+    "player": "https://drive.google.com/file/d/1s13GRD4zspEfZwSdbKh6H2vfqyWOso0R/preview",
     "updated": "2026-09-05T15:27:42.000Z"
   },
   {
@@ -550,7 +846,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355100518",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/189n0fpQ4JL_JfbQda2k8SGmw03cWUrtd/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/189n0fpQ4JL_JfbQda2k8SGmw03cWUrtd/view",
+    "player": "https://drive.google.com/file/d/189n0fpQ4JL_JfbQda2k8SGmw03cWUrtd/preview",
     "updated": "2026-09-05T15:27:30.000Z"
   },
   {
@@ -559,7 +856,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355192965",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1pq29R4r7lpk2W_Q6AsLtdjT5yXoNF1xt/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1pq29R4r7lpk2W_Q6AsLtdjT5yXoNF1xt/view",
+    "player": "https://drive.google.com/file/d/1pq29R4r7lpk2W_Q6AsLtdjT5yXoNF1xt/preview",
     "updated": "2026-09-05T15:27:18.000Z"
   },
   {
@@ -568,7 +866,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355244249",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/128cykK4jdC8VKNwp-V5ksr3Mcg8JZY3z/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/128cykK4jdC8VKNwp-V5ksr3Mcg8JZY3z/view",
+    "player": "https://drive.google.com/file/d/128cykK4jdC8VKNwp-V5ksr3Mcg8JZY3z/preview",
     "updated": "2026-09-05T15:26:52.000Z"
   },
   {
@@ -577,7 +876,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "355569270",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1aHn1udMyGVJa35rS9P8o0aG2DH_cazec/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1aHn1udMyGVJa35rS9P8o0aG2DH_cazec/view",
+    "player": "https://drive.google.com/file/d/1aHn1udMyGVJa35rS9P8o0aG2DH_cazec/preview",
     "updated": "2026-09-05T15:24:51.000Z"
   },
   {
@@ -586,7 +886,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "356975682",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1X8mDL6UzuZsrUSrGHQ-LHpLpTOq2nySs/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1X8mDL6UzuZsrUSrGHQ-LHpLpTOq2nySs/view",
+    "player": "https://drive.google.com/file/d/1X8mDL6UzuZsrUSrGHQ-LHpLpTOq2nySs/preview",
     "updated": "2026-09-05T15:24:13.000Z"
   },
   {
@@ -595,8 +896,149 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "359809408",
     "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/18RXnWYt_sTHes8pvPaANsWOQH1scxew_/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/18RXnWYt_sTHes8pvPaANsWOQH1scxew_/view",
+    "player": "https://drive.google.com/file/d/18RXnWYt_sTHes8pvPaANsWOQH1scxew_/preview",
     "updated": "2026-09-05T15:24:00.000Z"
+  },
+  {
+    "id": "10U9QK-OVJ2FbjT7m6JyaQRFuQdIMtyD7",
+    "name": "S02E01 - Seven Thirty-Seven.srt",
+    "mime": "application/octet-stream",
+    "size": "30980",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/10U9QK-OVJ2FbjT7m6JyaQRFuQdIMtyD7/view",
+    "player": "https://drive.google.com/file/d/10U9QK-OVJ2FbjT7m6JyaQRFuQdIMtyD7/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "13CZkfOGUBl8Z3iFp_Qm40d-w22R9c9d_",
+    "name": "S02E02 - Grilled.srt",
+    "mime": "application/octet-stream",
+    "size": "33553",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/13CZkfOGUBl8Z3iFp_Qm40d-w22R9c9d_/view",
+    "player": "https://drive.google.com/file/d/13CZkfOGUBl8Z3iFp_Qm40d-w22R9c9d_/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1DdEN-dPket9413KoHOn5TOP40s3cqRPC",
+    "name": "S02E03 - Bit by a Dead Bee.srt",
+    "mime": "application/octet-stream",
+    "size": "38621",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1DdEN-dPket9413KoHOn5TOP40s3cqRPC/view",
+    "player": "https://drive.google.com/file/d/1DdEN-dPket9413KoHOn5TOP40s3cqRPC/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1qjlrIBjQNBNrLawEhGi2LGAan0fC5rGy",
+    "name": "S02E04 - Down.srt",
+    "mime": "application/octet-stream",
+    "size": "32557",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1qjlrIBjQNBNrLawEhGi2LGAan0fC5rGy/view",
+    "player": "https://drive.google.com/file/d/1qjlrIBjQNBNrLawEhGi2LGAan0fC5rGy/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1gLjVmrLG4EEGWKbwnKXPmadRpV7aPVY_",
+    "name": "S02E05 - Breakage.srt",
+    "mime": "application/octet-stream",
+    "size": "34628",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1gLjVmrLG4EEGWKbwnKXPmadRpV7aPVY_/view",
+    "player": "https://drive.google.com/file/d/1gLjVmrLG4EEGWKbwnKXPmadRpV7aPVY_/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1n_kKDnl0F8ohGrCdfObZo6zSVznIhVVi",
+    "name": "S02E06 - Peekaboo.srt",
+    "mime": "application/octet-stream",
+    "size": "35579",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1n_kKDnl0F8ohGrCdfObZo6zSVznIhVVi/view",
+    "player": "https://drive.google.com/file/d/1n_kKDnl0F8ohGrCdfObZo6zSVznIhVVi/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1Y1X0j9SYevvzAI0DbNpzd5yopfHe77RW",
+    "name": "S02E07 - Negro y Azul.srt",
+    "mime": "application/octet-stream",
+    "size": "39830",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1Y1X0j9SYevvzAI0DbNpzd5yopfHe77RW/view",
+    "player": "https://drive.google.com/file/d/1Y1X0j9SYevvzAI0DbNpzd5yopfHe77RW/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1VtGAvrql7UcmsmRgQgC9xa2rVoUoOI0m",
+    "name": "S02E08 - Better Call Saul.srt",
+    "mime": "application/octet-stream",
+    "size": "49124",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1VtGAvrql7UcmsmRgQgC9xa2rVoUoOI0m/view",
+    "player": "https://drive.google.com/file/d/1VtGAvrql7UcmsmRgQgC9xa2rVoUoOI0m/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1PFOzHIC_QmW1EleDG6elQyJhoVINRBLe",
+    "name": "S02E09 - 4 Days Out.srt",
+    "mime": "application/octet-stream",
+    "size": "37105",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1PFOzHIC_QmW1EleDG6elQyJhoVINRBLe/view",
+    "player": "https://drive.google.com/file/d/1PFOzHIC_QmW1EleDG6elQyJhoVINRBLe/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1L1ktt5SYsCTvIl6Q4lA0OKW_jAKQd3Hg",
+    "name": "S02E10 - Over.srt",
+    "mime": "application/octet-stream",
+    "size": "29416",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1L1ktt5SYsCTvIl6Q4lA0OKW_jAKQd3Hg/view",
+    "player": "https://drive.google.com/file/d/1L1ktt5SYsCTvIl6Q4lA0OKW_jAKQd3Hg/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1e2U2tThAZMzu9OgDrAz99Xt7g0k7HFg_",
+    "name": "S02E11 - Mandala.srt",
+    "mime": "application/octet-stream",
+    "size": "34249",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1e2U2tThAZMzu9OgDrAz99Xt7g0k7HFg_/view",
+    "player": "https://drive.google.com/file/d/1e2U2tThAZMzu9OgDrAz99Xt7g0k7HFg_/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1cUnhLRVaNSVTCtrOhhuqnIt6EqYEg2V9",
+    "name": "S02E12 - Phoenix.srt",
+    "mime": "application/octet-stream",
+    "size": "41339",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1cUnhLRVaNSVTCtrOhhuqnIt6EqYEg2V9/view",
+    "player": "https://drive.google.com/file/d/1cUnhLRVaNSVTCtrOhhuqnIt6EqYEg2V9/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "1G1Yog-FvFd6U7nebUGDtq-0TxIkUSKiG",
+    "name": "S02E13 - ABQ.srt",
+    "mime": "application/octet-stream",
+    "size": "36665",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/1G1Yog-FvFd6U7nebUGDtq-0TxIkUSKiG/view",
+    "player": "https://drive.google.com/file/d/1G1Yog-FvFd6U7nebUGDtq-0TxIkUSKiG/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
+  },
+  {
+    "id": "17qmLOtHdWmwHSKy2sy-tzGVBQgTIzfv3",
+    "name": "The Pirate Filmes - O primeiro em BluRay compactado no Brasil.website",
+    "mime": "application/octet-stream",
+    "size": "410",
+    "path": "filmes e serie/Series/Breaking Bad - 2ª Temporada (2009) 720p Dual Áudio - Douglasvip",
+    "url": "https://drive.google.com/file/d/17qmLOtHdWmwHSKy2sy-tzGVBQgTIzfv3/view",
+    "player": "https://drive.google.com/file/d/17qmLOtHdWmwHSKy2sy-tzGVBQgTIzfv3/preview",
+    "updated": "2026-09-05T15:20:02.000Z"
   },
   {
     "id": "1rDmHf3nBS7G8FkgusClXwTA_LHJqIfdx",
@@ -604,7 +1046,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "418146206",
     "path": "filmes e serie/Series/Breaking Bad 1 Temporada - The Pirate Filmes",
-    "url": "https://drive.google.com/file/d/1rDmHf3nBS7G8FkgusClXwTA_LHJqIfdx/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1rDmHf3nBS7G8FkgusClXwTA_LHJqIfdx/view",
+    "player": "https://drive.google.com/file/d/1rDmHf3nBS7G8FkgusClXwTA_LHJqIfdx/preview",
     "updated": "2026-09-05T15:18:53.000Z"
   },
   {
@@ -613,7 +1056,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "419115632",
     "path": "filmes e serie/Series/Breaking Bad 1 Temporada - The Pirate Filmes",
-    "url": "https://drive.google.com/file/d/1CS2GOuWrAvRLg5yUhJnn5LNAtJy0fsek/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1CS2GOuWrAvRLg5yUhJnn5LNAtJy0fsek/view",
+    "player": "https://drive.google.com/file/d/1CS2GOuWrAvRLg5yUhJnn5LNAtJy0fsek/preview",
     "updated": "2026-09-05T15:18:51.000Z"
   },
   {
@@ -622,7 +1066,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "415092385",
     "path": "filmes e serie/Series/Breaking Bad 1 Temporada - The Pirate Filmes",
-    "url": "https://drive.google.com/file/d/1PnQmJZcOtOMNSiXRT5MgXebawUYkTaUk/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1PnQmJZcOtOMNSiXRT5MgXebawUYkTaUk/view",
+    "player": "https://drive.google.com/file/d/1PnQmJZcOtOMNSiXRT5MgXebawUYkTaUk/preview",
     "updated": "2026-09-05T15:18:51.000Z"
   },
   {
@@ -631,7 +1076,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "505276990",
     "path": "filmes e serie/Series/Breaking Bad 1 Temporada - The Pirate Filmes",
-    "url": "https://drive.google.com/file/d/1Y_C0dwlleSjf2Xa4g2QA7_hYLnKI1Sdj/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1Y_C0dwlleSjf2Xa4g2QA7_hYLnKI1Sdj/view",
+    "player": "https://drive.google.com/file/d/1Y_C0dwlleSjf2Xa4g2QA7_hYLnKI1Sdj/preview",
     "updated": "2026-09-05T15:18:50.000Z"
   },
   {
@@ -640,7 +1086,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "419202024",
     "path": "filmes e serie/Series/Breaking Bad 1 Temporada - The Pirate Filmes",
-    "url": "https://drive.google.com/file/d/1xsSzCds15oKm3OFgwql2PQGJQsr-Y2B6/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1xsSzCds15oKm3OFgwql2PQGJQsr-Y2B6/view",
+    "player": "https://drive.google.com/file/d/1xsSzCds15oKm3OFgwql2PQGJQsr-Y2B6/preview",
     "updated": "2026-09-05T15:18:50.000Z"
   },
   {
@@ -649,7 +1096,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "419836806",
     "path": "filmes e serie/Series/Breaking Bad 1 Temporada - The Pirate Filmes",
-    "url": "https://drive.google.com/file/d/1BauLdx7Aq7c2zgJlaqZhDjzxiFtrj2fM/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1BauLdx7Aq7c2zgJlaqZhDjzxiFtrj2fM/view",
+    "player": "https://drive.google.com/file/d/1BauLdx7Aq7c2zgJlaqZhDjzxiFtrj2fM/preview",
     "updated": "2026-09-05T15:18:49.000Z"
   },
   {
@@ -658,7 +1106,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "419305692",
     "path": "filmes e serie/Series/Breaking Bad 1 Temporada - The Pirate Filmes",
-    "url": "https://drive.google.com/file/d/1JxKHYqXvpwmnLVkNQ4eY8Tod7cLoy5-E/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1JxKHYqXvpwmnLVkNQ4eY8Tod7cLoy5-E/view",
+    "player": "https://drive.google.com/file/d/1JxKHYqXvpwmnLVkNQ4eY8Tod7cLoy5-E/preview",
     "updated": "2026-09-05T15:18:44.000Z"
   },
   {
@@ -667,7 +1116,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354188758",
     "path": "filmes e serie/Series/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip-20260922T205641Z-1-002/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1pehHhE18Xcxj9bcTGuNdeIr0JgSLQYRS/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1pehHhE18Xcxj9bcTGuNdeIr0JgSLQYRS/view",
+    "player": "https://drive.google.com/file/d/1pehHhE18Xcxj9bcTGuNdeIr0JgSLQYRS/preview",
     "updated": "2026-09-05T12:50:20.000Z"
   },
   {
@@ -676,7 +1126,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "346793423",
     "path": "filmes e serie/Series/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip-20260922T205641Z-1-002/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1cSmFyDmx0yE1wGCKnpSuAejO4ZWw0X-C/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1cSmFyDmx0yE1wGCKnpSuAejO4ZWw0X-C/view",
+    "player": "https://drive.google.com/file/d/1cSmFyDmx0yE1wGCKnpSuAejO4ZWw0X-C/preview",
     "updated": "2026-09-05T12:50:18.000Z"
   },
   {
@@ -685,7 +1136,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "345032360",
     "path": "filmes e serie/Series/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip-20260922T205641Z-1-002/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/15qZaMg90BxEVEKTwSI9rigw0HxiQ8WGl/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/15qZaMg90BxEVEKTwSI9rigw0HxiQ8WGl/view",
+    "player": "https://drive.google.com/file/d/15qZaMg90BxEVEKTwSI9rigw0HxiQ8WGl/preview",
     "updated": "2026-09-05T12:50:14.000Z"
   },
   {
@@ -694,7 +1146,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "339370907",
     "path": "filmes e serie/Series/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip-20260922T205641Z-1-002/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1ZOKsABSyFS3zOQ3hGSwfXzQZSpOS_lsM/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1ZOKsABSyFS3zOQ3hGSwfXzQZSpOS_lsM/view",
+    "player": "https://drive.google.com/file/d/1ZOKsABSyFS3zOQ3hGSwfXzQZSpOS_lsM/preview",
     "updated": "2026-09-05T12:50:14.000Z"
   },
   {
@@ -703,7 +1156,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "344961859",
     "path": "filmes e serie/Series/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip-20260922T205641Z-1-002/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/14kTqGm7EQbITO49JUepyQ22YStDRm0Vz/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/14kTqGm7EQbITO49JUepyQ22YStDRm0Vz/view",
+    "player": "https://drive.google.com/file/d/14kTqGm7EQbITO49JUepyQ22YStDRm0Vz/preview",
     "updated": "2026-09-05T12:50:02.000Z"
   },
   {
@@ -712,7 +1166,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "378456627",
     "path": "filmes e serie/Series/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip-20260922T205641Z-1-002/Breaking Bad - 4ª Temporada (2011) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1FR4iNTjzcsckWRrof4ZAtx4V2KTvkXlV/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1FR4iNTjzcsckWRrof4ZAtx4V2KTvkXlV/view",
+    "player": "https://drive.google.com/file/d/1FR4iNTjzcsckWRrof4ZAtx4V2KTvkXlV/preview",
     "updated": "2026-09-05T12:49:50.000Z"
   },
   {
@@ -721,7 +1176,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "354216980",
     "path": "filmes e serie/Series/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip-20260922T180842Z-1-003/Breaking Bad - 3ª Temporada (2010) 720p Dual Áudio - Douglasvip",
-    "url": "https://drive.google.com/file/d/1QYk2ErnLX25DU1MPSQNkepk7TrAsVHyr/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1QYk2ErnLX25DU1MPSQNkepk7TrAsVHyr/view",
+    "player": "https://drive.google.com/file/d/1QYk2ErnLX25DU1MPSQNkepk7TrAsVHyr/preview",
     "updated": "2026-09-05T12:06:26.000Z"
   },
   {
@@ -730,7 +1186,8 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "mime": "video/mp4",
     "size": "617158373",
     "path": "filmes e serie",
-    "url": "https://drive.google.com/file/d/1cyWxvMlPaaeBge6sTxWHTu2sSNHOxdRo/view?usp=drivesdk",
+    "url": "https://drive.google.com/file/d/1cyWxvMlPaaeBge6sTxWHTu2sSNHOxdRo/view",
+    "player": "https://drive.google.com/file/d/1cyWxvMlPaaeBge6sTxWHTu2sSNHOxdRo/preview",
     "updated": "2026-09-04T11:12:14.805Z"
   }
 ];
