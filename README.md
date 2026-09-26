@@ -1,3 +1,11 @@
+## Versão 1.3.15 — catálogo do Drive recuperado
+
+- Snapshot atualizado de 77 para **81 vídeos**, sem remoções.
+- Adicionados: The Odyssey (2026), Resident Evil (2026) TELESYNC, Spider-Man: Brand New Day (2026) CAMRip e American Horror Story S01E01 — Pilot.
+- A Action do Google Drive agora detecta redirecionamento para login do Google, preserva o snapshot anterior e termina com aviso em vez de falhar.
+- O atualizador aceita a variável de repositório `DRIVE_SYNC_URL`, permitindo trocar a implantação do Apps Script sem editar o código.
+- O teste do núcleo de mídia passou a aceitar a deduplicação intencional de versões diferentes do mesmo filme.
+
 ## Versão 1.3.14 — TV verificada e PWA corrigido
 
 - A TV ao vivo passou a consumir uma playlist monitorada de sinais saudáveis, em vez de carregar indiscriminadamente listas brutas.
