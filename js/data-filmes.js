@@ -35,6 +35,27 @@ const FILMES_CATALOGO = [
   {"id":"filmelier-defensor-2021","type":"filme","title":"O Defensor: A História de Bert Trautmann","year":"2021","genre":"Esporte / Drama","filmGenre":"drama","mediaType":"filme","language":"Português (dublado)","portuguese":true,"colorContent":true,"freeLegal":true,"playablePick":true,"imdbRating":7.3,"accent":"#6586a0","thumb":"assets/filme-defensor.svg","desc":"Um ex-soldado reconstrói sua vida como goleiro na Inglaterra. Filme completo dublado publicado pelo Filmelier TV.","youtubeId":"5WyX5fwmutc","sourceUrl":"https://www.youtube.com/watch?v=5WyX5fwmutc","sourceLabel":"Filmelier TV — filme completo","nostalgiaTags":["filme completo","dublado","Filmelier TV"]},
   {"id":"filmelier-ficaremos-bem-2021","type":"filme","title":"Ficaremos Bem","year":"2021","genre":"Drama / Família","filmGenre":"drama","mediaType":"filme","language":"Português (dublado)","portuguese":true,"colorContent":true,"freeLegal":true,"playablePick":true,"imdbRating":7.3,"accent":"#997d92","thumb":"assets/filme-ficaremos-bem.svg","desc":"Uma notícia difícil leva um casal e sua família a reverem a vida juntos. Filme completo dublado publicado pelo Filmelier TV.","youtubeId":"kCxKA60YZ_E","sourceUrl":"https://www.youtube.com/watch?v=kCxKA60YZ_E","sourceLabel":"Filmelier TV — filme completo","nostalgiaTags":["filme completo","dublado","Filmelier TV"]},
   {"id":"filmelier-outra-face-guerra-2019","type":"filme","title":"A Outra Face da Guerra","year":"2019","genre":"Guerra / Drama","filmGenre":"drama","mediaType":"filme","language":"Português (dublado)","portuguese":true,"colorContent":true,"freeLegal":true,"playablePick":true,"imdbRating":7.2,"accent":"#6f7b79","thumb":"assets/filme-outra-face-guerra.svg","desc":"Um jovem letão se alista durante a Primeira Guerra Mundial. Filme completo dublado publicado pelo Filmelier TV.","youtubeId":"Ralnd-VvSsQ","sourceUrl":"https://www.youtube.com/watch?v=Ralnd-VvSsQ","sourceLabel":"Filmelier TV — filme completo","nostalgiaTags":["filme completo","dublado","Filmelier TV"]},
+  {
+    "id":"youtube-adrenalina-pressure-2002",
+    "type":"filme",
+    "title":"Adrenalina",
+    "year":"2002",
+    "genre":"Ação / Suspense",
+    "filmGenre":"acao",
+    "mediaType":"filme",
+    "language":"Conforme a publicação do YouTube",
+    "colorContent":true,
+    "playablePick":true,
+    "imdbRating":5.7,
+    "accent":"#7559d9",
+    "thumb":"https://i.ytimg.com/vi/MrpiY2Tyhug/hqdefault.jpg",
+    "desc":"Dois amigos acabam envolvidos em uma trama perigosa e precisam escapar de um xerife corrupto enquanto tentam provar sua inocência.",
+    "youtubeId":"MrpiY2Tyhug",
+    "sourceUrl":"https://www.youtube.com/watch?v=MrpiY2Tyhug",
+    "sourceLabel":"YouTube — Terroreterno lup",
+    "availabilityStatus":"Disponibilidade depende da publicação no YouTube",
+    "nostalgiaTags":["Adrenalina","Pressure","2002","ação","suspense","YouTube"]
+  },
   {"id":"filmelier-segredos-guerra-2022","type":"filme","title":"Segredos de Guerra","year":"2022","genre":"Romance / Drama","filmGenre":"drama","mediaType":"filme","language":"Português (dublado)","portuguese":true,"colorContent":true,"freeLegal":true,"playablePick":true,"imdbRating":7.1,"accent":"#677ba1","thumb":"assets/filme-segredos-guerra.svg","desc":"Um soldado e um piloto vivem um romance durante a Guerra Fria. Filme completo dublado publicado pelo Filmelier TV.","youtubeId":"Tksn__fNp4o","sourceUrl":"https://www.youtube.com/watch?v=Tksn__fNp4o","sourceLabel":"Filmelier TV — filme completo","nostalgiaTags":["filme completo","dublado","Filmelier TV"]}
 ];
 
