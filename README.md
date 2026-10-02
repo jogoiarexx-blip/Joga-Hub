@@ -1,3 +1,12 @@
+## Versão 1.4.0 — visual profissional + YouTube selecionado
+
+- Redesign visual do cabeçalho, hero, busca, filtros, home, cards e catálogo de mídia.
+- Nova área **YouTube selecionado**, com diferenciação visual entre fonte oficial e publicação externa.
+- Adicionados **Other Side of the Box** pelo ALTER e **Kung Fury** pelo canal oficial LaserUnicorns.
+- Catálogo curado dos canais Terroreterno lup e Zerando Games Rexx, com séries agrupadas e indicação quando os direitos da publicação não foram verificados.
+- O Corvo: A Série e Hunter x Hunter passam a aparecer agrupados por série em vez de vídeos soltos.
+- Corrigida novamente a limpeza do cache para preservar os caches dos apps internos.
+
 ## Versão 1.3.15 — catálogo do Drive recuperado
 
 - Snapshot atualizado de 77 para **81 vídeos**, sem remoções.

@@ -1,4 +1,4 @@
-/* JOGAHUB 1.3.17 — home, busca, favoritos, TV e progresso de leitura */
+/* JOGAHUB 1.4.0 — home, busca, favoritos, TV e progresso de leitura */
 
 const TYPES = {
   jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
@@ -66,7 +66,7 @@ function rebuildCatalogItems(){
 }
 rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
-const APP_VERSION = '1.3.17';
+const APP_VERSION = '1.4.0';
 window.JOGAHUB_VERSION = APP_VERSION;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
@@ -546,13 +546,27 @@ function movieKindLabel(item){
   if(item.mediaType === 'colecao') return 'Coleção';
   return 'Filme';
 }
+function mediaSourceBadge(item){
+  if(item.driveFileId)return '<span class="source-badge drive">☁ Drive</span>';
+  if(item.archiveId)return '<span class="source-badge archive">Archive</span>';
+  if(item.youtubeId||item.youtubePlaylistId){
+    if(item.verifiedSource)return '<span class="source-badge verified">✓ Oficial</span>';
+    return '<span class="source-badge youtube">YouTube</span>';
+  }
+  return '';
+}
+function mediaSourceNote(item){
+  if(item.verifiedSource)return '<small class="source-note verified">✓ Fonte oficial verificada</small>';
+  if(item.sourceUnverified)return '<small class="source-note external">Publicação externa • direitos não verificados</small>';
+  return '';
+}
 function movieCardHTML(item, compact=false){
   const favorites = loadFavorites();
   const isFav = favorites.has(item.id);
   const p = movieProgress(item);
   const state = movieWatchState(item);
   const pct = p && !p.episodeOnly ? Math.max(0, Math.min(100, (p.time/p.duration)*100)) : 0;
-  const sourceBadge=item.driveFileId?'<span class="source-badge drive">☁ Drive</span>':(item.archiveId?'<span class="source-badge archive">Archive</span>':(item.youtubeId||item.youtubePlaylistId?'<span class="source-badge youtube">YouTube</span>':''));
+  const sourceBadge=mediaSourceBadge(item);
   const drivePosterTitle=item.driveFileId?`<span class="drive-poster-title">${escapeHTML(item.seriesTitle || item.title)}</span>`:'';
   return `<article class="stream-card${compact?' compact':''}${item.driveFileId?' drive-card':''}" style="--accent:${item.accent || 'var(--gold)'}" data-id="${escapeHTML(item.id)}">
     <a class="stream-poster" href="${escapeHTML(itemHref(item))}"${itemLinkAttrs(item)} aria-label="${isCatalogExternal(item)?'Onde assistir':'Assistir'} ${escapeHTML(item.title)}">
@@ -565,7 +579,8 @@ function movieCardHTML(item, compact=false){
     <div class="stream-card-copy">
       <div class="stream-card-title"><b>${escapeHTML(item.seriesTitle || item.title)}</b><button class="favorite-btn stream-fav${isFav?' active':''}" type="button" data-favorite="${escapeHTML(item.id)}" aria-label="${isFav?'Remover da':'Adicionar à'} Minha Lista" aria-pressed="${isFav}">♥</button></div>
       <span>${escapeHTML(movieKindLabel(item))}${item.year ? ` • ${escapeHTML(item.year)}` : ''} • ${escapeHTML(item.genre || '')}</span>${imdbBadge(item,'copy-imdb')}
-      ${item.playablePick ? `<small>${escapeHTML(item.sourceLabel)} • ${escapeHTML(item.language)} • ▶ Assistir no JogaHub</small>` : ''}
+      ${item.sourceLabel ? `<small class="stream-source-line">${escapeHTML(item.sourceLabel)}${item.language ? ' • '+escapeHTML(item.language) : ''}</small>` : ''}
+      ${mediaSourceNote(item)}
       ${item.seriesTitle && item.title !== item.seriesTitle ? `<small>${escapeHTML(item.title)}</small>` : ''}
     </div>
   </article>`;
@@ -580,7 +595,7 @@ function seriesCardHTML(group){
   const availability=first.availabilityStatus ? `<small class="series-availability">${escapeHTML(first.availabilityStatus)}</small>` : '';
   return `<article class="stream-card series-summary${catalogOnly?' catalog-only':''}" style="--accent:${first.accent || 'var(--gold)'}">
     <a class="stream-poster" href="${escapeHTML(itemHref(next))}"${itemLinkAttrs(next)} aria-label="${catalogOnly?'Onde assistir':'Abrir'} ${escapeHTML(group.title)}">
-      <img src="${escapeHTML(first.thumb || '')}" alt="Capa de ${escapeHTML(group.title)}" loading="lazy" decoding="async"><span class="stream-play">${catalogOnly?'↗':'▶'}</span>
+      <img src="${escapeHTML(first.thumb || '')}" alt="Capa de ${escapeHTML(group.title)}" loading="lazy" decoding="async">${mediaSourceBadge(first)}<span class="stream-play">${catalogOnly?'↗':'▶'}</span>
       <span class="series-count">${episodes ? `${episodes} ep.` : 'Série'}</span>
       ${catalogOnly?'<span class="catalog-badge">CATÁLOGO</span>':''}
     </a>
@@ -631,6 +646,7 @@ function renderMovieHub(list){
   }else{
     const continuing=take(pool.filter(movieProgress),14);
     const favs=take(pool.filter(i=>favorites.has(i.id)),14);
+    const youtubeMovies=take(pool.filter(i=>i.youtubeCurated && i.mediaType!=='serie' && i.mediaType!=='colecao'),24);
     const playablePicks=take(pool.filter(i=>i.playablePick),20);
     const topImdb=take(pool.filter(i=>imdbRating(i)>0),20);
     const jackie=take(pool.filter(i=>i.jackieChan),24);
@@ -638,10 +654,24 @@ function renderMovieHub(list){
 
     rows+=section('Continuar assistindo','Vídeos diretos retomam no tempo exato; Google Drive retoma no último episódio aberto.',continuing,'catalog-continuar');
     rows+=section('Minha Lista','Seus favoritos, sem repetir o que já está acima.',favs,'catalog-lista');
-    rows+=section('🎬 Filmes completos para assistir aqui','Filmes dublados de canais oficiais; toque na capa para abrir o player do JogaHub.',playablePicks,'catalog-playable');
+    rows+=section('▶ YouTube selecionado','Filmes e curtas encontrados nos canais pesquisados; fontes oficiais são identificadas por selo.',youtubeMovies,'catalog-youtube');
+    rows+=section('🎬 Filmes completos para assistir aqui','Publicações oficiais e verificadas que abrem no player do JogaHub.',playablePicks,'catalog-playable');
     rows+=section('⭐ Melhores no IMDb','Ranking do catálogo pela nota IMDb, da maior para a menor.',topImdb,'catalog-imdb');
     rows+=section('🥋 Jackie Chan','Filmes anteriores a 2000 e As Aventuras de Jackie Chan encontrados em fontes reproduzíveis.',jackie);
     rows+=section('📺 Nostalgia da TV','Desenhos, séries e clássicos que ainda não apareceram nas seções anteriores.',classicTv);
+
+    // Séries selecionadas do YouTube: agrupadas em uma capa, como as séries do Drive.
+    const youtubeSeriesItems=pool.filter(i=>i.youtubeCurated && i.mediaType==='serie' && !used.has(mediaIdentity(i)));
+    if(youtubeSeriesItems.length){
+      const ytGroups=[]; const ytGroupMap=new Map();
+      for(const item of youtubeSeriesItems){
+        const key=item.seriesId || normalize(item.seriesTitle || item.title);
+        if(!ytGroupMap.has(key)){const g={id:key,title:item.seriesTitle||item.title,items:[]};ytGroupMap.set(key,g);ytGroups.push(g);}
+        ytGroupMap.get(key).items.push(item);
+      }
+      ytGroups.forEach(g=>{g.items.sort((a,b)=>(a.season||1)-(b.season||1)||(a.episode||0)-(b.episode||0));g.items.forEach(i=>used.add(mediaIdentity(i)));});
+      rows+=`<section id="catalog-youtube-series" class="stream-row youtube-series-row"><div class="stream-row-head"><div><h2>📺 Séries do YouTube</h2><p>Publicações agrupadas por série; o selo mostra se a fonte foi verificada ou é externa.</p></div><div class="stream-row-nav"><span>${ytGroups.length}</span><button type="button" data-row-scroll="-1" aria-label="Voltar nesta fileira">‹</button><button type="button" data-row-scroll="1" aria-label="Avançar nesta fileira">›</button></div></div><div class="stream-track">${ytGroups.map(seriesCardHTML).join('')}</div></section>`;
+    }
 
     // Google Drive: mostra cada longa individualmente, sem esconder dentro de coleção.
     // Cada card abre o link-player.html do próprio JogaHub por driveFileId.
@@ -687,7 +717,9 @@ function renderMovieHub(list){
     <nav class="catalog-quick-nav" aria-label="Atalhos do catálogo">
       <button type="button" data-catalog-scroll="catalog-continuar">▶ Continuar</button>
       <button type="button" data-catalog-scroll="catalog-lista">♥ Minha Lista</button>
-      <button type="button" data-catalog-scroll="catalog-playable">🎬 Filmes completos</button>
+      <button type="button" data-catalog-scroll="catalog-youtube">▶ YouTube</button>
+      <button type="button" data-catalog-scroll="catalog-youtube-series">📺 Séries YouTube</button>
+      <button type="button" data-catalog-scroll="catalog-playable">🎬 Oficiais</button>
       <button type="button" data-catalog-scroll="catalog-imdb">⭐ IMDb</button>
       <button type="button" data-catalog-scroll="catalog-recentes">🆕 Novidades</button>
       <button type="button" data-catalog-scroll="catalog-drive">☁ Google Drive</button>
@@ -699,7 +731,7 @@ function renderMovieHub(list){
       <div class="stream-hero-copy"><span class="stream-eyebrow">${escapeHTML(categoryMeta.tag.toUpperCase())}</span>
         <h1>${escapeHTML(categoryMeta.title)}</h1>
         <p>${escapeHTML(categoryMeta.desc)}</p>
-        <div class="stream-hero-meta"><span>${activeType==='filme' ? 'Catálogo de filmes' : activeType==='serie' ? 'Catálogo de séries' : 'Catálogo de animes'}</span><span>${pool.length} conteúdos</span></div>
+        <div class="stream-hero-meta"><span>${activeType==='filme' ? 'Catálogo de filmes' : activeType==='serie' ? 'Catálogo de séries' : 'Catálogo de animes'}</span><span>${pool.length} conteúdos</span>${pool.some(i=>i.youtubeCurated)?`<span>▶ ${pool.filter(i=>i.youtubeCurated).length} YouTube selecionados</span>`:''}</div>
         <div class="stream-hero-actions"><a class="stream-primary" href="#games">▶ ${escapeHTML(categoryMeta.action.replace('→','').trim())}</a>${featured?`<a class="stream-secondary" href="${escapeHTML(itemHref(featured))}"${itemLinkAttrs(featured)}>⭐ destaque: ${escapeHTML(featured.seriesTitle || featured.title)}</a>`:''}</div>
       </div>
     </section>
@@ -893,7 +925,7 @@ function renderGenreFilters(){
   if(activeType === 'emulador'){ document.getElementById('filters').innerHTML=''; return; }
   if(activeType === 'radio'){ document.getElementById('filters').innerHTML=''; return; }
   if(['filme','serie','anime'].includes(activeType)){
-    const options=[['todos','🍿 Todos'],...(activeType==='serie'?[['breaking-bad','🧪 Breaking Bad'],['doramas','📱 Doramas curtos']]:[]),['youtube-pt','▶️ YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Grátis'],['infantil','🧸 Infantil'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
+    const options=[['todos','🍿 Todos'],...(activeType==='serie'?[['breaking-bad','🧪 Breaking Bad'],['doramas','📱 Doramas curtos']]:[]),['youtube-curated','▶ YouTube selecionado'],['youtube-pt','🇧🇷 YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Grátis'],['infantil','🧸 Infantil'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
     document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
     return;
   }
@@ -939,7 +971,8 @@ function applyFilters(){
     const searchable = itemSearchIndex(i);
     const movieFilter = !['filme','serie','anime'].includes(activeType) || genre === 'todos'
       || (genre === 'jackie' && i.jackieChan === true)
-      || (genre === 'youtube-pt' && i.youtubePt === true)
+      || (genre === 'youtube-curated' && i.youtubeCurated === true)
+      || (genre === 'youtube-pt' && (i.youtubePt === true || (i.youtubeId && (i.portuguese || /portugu/i.test(i.language || '')))))
       || (genre === 'archive-pt' && i.archiveLicensed === true)
       || (genre === 'gratis' && i.freeLegal)
       || (genre === 'classicos-tv' && i.classicTv)
@@ -1206,7 +1239,7 @@ if('serviceWorker' in navigator){
     try {
       // limpa caches da versão que causou o problema no GitHub Pages
       const names = await caches.keys();
-      await Promise.all(names.filter(n => (n.startsWith('nexora-') || n.startsWith('linkora-') || n.startsWith('jogahub-')) && n !== CURRENT_SHELL_CACHE && n !== CURRENT_CONTENT_CACHE && n !== MEDIA_CACHE).map(n => caches.delete(n)));
+      await Promise.all(names.filter(isObsoleteHubCache).map(n => caches.delete(n)));
       await navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'});
     } catch(err){ console.warn('PWA:', err); }
   });
