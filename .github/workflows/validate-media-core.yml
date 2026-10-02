@@ -7,6 +7,9 @@ on:
       - 'js/drive-sync.js'
       - 'js/drive-snapshot.js'
       - 'js/app.js'
+      - 'js/data-filmes.js'
+      - 'js/launcher-upgrade.js'
+      - 'js/tv-catalog.js'
       - 'link-player.html'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
@@ -16,6 +19,9 @@ on:
       - 'js/drive-sync.js'
       - 'js/drive-snapshot.js'
       - 'js/app.js'
+      - 'js/data-filmes.js'
+      - 'js/launcher-upgrade.js'
+      - 'js/tv-catalog.js'
       - 'link-player.html'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
@@ -29,5 +35,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validar sintaxe do app
+        run: |
+          node --check js/app.js
+          node --check js/data-filmes.js
+          node --check js/launcher-upgrade.js
+          node --check js/drive-sync.js
+          node --check js/tv-catalog.js
+
       - name: Validar catálogo e parser do Drive
         run: node tools/test-drive-core.mjs
