@@ -43,5 +43,19 @@ jobs:
           node --check js/drive-sync.js
           node --check js/tv-catalog.js
 
+      - name: Validar JavaScript do player HTML
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('link-player.html','utf8');
+          const blocks=[...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1].trim()).filter(Boolean);
+          if(!blocks.length) throw new Error('Nenhum script inline encontrado em link-player.html');
+          for(const [i,code] of blocks.entries()){
+            try{ new Function(code); }
+            catch(e){ throw new Error('Script inline '+(i+1)+' inválido: '+e.message); }
+          }
+          console.log('link-player.html:',blocks.length,'bloco(s) JavaScript válido(s)');
+          NODE
+
       - name: Validar catálogo e parser do Drive
         run: node tools/test-drive-core.mjs

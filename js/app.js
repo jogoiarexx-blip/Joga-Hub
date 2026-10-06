@@ -1,4 +1,4 @@
-/* JOGAHUB 1.4.0 — home, busca, favoritos, TV e progresso de leitura */
+/* JOGAHUB 1.4.1 — home, busca, favoritos, TV e progresso de leitura */
 
 const TYPES = {
   jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
@@ -66,7 +66,7 @@ function rebuildCatalogItems(){
 }
 rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
-const APP_VERSION = '1.4.0';
+const APP_VERSION = '1.4.1';
 window.JOGAHUB_VERSION = APP_VERSION;
 const FAVORITES_KEY = 'jogahub.favorites';
 const OFFLINE_KEY = 'jogahub.offline.';
@@ -302,7 +302,7 @@ function itemHref(item){
     const start = Number(item.startSeconds)||0;
     const url = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(item.youtubeId)}${start?`?start=${start}`:''}`;
     const source = item.sourceUrl || `https://www.youtube.com/watch?v=${encodeURIComponent(item.youtubeId)}${start?`&t=${start}s`:''}`;
-    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=youtube&youtubeId=${encodeURIComponent(item.youtubeId)}&start=${start}&id=${encodeURIComponent(item.id || '')}`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=youtube&youtubeId=${encodeURIComponent(item.youtubeId)}&start=${start}&id=${encodeURIComponent(item.id || '')}&seriesId=${encodeURIComponent(item.seriesId || '')}&seriesTitle=${encodeURIComponent(item.seriesTitle || '')}&season=${encodeURIComponent(item.season || '')}&episode=${encodeURIComponent(item.episode || '')}`;
   }
   if(item.type === 'filme' && item.archiveId){
     const url = `https://archive.org/embed/${encodeURIComponent(item.archiveId)}`;
@@ -315,7 +315,7 @@ function itemHref(item){
   if(item.type === 'filme' && item.driveFileId){
     const url = `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/preview`;
     const source = item.sourceUrl || `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/view`;
-    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=iframe&id=${encodeURIComponent(item.id || '')}`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=iframe&id=${encodeURIComponent(item.id || '')}&driveFileId=${encodeURIComponent(item.driveFileId || '')}&driveName=${encodeURIComponent(item._driveName || '')}&driveMime=${encodeURIComponent(item.driveMime || '')}&seriesId=${encodeURIComponent(item.seriesId || '')}&seriesTitle=${encodeURIComponent(item.seriesTitle || '')}&season=${encodeURIComponent(item.season || '')}&episode=${encodeURIComponent(item.episode || '')}`;
   }
   if(isExternalItem(item)){
     if(item.embed === true){

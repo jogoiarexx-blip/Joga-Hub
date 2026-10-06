@@ -1,3 +1,13 @@
+## Versão 1.4.1 — correção do player de episódios
+
+- Corrigido o desencontro entre o catálogo da home e o catálogo carregado pelo `link-player.html`.
+- O player agora usa as mesmas versões atuais de filmes, snapshot e sincronizador do Google Drive.
+- Links de episódios passam a carregar explicitamente `youtubeId`/`driveFileId`, série, temporada e episódio.
+- Se o navegador estiver com cache antigo, o player reconstrói o episódio mínimo a partir da própria URL e ainda tenta reproduzir.
+- Navegação anterior/próximo preserva todos os dados do episódio.
+- Vídeos do YouTube que bloqueiam incorporação agora mostram uma mensagem clara e um botão para abrir o episódio no YouTube, em vez de ficar travados.
+- CI passou a validar também o JavaScript inline do player.
+
 ## Versão 1.4.0 — visual profissional + YouTube selecionado
 
 - Redesign visual do cabeçalho, hero, busca, filtros, home, cards e catálogo de mídia.
