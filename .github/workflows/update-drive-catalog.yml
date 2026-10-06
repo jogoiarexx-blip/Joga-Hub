@@ -3,7 +3,7 @@ name: Atualizar catálogo do Google Drive
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 */3 * * *'
+    - cron: '17 * * * *'
   push:
     paths:
       - 'tools/update-drive-snapshot.mjs'
