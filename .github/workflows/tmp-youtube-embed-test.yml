@@ -1,0 +1,41 @@
+name: Teste temporário de embeds YouTube
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-youtube-embed-test.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Testar vídeos das séries
+        shell: bash
+        run: |
+          python -m pip install -q yt-dlp
+          python - <<'PY'
+          import json, subprocess, urllib.request, re
+          ids=["iVfhapTzKP8","2K1Eo9UZE0A","RG1Kq9P2Ku8","R0U7ko-nqhg","wlbV_AjRedg"]
+          for vid in ids:
+              out={"id":vid}
+              try:
+                  raw=subprocess.check_output(["yt-dlp","--skip-download","--dump-single-json",f"https://www.youtube.com/watch?v={vid}"],stderr=subprocess.STDOUT,text=True,timeout=120)
+                  d=json.loads(raw)
+                  for k in ["title","availability","age_limit","live_status","channel","channel_id","duration","webpage_url"]:
+                      out[k]=d.get(k)
+                  out["yt_dlp_ok"]=True
+              except subprocess.CalledProcessError as e:
+                  out["yt_dlp_ok"]=False;out["error"]=e.output[-1000:]
+              except Exception as e:
+                  out["yt_dlp_ok"]=False;out["error"]=str(e)
+              try:
+                  req=urllib.request.Request(f"https://www.youtube.com/watch?v={vid}",headers={"User-Agent":"Mozilla/5.0"})
+                  html=urllib.request.urlopen(req,timeout=20).read().decode("utf-8","ignore")
+                  m=re.search(r'"playableInEmbed"\s*:\s*(true|false)',html)
+                  out["playableInEmbed"]=None if not m else m.group(1)=="true"
+                  out["embedDisabledText"]="Video unavailable" in html
+              except Exception as e:
+                  out["html_error"]=str(e)
+              print("EMBED_TEST="+json.dumps(out,ensure_ascii=False))
+          PY
