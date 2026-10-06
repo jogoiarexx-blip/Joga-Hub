@@ -771,6 +771,86 @@ window.JOGAHUB_DRIVE_SNAPSHOT = [
     "updated": "2026-09-09T16:54:26.000Z"
   },
   {
+    "id": "1rGPSp2e4dBxwXiOFKEiK4MXqsptXV8Oa",
+    "name": "6 - Buyout.mp4",
+    "mime": "video/mp4",
+    "size": "410498509",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1rGPSp2e4dBxwXiOFKEiK4MXqsptXV8Oa/view",
+    "player": "https://drive.google.com/file/d/1rGPSp2e4dBxwXiOFKEiK4MXqsptXV8Oa/preview",
+    "updated": "2026-09-05T16:48:07.898Z"
+  },
+  {
+    "id": "1LohvX5EfavI44-yIJwJ-le9_9w2z-7d2",
+    "name": "1 - Live Free or Die.mp4",
+    "mime": "video/mp4",
+    "size": "371906117",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1LohvX5EfavI44-yIJwJ-le9_9w2z-7d2/view",
+    "player": "https://drive.google.com/file/d/1LohvX5EfavI44-yIJwJ-le9_9w2z-7d2/preview",
+    "updated": "2026-09-05T16:48:07.854Z"
+  },
+  {
+    "id": "11WiwoSjOp3cXdED74jlcqQBRsKh1eQ2a",
+    "name": "7 - Say My Name.mp4",
+    "mime": "video/mp4",
+    "size": "409624539",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/11WiwoSjOp3cXdED74jlcqQBRsKh1eQ2a/view",
+    "player": "https://drive.google.com/file/d/11WiwoSjOp3cXdED74jlcqQBRsKh1eQ2a/preview",
+    "updated": "2026-09-05T16:48:04.703Z"
+  },
+  {
+    "id": "1BdER9xnZ9Zxc7hHFG0QUx-5v13C3zr23",
+    "name": "2 - Madrigal.mp4",
+    "mime": "video/mp4",
+    "size": "408730223",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1BdER9xnZ9Zxc7hHFG0QUx-5v13C3zr23/view",
+    "player": "https://drive.google.com/file/d/1BdER9xnZ9Zxc7hHFG0QUx-5v13C3zr23/preview",
+    "updated": "2026-09-05T16:48:02.359Z"
+  },
+  {
+    "id": "1EGQrCKGd_r47YX4VGbWpTueeJ4Vtw6Ot",
+    "name": "5 - Dead Freight.mp4",
+    "mime": "video/mp4",
+    "size": "416300705",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1EGQrCKGd_r47YX4VGbWpTueeJ4Vtw6Ot/view",
+    "player": "https://drive.google.com/file/d/1EGQrCKGd_r47YX4VGbWpTueeJ4Vtw6Ot/preview",
+    "updated": "2026-09-05T16:48:01.883Z"
+  },
+  {
+    "id": "1i5WGE8cdB6urGY4JY8d16pdi2-1N8s7j",
+    "name": "4 - Fifty-One.mp4",
+    "mime": "video/mp4",
+    "size": "410184356",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1i5WGE8cdB6urGY4JY8d16pdi2-1N8s7j/view",
+    "player": "https://drive.google.com/file/d/1i5WGE8cdB6urGY4JY8d16pdi2-1N8s7j/preview",
+    "updated": "2026-09-05T16:47:58.662Z"
+  },
+  {
+    "id": "1-28Fu699uYJRXZmmoTSYffkvnaAfc8Pd",
+    "name": "3 - Hazard Pay.mp4",
+    "mime": "video/mp4",
+    "size": "408799970",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1-28Fu699uYJRXZmmoTSYffkvnaAfc8Pd/view",
+    "player": "https://drive.google.com/file/d/1-28Fu699uYJRXZmmoTSYffkvnaAfc8Pd/preview",
+    "updated": "2026-09-05T16:47:58.138Z"
+  },
+  {
+    "id": "13Bynb7oe0DYAU88xF98udTpTRhqgpWYa",
+    "name": "8 - Gliding Over All.mp4",
+    "mime": "video/mp4",
+    "size": "410015354",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada [ Parte 1 ] - The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/13Bynb7oe0DYAU88xF98udTpTRhqgpWYa/view",
+    "player": "https://drive.google.com/file/d/13Bynb7oe0DYAU88xF98udTpTRhqgpWYa/preview",
+    "updated": "2026-09-05T16:47:57.191Z"
+  },
+  {
     "id": "1bpHtLyPvVAk6Klss-f-9AQJPz1K_L6PW",
     "name": "S02E03 - Bit by a Dead Bee.mp4",
     "mime": "video/mp4",
