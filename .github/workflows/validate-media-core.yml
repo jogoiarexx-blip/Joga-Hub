@@ -7,6 +7,7 @@ on:
       - 'js/drive-sync.js'
       - 'js/drive-snapshot.js'
       - 'js/app.js'
+      - 'js/data-links.js'
       - 'js/data-filmes.js'
       - 'js/launcher-upgrade.js'
       - 'js/tv-catalog.js'
@@ -38,6 +39,7 @@ jobs:
       - name: Validar sintaxe do app
         run: |
           node --check js/app.js
+          node --check js/data-links.js
           node --check js/data-filmes.js
           node --check js/launcher-upgrade.js
           node --check js/drive-sync.js

@@ -300,6 +300,20 @@ const LINK_ITEMS = [
     embed: false
   },
   {
+    id: 'bo1-zombies-browser',
+    type: 'jogo',
+    title: 'Black Ops 1 Zombies — Browser',
+    genre: 'FPS / Survival / Zombies',
+    category: 'survival',
+    accent: 'var(--brand-red)',
+    thumb: 'https://vel.gg/art/mapselect-supported.webp',
+    hero: 'https://vel.gg/art/mapselect-supported.webp',
+    desc: 'Black Ops 1 Zombies no navegador — projeto externo e não oficial com seleção de mapas e gameplay de sobrevivência contra hordas.',
+    url: 'https://vel.gg/bo1z',
+    installable: false,
+    embed: false
+  },
+  {
     id: 'snes-nova',
     type: 'emulador',
     title: 'SNES Nova',
