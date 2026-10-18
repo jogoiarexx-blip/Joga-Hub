@@ -35,6 +35,48 @@
 
 const LINK_ITEMS = [
   {
+    id: 'asfalto-brutal',
+    type: 'jogo',
+    title: 'Asfalto Brutal',
+    genre: 'Corrida / Combate de motos 3D',
+    category: 'corrida',
+    accent: 'var(--brand-orange)',
+    thumb: 'assets/cover-asfalto-brutal.svg',
+    hero: 'assets/cover-asfalto-brutal.svg',
+    desc: 'Corrida de motos em 3D com combate corpo a corpo, armas, tráfego, adversários inteligentes, nitro e suporte a controle.',
+    url: 'https://jogoiarexx-blip.github.io/Asfalto-Brutal/',
+    installable: false,
+    embed: false
+  },
+  {
+    id: 'asas-de-brumaria',
+    type: 'jogo',
+    title: 'Asas de Brumária',
+    genre: 'Aventura / Dragões / Mundo aberto 3D',
+    category: 'rpg',
+    accent: 'var(--brand-cyan)',
+    thumb: 'assets/cover-asas-de-brumaria.svg',
+    hero: 'assets/cover-asas-de-brumaria.svg',
+    desc: 'Explore ilhas e montanhas, voe com dragões, conclua missões, resgate filhotes e descubra novos desafios em um mundo 3D.',
+    url: 'https://jogoiarexx-blip.github.io/Asas-de-Brum-ria/',
+    installable: false,
+    embed: false
+  },
+  {
+    id: 'hulk-smash-city',
+    type: 'jogo',
+    title: 'Hulk Smash City',
+    genre: 'Ação / Destruição / Mundo aberto 3D',
+    category: 'acao',
+    accent: 'var(--brand-green)',
+    thumb: 'assets/cover-hulk-smash.svg',
+    hero: 'assets/cover-hulk-smash.svg',
+    desc: 'Cause destruição em uma cidade 3D, enfrente inimigos e use superpulo, socos, escalada, arremesso de carros e golpes especiais.',
+    url: 'https://jogoiarexx-blip.github.io/Hulk-Smash/',
+    installable: false,
+    embed: false
+  },
+  {
     id: 'trilha-da-floresta',
     type: 'jogo',
     title: 'Trilha da Floresta',
