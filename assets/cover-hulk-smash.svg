@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="HULK SMASH CITY — capa do jogo">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c2130"/><stop offset="1" stop-color="#244329"/></linearGradient><linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#020609" stop-opacity="0"/><stop offset="1" stop-color="#020609" stop-opacity=".94"/></linearGradient><radialGradient id="halo"><stop stop-color="#82ee61" stop-opacity=".62"/><stop offset="1" stop-color="#82ee61" stop-opacity="0"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="11"/></filter></defs>
+<rect width="1200" height="675" fill="url(#bg)"/><circle cx="915" cy="275" r="345" fill="url(#halo)"/><path d="M0 0H1200V675H0Z" fill="none" stroke="#82ee61" stroke-opacity=".13" stroke-width="18"/>
+
+<g fill="#122431"><path d="M40 415V175H159V415ZM181 415V233H312V415ZM343 415V139H498V415ZM510 415V273H605V415ZM639 415V196H755V415ZM760 415V259H890V415ZM904 415V156H1012V415ZM1028 415V246H1170V415Z"/></g>
+<g fill="#80bfa3" opacity=".4"><path d="M69 209h19v29H69zm45 0h19v29h-19zm-46 66h19v29H68zm139-9h19v29h-19zm90 0h19v29h-19zm70-93h19v29h-19zm63 0h19v29h-19zm-62 70h19v29h-19zm62 0h19v29h-19zm242-11h19v29h-19zm70 0h19v29h-19zm182-30h19v29h-19zm58 0h19v29h-19z"/></g>
+<path d="M525 438L594 390 578 316 617 288 647 341 662 206Q668 171 695 176Q723 181 720 213L723 319 750 162Q758 137 783 148Q807 158 802 188L789 314 825 175Q837 152 861 163Q882 174 870 200L846 331 878 248Q893 225 915 240Q933 254 921 277L862 449 829 511H666Z" fill="#4ba841" stroke="#b8ff73" stroke-width="9" stroke-linejoin="round"/>
+<path d="M605 395L652 373 664 332 698 360 739 340 777 362 818 343" fill="none" stroke="#245d32" stroke-width="18" stroke-linecap="round"/>
+<path d="M0 473L371 408 454 475 560 433 641 515 485 566 310 539 0 581Z" fill="#334a46"/>
+<g stroke="#c0ff77" stroke-width="13" stroke-linecap="round" opacity=".95"><path d="M461 270L399 200"/><path d="M498 344L392 327"/><path d="M945 395L1086 335"/><path d="M928 173L995 85"/></g>
+
+<rect y="405" width="1200" height="270" fill="url(#shade)"/>
+<rect x="65" y="450" width="8" height="143" rx="4" fill="#82ee61"/>
+<text x="97" y="504" font-family="Arial,Helvetica,sans-serif" font-size="28" letter-spacing="7" fill="#b6ff94" font-weight="700">JOGAHUB ORIGINAL</text>
+<text x="97" y="562" font-family="Arial,Helvetica,sans-serif" font-size="53" fill="white" font-weight="900" letter-spacing="1">HULK SMASH CITY</text>
+<text x="99" y="600" font-family="Arial,Helvetica,sans-serif" font-size="23" fill="#e2ecf5" letter-spacing="3">MUNDO 3D · DESTRUIÇÃO TOTAL</text>
+<rect x="65" y="624" width="260" height="4" fill="#82ee61" rx="2"/>
+</svg>
