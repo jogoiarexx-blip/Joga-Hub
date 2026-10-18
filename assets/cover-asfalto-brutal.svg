@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="ASFALTO BRUTAL — capa do jogo">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101929"/><stop offset="1" stop-color="#4b1722"/></linearGradient><linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#020609" stop-opacity="0"/><stop offset="1" stop-color="#020609" stop-opacity=".94"/></linearGradient><radialGradient id="halo"><stop stop-color="#ff743d" stop-opacity=".62"/><stop offset="1" stop-color="#ff743d" stop-opacity="0"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="11"/></filter></defs>
+<rect width="1200" height="675" fill="url(#bg)"/><circle cx="915" cy="275" r="345" fill="url(#halo)"/><path d="M0 0H1200V675H0Z" fill="none" stroke="#ff743d" stroke-opacity=".13" stroke-width="18"/>
+
+<path d="M0 352L400 300 520 337 1120 291 1200 324V675H0Z" fill="#101826" opacity=".9"/>
+<path d="M390 675L535 326H772L1110 675Z" fill="#28323e"/>
+<path d="M730 330L820 675" stroke="#edbe67" stroke-width="9" stroke-dasharray="40 34" opacity=".8"/>
+<path d="M230 470L472 397" stroke="#ff8f56" stroke-opacity=".6" stroke-width="8" stroke-linecap="round"/>
+<path d="M180 490L510 409" stroke="#ffbb70" stroke-opacity=".4" stroke-width="4" stroke-linecap="round"/>
+<g transform="translate(180 -12) rotate(-11 810 400)"><ellipse cx="832" cy="528" rx="270" ry="32" fill="#000" opacity=".5"/><circle cx="680" cy="475" r="93" fill="#13191d" stroke="#99a7b9" stroke-width="14"/><circle cx="1010" cy="475" r="93" fill="#13191d" stroke="#99a7b9" stroke-width="14"/><circle cx="680" cy="475" r="33" fill="#637487"/><circle cx="1010" cy="475" r="33" fill="#637487"/>
+<path d="M690 469L845 385 1001 469 820 455Z" fill="#1c2227" stroke="#c7d4de" stroke-width="17" stroke-linejoin="round"/><path d="M752 363L868 339 941 383 864 418 774 412Z" fill="#ee4c2f" stroke="#ffb27a" stroke-width="8"/><path d="M860 351L881 269 926 235" stroke="#111820" stroke-width="23" stroke-linecap="round"/><path d="M842 356L783 304 816 242" stroke="#131820" stroke-width="33" stroke-linecap="round"/><path d="M823 258L878 200 922 232 895 322 843 333Z" fill="#1a2739" stroke="#6e8c9c" stroke-width="7"/><circle cx="883" cy="184" r="45" fill="#1b202b" stroke="#f0a06a" stroke-width="8"/><path d="M900 168L949 190 918 202 889 200Z" fill="#ff6d32"/><path d="M930 240L1014 237" stroke="#1c202a" stroke-width="18" stroke-linecap="round"/><path d="M1007 230L1064 237" stroke="#a4b1bb" stroke-width="10" stroke-linecap="round"/></g>
+
+<rect y="405" width="1200" height="270" fill="url(#shade)"/>
+<rect x="65" y="450" width="8" height="143" rx="4" fill="#ff743d"/>
+<text x="97" y="504" font-family="Arial,Helvetica,sans-serif" font-size="28" letter-spacing="7" fill="#ffb877" font-weight="700">JOGAHUB ORIGINAL</text>
+<text x="97" y="562" font-family="Arial,Helvetica,sans-serif" font-size="53" fill="white" font-weight="900" letter-spacing="1">ASFALTO BRUTAL</text>
+<text x="99" y="600" font-family="Arial,Helvetica,sans-serif" font-size="23" fill="#e2ecf5" letter-spacing="3">CORRIDA DE MOTOS · COMBATE 3D</text>
+<rect x="65" y="624" width="260" height="4" fill="#ff743d" rx="2"/>
+</svg>
