@@ -1,6 +1,96 @@
 /* JogaHub — snapshot automático do Google Drive. Gerado por GitHub Actions/Drive sync. */
 window.JOGAHUB_DRIVE_SNAPSHOT = [
   {
+    "id": "1yxC5qlWLAajWamGlu0Sz-1UeK5M8vl3M",
+    "name": "13 - To'hajiilee.mp4",
+    "mime": "video/mp4",
+    "size": "400794478",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1yxC5qlWLAajWamGlu0Sz-1UeK5M8vl3M/view",
+    "player": "https://drive.google.com/file/d/1yxC5qlWLAajWamGlu0Sz-1UeK5M8vl3M/preview",
+    "updated": "2026-10-18T21:32:30.401Z"
+  },
+  {
+    "id": "1J3hgNRSAUTtPieCQ2T37U5Ndg7qWRA20",
+    "name": "14 - Ozymandias.mp4",
+    "mime": "video/mp4",
+    "size": "409365334",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1J3hgNRSAUTtPieCQ2T37U5Ndg7qWRA20/view",
+    "player": "https://drive.google.com/file/d/1J3hgNRSAUTtPieCQ2T37U5Ndg7qWRA20/preview",
+    "updated": "2026-10-18T21:32:22.982Z"
+  },
+  {
+    "id": "18_tXNDNMTMlHEqsqBC3ms0VpNgTRfIVK",
+    "name": "9 - Blood Money.mp4",
+    "mime": "video/mp4",
+    "size": "410616881",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/18_tXNDNMTMlHEqsqBC3ms0VpNgTRfIVK/view",
+    "player": "https://drive.google.com/file/d/18_tXNDNMTMlHEqsqBC3ms0VpNgTRfIVK/preview",
+    "updated": "2026-10-18T21:32:15.734Z"
+  },
+  {
+    "id": "1_Ziu61ogTJ4EA2zP5zDcdDAYkH-lX3AC",
+    "name": "12 - Rabid Dog.mp4",
+    "mime": "video/mp4",
+    "size": "409767294",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1_Ziu61ogTJ4EA2zP5zDcdDAYkH-lX3AC/view",
+    "player": "https://drive.google.com/file/d/1_Ziu61ogTJ4EA2zP5zDcdDAYkH-lX3AC/preview",
+    "updated": "2026-10-18T21:31:31.787Z"
+  },
+  {
+    "id": "1Rb5i0wBTiMpw_ZzN94BJDdZF04izEfNV",
+    "name": "10 - Buried.mp4",
+    "mime": "video/mp4",
+    "size": "410823067",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1Rb5i0wBTiMpw_ZzN94BJDdZF04izEfNV/view",
+    "player": "https://drive.google.com/file/d/1Rb5i0wBTiMpw_ZzN94BJDdZF04izEfNV/preview",
+    "updated": "2026-10-18T21:31:14.416Z"
+  },
+  {
+    "id": "19zmrs8pRWPFEhSekBifuUp73KwM0kWYT",
+    "name": "11 - Confessions.mp4",
+    "mime": "video/mp4",
+    "size": "410964669",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/19zmrs8pRWPFEhSekBifuUp73KwM0kWYT/view",
+    "player": "https://drive.google.com/file/d/19zmrs8pRWPFEhSekBifuUp73KwM0kWYT/preview",
+    "updated": "2026-10-18T21:30:57.882Z"
+  },
+  {
+    "id": "1AyDQq9scJnBf82oybVH4P99PhbNqnd8E",
+    "name": "15 - Granite State.mp4",
+    "mime": "video/mp4",
+    "size": "463225445",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/1AyDQq9scJnBf82oybVH4P99PhbNqnd8E/view",
+    "player": "https://drive.google.com/file/d/1AyDQq9scJnBf82oybVH4P99PhbNqnd8E/preview",
+    "updated": "2026-10-18T21:29:36.093Z"
+  },
+  {
+    "id": "190WLdb5TM2RO07VeFL7jJjuPsdatwq-a",
+    "name": "16 - Felina.mp4",
+    "mime": "video/mp4",
+    "size": "478845244",
+    "path": "filmes e serie/Series/Breaking Bad 5 Temporada Parte 2 -  The Pirate Filmes",
+    "url": "https://drive.google.com/file/d/190WLdb5TM2RO07VeFL7jJjuPsdatwq-a/view",
+    "player": "https://drive.google.com/file/d/190WLdb5TM2RO07VeFL7jJjuPsdatwq-a/preview",
+    "updated": "2026-10-18T21:27:16.443Z"
+  },
+  {
+    "id": "1RHBWQ9zNADS3fZ3V1g3Grs3f9-vPssWL",
+    "name": "Marsupilami.Confusão.a.Bordo.2025.WEB-DL.1080p.x264.DUAL.5.1-STARCKFILMES.mkv",
+    "mime": "video/matroska",
+    "size": "2220324498",
+    "path": "filmes e serie",
+    "url": "https://drive.google.com/file/d/1RHBWQ9zNADS3fZ3V1g3Grs3f9-vPssWL/view",
+    "player": "https://drive.google.com/file/d/1RHBWQ9zNADS3fZ3V1g3Grs3f9-vPssWL/preview",
+    "updated": "2026-10-18T20:53:02.781Z"
+  },
+  {
     "id": "1wxR6P8D6b4hhWHnelP7e2ki4z8dTpnDR",
     "name": "09 - Spooky Little Girl.mp4",
     "mime": "video/mp4",
