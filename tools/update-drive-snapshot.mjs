@@ -1,4 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { readDrivePayload, missingFileIds } from './drive-snapshot-policy.mjs';
 
 const CONFIG_PATH = 'js/data-drive-filmes.js';
 const SNAPSHOT_PATH = 'js/drive-snapshot.js';
@@ -56,15 +57,12 @@ let payload;
 try { payload = JSON.parse(body); }
 catch { preserveSnapshot('resposta não era JSON válido'); }
 
-if (payload?.ok === false || payload?.sucesso === false) {
-  throw new Error(payload.error || payload.erro || 'Apps Script informou falha');
+let raw;
+try {
+  raw = readDrivePayload(payload);
+} catch (error) {
+  preserveSnapshot(error?.message || String(error));
 }
-
-const raw = Array.isArray(payload.files)
-  ? payload.files
-  : Array.isArray(payload.itens)
-    ? payload.itens
-    : [];
 
 const byId = new Map();
 for (const source of raw) {
@@ -91,7 +89,25 @@ const output =
   'window.JOGAHUB_DRIVE_SNAPSHOT = ' + JSON.stringify(files, null, 2) + ';\n';
 
 let previous = '';
-try { previous = await readFile(SNAPSHOT_PATH, 'utf8'); } catch {}
+try { previous = await readFile(SNAPSHOT_PATH, 'utf8'); } catch (error) {
+  if (error?.code !== 'ENOENT') preserveSnapshot('não foi possível ler o snapshot anterior: ' + error);
+}
+
+if (previous) {
+  const previousMatch = previous.match(/window\.JOGAHUB_DRIVE_SNAPSHOT\s*=\s*(\[[\s\S]*\]);?\s*$/);
+  if (!previousMatch) preserveSnapshot('formato do snapshot anterior inválido');
+  let previousFiles;
+  try { previousFiles = JSON.parse(previousMatch[1]); }
+  catch { preserveSnapshot('JSON do snapshot anterior inválido'); }
+  const removedIds = missingFileIds(previousFiles, files);
+  if (removedIds.length && process.env.DRIVE_ALLOW_REMOVALS !== '1') {
+    preserveSnapshot(
+      'a nova leitura omitiu ' + removedIds.length +
+      ' arquivo(s) já publicados. Snapshot preservado para evitar perda de catálogo. ' +
+      'Se as exclusões forem intencionais, defina DRIVE_ALLOW_REMOVALS=1 no repositório.'
+    );
+  }
+}
 
 if (previous !== output) {
   await writeFile(SNAPSHOT_PATH, output, 'utf8');
