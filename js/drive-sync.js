@@ -79,7 +79,14 @@ function normalizeResponse(j){
   if(j.ok===false||j.sucesso===false)throw new Error(j.error||j.erro||'O Apps Script informou uma falha');
   const raw=Array.isArray(j.files)?j.files:(Array.isArray(j.itens)?j.itens:(Array.isArray(j.items)?j.items:null));
   if(!raw)throw new Error('Resposta inválida: lista de arquivos não encontrada');
-  return {files:raw.map(normalizeFile).filter(Boolean),errors:Array.isArray(j.errors)?j.errors:[],rootName:String(j.pastaRaiz||j.rootName||root.name||'Google Drive')};
+  const files=raw.map(normalizeFile).filter(Boolean);
+  if(!files.length)throw new Error('Resposta vazia: catálogo anterior preservado');
+  if(files.length!==raw.length)throw new Error('Resposta incompleta: um ou mais arquivos sem ID');
+  if(j.total!==undefined&&j.total!==null){
+    const declared=Number(j.total),actual=new Set(files.map(f=>f.id)).size;
+    if(!Number.isSafeInteger(declared)||declared!==actual)throw new Error('Resposta incompleta: total do Drive inconsistente');
+  }
+  return {files,errors:Array.isArray(j.errors)?j.errors:[],rootName:String(j.pastaRaiz||j.rootName||root.name||'Google Drive')};
 }
 function preferred(a,b){
   const ta=Date.parse(a.updated)||0,tb=Date.parse(b.updated)||0;
@@ -187,6 +194,16 @@ async function performSync(){
       if(payload.errors.length){
         errors=errors.concat(payload.errors);
         folderStats.push({name:sourceRoot.name,found:payload.files.length,received:payload.files.length,added:0,removed:0,duplicates:0,error:'Varredura incompleta; catálogo anterior preservado'});
+        continue;
+      }
+      // Impede que uma leitura truncada substitua o catálogo já carregado.
+      // Exclusões menores continuam possíveis para refletir mudanças reais no Drive.
+      const previousCount=FILMES_CATALOGO.filter(item=>String(item?.id||'').startsWith('drive-auto-')).length;
+      const incomingCount=deduplicateFiles(payload.files).files.length;
+      if(previousCount>=20&&incomingCount<Math.ceil(previousCount*0.8)){
+        const reason='Possível leitura parcial: '+incomingCount+' de '+previousCount+' arquivos; catálogo anterior preservado';
+        errors.push({name:sourceRoot.name,error:reason});
+        folderStats.push({name:sourceRoot.name,found:incomingCount,added:0,removed:0,duplicates:0,error:reason});
         continue;
       }
       const result=addFiles(payload.files,{...sourceRoot,name:payload.rootName||sourceRoot.name},{replace:true,persist:true});
