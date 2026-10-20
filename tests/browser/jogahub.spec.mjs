@@ -8,10 +8,12 @@ test.beforeEach(async ({ page }) => {
 
 test('inicializa sem perder a biblioteca de jogos', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#typeTabs [data-type="jogo"]')).toBeVisible();
   await expect(page.locator('#games')).not.toBeEmpty();
-
-  await page.locator('#typeTabs [data-type="jogo"]').click();
+  // A faixa legada de tipos fica oculta nos layouts atuais.
+  // Use o botão realmente visível no header, sidebar ou menu mobile.
+  const gamesNav = page.locator('button[data-view="jogo"]:visible').first();
+  await expect(gamesNav).toBeVisible();
+  await gamesNav.click();
   await expect(page.locator('#typeTabs [data-type="jogo"]')).toHaveAttribute('aria-pressed', 'true');
   for (const id of ['asfalto-brutal', 'asas-de-brumaria', 'hulk-smash-city']) {
     await expect(page.locator('#games .card[data-id="' + id + '"]')).toBeVisible();
