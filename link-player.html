@@ -30,12 +30,18 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
 .scrub-preview{position:absolute;bottom:72px;z-index:22;display:none;min-width:74px;padding:7px 9px;border-radius:9px;background:rgba(7,7,12,.92);border:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:850;text-align:center;transform:translateX(-50%);pointer-events:none}.scrub-preview.show{display:block}.stats-panel{position:absolute;right:12px;top:52px;z-index:24;width:min(330px,calc(100% - 24px));display:none;padding:12px;border-radius:13px;background:rgba(7,7,12,.94);border:1px solid #3b3b52;box-shadow:0 16px 50px rgba(0,0,0,.48);font-size:12px;backdrop-filter:blur(12px)}.stats-panel.show{display:block}.stats-panel h3{margin:0 0 9px;font-size:14px}.stats-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;color:#bbb}.stats-grid b{color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.recovery-card{position:absolute;left:50%;top:50%;z-index:26;transform:translate(-50%,-50%);width:min(470px,calc(100% - 28px));display:none;padding:17px;border-radius:16px;background:rgba(12,12,20,.96);border:1px solid #4a4a67;box-shadow:0 20px 70px rgba(0,0,0,.62);text-align:center}.recovery-card.show{display:block}.recovery-card h3{margin:0 0 7px}.recovery-card p{color:#bcbccc;line-height:1.45;margin:0 0 12px}.recovery-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.quality-chip{position:absolute;right:12px;top:48px;z-index:7;padding:5px 8px;border-radius:8px;background:rgba(5,5,10,.68);border:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:900;pointer-events:none}.chapter-mark{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.58);pointer-events:none}.seek-wrap{position:relative}.caption-style-preview{padding:10px 12px;border-radius:10px;background:#05050a;text-align:center;color:#fff}.caption-style-preview span{display:inline-block;padding:2px 7px;border-radius:4px}.stage video::cue{font-size:var(--cue-size,100%);background:rgba(0,0,0,var(--cue-bg,.72));color:#fff;text-shadow:0 1px 2px #000}.remote-btn[hidden],.stats-btn[hidden]{display:none}.stage.recovering:after{content:'recuperando reprodução…';position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:25;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.74);font-size:12px;font-weight:800;color:var(--warn)}
 @media(max-width:720px){.stats-panel{top:44px;right:8px;width:calc(100% - 16px)}.quality-chip{top:42px;right:9px}.scrub-preview{bottom:65px}.recovery-card{width:calc(100% - 20px);padding:15px}}
 
+.drive-diagnostic{margin:10px 12px;padding:12px 14px;border:1px solid #4b526e;border-radius:12px;background:#151825;color:#eaecfa;font-size:13px;line-height:1.45}
+.drive-diagnostic[hidden]{display:none!important}
+.drive-diagnostic strong{display:block;margin-bottom:4px;font-size:14px}
+.drive-diagnostic p{margin:5px 0}
+.drive-diagnostic #driveDiagnosticAction{color:#c8d2ff;font-weight:650}
 </style>
 <script src="js/data-filmes.js?v=139"></script>
 <script src="js/data-drive-filmes.js?v=7"></script>
 <script src="js/drive-snapshot.js?v=4"></script>
 <script src="js/drive-sync.js?v=16"></script>
 <script src="js/player-drive-core.js?v=1"></script>
+<script src="js/player-drive-diagnostics.js?v=1"></script>
 <script src="js/player-episode-core.js?v=1"></script>
 </head>
 <body>
@@ -101,6 +107,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     </div>
   </section>
   <div id="driveTip" class="drive-tip"><span class="dot"></span><span id="driveTipText"><b>Player JogaHub</b> tentando reprodução direta do Google Drive.</span></div>
+  <section id="driveDiagnostic" class="drive-diagnostic" role="status" aria-live="polite" hidden><strong id="driveDiagnosticTitle"></strong><p id="driveDiagnosticDetail"></p><p id="driveDiagnosticAction"></p></section>
   <section class="info"><div><h1 id="title">Conteúdo online</h1><div id="meta" class="meta"></div><p id="desc" class="desc"></p><div id="continueText" class="continue"></div><div id="sleepStatus" class="sleep-status"></div></div><div class="side"><button class="btn" id="restartBtn" type="button">↺ começar do início</button></div></section>
   <section id="seriesBox" class="series-box" hidden><h2 id="seriesTitle"></h2><p id="seriesSummary"></p><div id="seasonChips" class="season-chips"></div></section>
   <section id="episodes" class="episodes" hidden><div class="episodes-head"><strong id="episodesTitle">🎞️ Filmes e episódios</strong><span id="episodeCount" class="meta"></span></div><div id="episodeList"></div></section>
@@ -130,6 +137,8 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   const PLAYER_DRIVE_CORE=window.JOGAHUB_PLAYER_DRIVE_CORE;
   if(!PLAYER_DRIVE_CORE)throw new Error('Núcleo do player Drive não carregado');
   const driveSession=PLAYER_DRIVE_CORE.makeSession();
+  const DRIVE_DIAGNOSTICS=window.JOGAHUB_DRIVE_DIAGNOSTICS;
+  if(!DRIVE_DIAGNOSTICS)throw new Error('Módulo de diagnóstico do Drive não carregado');
   const EPISODE_CORE=window.JOGAHUB_PLAYER_EPISODE_CORE;
   if(!EPISODE_CORE)throw new Error('Núcleo de episódios não carregado');
   try{u=new URL(raw);if(!/^https?:$/.test(u.protocol))u=null}catch{} try{external=new URL(rawExternal);if(!/^https?:$/.test(external.protocol))external=null}catch{}
@@ -318,8 +327,29 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     if(progress?.episodeOnly){try{localStorage.removeItem(progressKeyNow())}catch{}}
   }
   function rememberDriveSuccess(fileId,url,elapsed){writeJson(driveRouteKey(fileId),{url,updatedAt:Date.now(),elapsed:Math.round(elapsed||0),width:video.videoWidth||0,height:video.videoHeight||0});clearDriveFail(fileId)}
-  function rememberDriveFailure(fileId,reason){writeJson(driveFailKey(fileId),{updatedAt:Date.now(),reason:String(reason||'falha')})}
-  function recentDriveFailure(fileId){const f=readJson(driveFailKey(fileId));return !!(f?.updatedAt&&Date.now()-f.updatedAt<DRIVE_FAIL_TTL)}
+  function rememberDriveFailure(fileId,issue){
+    const code=DRIVE_DIAGNOSTICS.info(issue?.code).code;
+    if(DRIVE_DIAGNOSTICS.ttl(code)){
+      writeJson(driveFailKey(fileId),{updatedAt:Date.now(),code,status:issue?.status||0});
+    }else clearDriveFail(fileId);
+  }
+  function recentDriveFailure(fileId){
+    return DRIVE_DIAGNOSTICS.cached(readJson(driveFailKey(fileId)));
+  }
+  function showDriveDiagnostic(code){
+    const details=DRIVE_DIAGNOSTICS.info(code);
+    const box=$('driveDiagnostic');
+    if(!box)return;
+    box.hidden=false;
+    box.dataset.reason=details.code;
+    $('driveDiagnosticTitle').textContent=details.title;
+    $('driveDiagnosticDetail').textContent=details.detail;
+    $('driveDiagnosticAction').textContent=details.action;
+  }
+  function hideDriveDiagnostic(){
+    const box=$('driveDiagnostic');
+    if(box){box.hidden=true;delete box.dataset.reason}
+  }
   function driveDirectCandidates(fileId){const id=encodeURIComponent(fileId||'');const all=[`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`,`https://drive.google.com/uc?export=download&id=${id}`];const saved=readJson(driveRouteKey(fileId));if(saved?.url&&Date.now()-Number(saved.updatedAt||0)<DRIVE_ROUTE_TTL&&all.includes(saved.url))return [saved.url,...all.filter(x=>x!==saved.url)];return all}
   function driveTimeoutMs(){const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(settings.dataSaver)return 6500;if(c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return 14000;if(c?.effectiveType==='3g')return 11000;return 8500}
   // Registra os eventos antes do load; rotas em cache podem carregar imediatamente.
@@ -339,17 +369,23 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   async function useDriveDirect(autoplay=false,force=false){
     const fileId=currentItem?.driveFileId;
     if(!fileId)throw new Error('driveFileId ausente');
-    if(!force&&recentDriveFailure(fileId))throw new Error('rota direta falhou recentemente');
+    const cachedFailure=!force&&recentDriveFailure(fileId);
+    if(cachedFailure){
+      const error=new Error('Falha direta recente: '+cachedFailure.code);
+      error.driveIssue=cachedFailure.code;
+      throw error;
+    }
     const token=driveSession.beginDirect();
     $('driveModeBtn').hidden=false;
     $('driveModeBtn').textContent='☁ usar modo Drive';
+    hideDriveDiagnostic();
     loading.classList.remove('hide');
     loadingText.textContent='Drive Engine: escolhendo a melhor rota…';
     frame.removeAttribute('src');
     video.pause();video.removeAttribute('src');
     video.poster=currentItem?.thumb||'';
     const candidates=driveDirectCandidates(fileId);
-    let lastError=null;
+    let lastError=null,lastIssue=null,lastStatus=0;
     for(let i=0;i<candidates.length;i++){
       if(!driveSession.isCurrent(token))return false;
       const candidate=candidates[i],started=performance.now();
@@ -369,6 +405,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
         $('speed').value=String(video.playbackRate);
         loading.classList.add('hide');pc.hidden=false;
         setMode('enhanced','Google Drive • reprodução direta');
+        hideDriveDiagnostic();
         syncCustomControls();showControls(3500);
         $('audioTrack').hidden=true;$('subtitleTrack').hidden=true;
         const routeSaved=readJson(driveRouteKey(fileId));
@@ -381,14 +418,32 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
       }catch(error){
         if(!driveSession.isCurrent(token))return false;
         lastError=error;
-        console.warn('Drive candidate falhou',candidate,error);
+        const mediaCode=Number(error?.code)||Number(video.error?.code)||0;
+        const timedOut=/tempo limite/i.test(String(error?.message||''));
+        console.warn('Rota direta do Drive falhou',i+1,error);
+        // MediaError não fornece status HTTP; HEAD só é consultado APÓS
+        // falha e pode ser bloqueado por CORS. Nunca baixar o vídeo inteiro
+        // para fazer diagnóstico.
+        const observation=navigator.onLine===false
+          ? {status:0,contentType:''}
+          : await DRIVE_DIAGNOSTICS.probe(candidate,fetch,{timeoutMs:1500});
+        if(!driveSession.isCurrent(token))return false;
+        const code=DRIVE_DIAGNOSTICS.classify({
+          status:observation.status,contentType:observation.contentType,
+          mediaCode,online:navigator.onLine,timedOut
+        });
+        lastIssue=code;
+        lastStatus=observation.status||0;
         video.pause();video.removeAttribute('src');video.load();
+        if(DRIVE_DIAGNOSTICS.stopTrying(code))break;
       }
     }
     if(!driveSession.failDirect(token))return false;
     directMediaUrl='';
-    rememberDriveFailure(fileId,lastError?.message||lastError||'todas as rotas falharam');
-    throw lastError||new Error('reprodução direta indisponível');
+    rememberDriveFailure(fileId,{code:lastIssue||'unknown',status:lastStatus});
+    const failure=new Error(String(lastError?.message||'reprodução direta indisponível'));
+    failure.driveIssue=lastIssue||'unknown';
+    throw failure;
   }
   function useDriveFallback(persist=true){
     if(provider!=='iframe')return fallback();
@@ -400,7 +455,31 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     directMediaUrl='';$('downloadBtn').hidden=true;
   }
   function warmNextDriveEpisode(){if(settings.dataSaver||!nextItem?.driveFileId||!navigator.onLine)return;const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(c?.saveData||c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return;try{const host=document.head;['https://drive.usercontent.google.com','https://drive.google.com'].forEach(h=>{if(document.querySelector(`link[data-jh-preconnect="${h}"]`))return;const l=document.createElement('link');l.rel='preconnect';l.href=h;l.crossOrigin='anonymous';l.dataset.jhPreconnect=h;host.appendChild(l)})}catch{}}
-  async function initDrive(){if(await loadOfflineCopy())return;if(!currentItem?.driveFileId){useDriveFallback(false);return}if(PLAYER_DRIVE_CORE.needsCompatiblePlayer(currentItem._driveName||queryDriveName,currentItem.driveMime||queryDriveMime)){useDriveFallback(false);return}driveMode=localStorage.getItem(driveModeKey())||localStorage.getItem('jogahub.drive.playerMode')||'auto';$('driveModeBtn').hidden=false;if(driveMode==='compat'){useDriveFallback();return}try{await useDriveDirect(false,false)}catch(e){console.warn('JogaHub Drive Engine 5.0:',e);diagnoseDriveError(e?.message||e);if(driveSession.getMode()!=='compatible')useDriveFallback(false)}}
+  async function initDrive(){
+    if(await loadOfflineCopy())return;
+    if(!currentItem?.driveFileId){useDriveFallback(false);return}
+    if(PLAYER_DRIVE_CORE.needsCompatiblePlayer(currentItem._driveName||queryDriveName,currentItem.driveMime||queryDriveMime)){
+      diagnoseDriveError('codec');
+      useDriveFallback(false);
+      return;
+    }
+    const mime=PLAYER_DRIVE_CORE.directMime(currentItem?._driveName||queryDriveName,currentItem?.driveMime||queryDriveMime);
+    if(!DRIVE_DIAGNOSTICS.directCapability(video,mime)){
+      diagnoseDriveError('codec');
+      useDriveFallback(false);
+      return;
+    }
+    driveMode=localStorage.getItem(driveModeKey())||localStorage.getItem('jogahub.drive.playerMode')||'auto';
+    $('driveModeBtn').hidden=false;
+    if(driveMode==='compat'){useDriveFallback();return}
+    try{
+      await useDriveDirect(false,false);
+    }catch(error){
+      console.warn('JogaHub Drive Engine:',error);
+      diagnoseDriveError(error?.driveIssue||'unknown');
+      if(driveSession.getMode()!=='compatible')useDriveFallback(false);
+    }
+  }
   async function initArchive(){if(type!=='filme'||!archiveId||!u){fallback('sem archiveId');return}if(!currentItem?.archivePlaylist&&await loadOfflineCopy())return;try{loadingText.textContent='Consultando os arquivos do Internet Archive…';const res=await fetch(`https://archive.org/metadata/${encodeURIComponent(archiveId)}`,{mode:'cors'});if(!res.ok)throw new Error(`metadata ${res.status}`);const data=await res.json(),files=Array.isArray(data.files)?data.files:[],allPlayable=files.filter(f=>f?.name&&/\.(mp4|webm|ogv|ogg)$/i.test(f.name)&&!/thumb|sample/i.test(f.name));const score=f=>{const n=(f.name||'').toLowerCase(),fmt=(f.format||'').toLowerCase();let s=0;if(/\.mp4$/i.test(n))s+=100;if(/h\.264|mpeg4|512kb/.test(fmt+n))s+=40;if((f.source||'')==='original')s+=20;if((Number(f.size)||0)>20e6)s+=10;return s};if(!allPlayable.length)throw new Error('nenhum vídeo direto');const grouped=new Map();for(const f of allPlayable){const key=archiveCanonical(f);const prev=grouped.get(key);if(!prev||score(f)>score(prev))grouped.set(key,f)}archivePlaylistFiles=[...grouped.values()].sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'pt-BR',{numeric:true,sensitivity:'base'}));if(currentItem?.archivePlaylist&&archivePlaylistFiles.length>1){const requested=Math.max(0,Math.min(archivePlaylistFiles.length-1,Number(q.get('ep')||0)));selectArchiveEpisode(requested,false);return}archivePlaylistFiles.sort((a,b)=>score(b)-score(a));const f=archivePlaylistFiles[0];archiveEpisodeKey='';directMediaUrl=archiveFileUrl(f);directMediaSize=Number(f.size)||0;directMediaMime=(f.format||'').toLowerCase().includes('webm')?'video/webm':'video/mp4';video.poster=`https://archive.org/services/img/${encodeURIComponent(archiveId)}`;video.src=directMediaUrl;$('downloadBtn').hidden=false;files.filter(f=>f?.name&&/\.vtt$/i.test(f.name)).slice(0,8).forEach((f,i)=>{const tr=document.createElement('track');tr.kind='subtitles';tr.label=f.title||f.language||`Legenda ${i+1}`;tr.srclang=(f.language||'pt').toString().slice(0,2);tr.src=`https://archive.org/download/${encodeURIComponent(archiveId)}/${f.name.split('/').map(encodeURIComponent).join('/')}`;video.appendChild(tr)});video.addEventListener('loadedmetadata',()=>{const p=readProgress();if(p&&p.time>20&&p.time<video.duration-20)video.currentTime=Math.min(p.time,Math.max(0,video.duration-5));video.playbackRate=Number(settings.speed)||1;if(typeof settings.volume==='number')video.volume=Math.max(0,Math.min(1,settings.volume));$('speed').value=String(video.playbackRate);loading.classList.add('hide');setMode('enhanced','player aprimorado');const info=[currentItem?.genre,currentItem?.year,currentItem?.language,formatTime(video.duration),directMediaSize?formatBytes(directMediaSize):''].filter(Boolean);$('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('')},{once:true});video.addEventListener('error',()=>fallback('falha no vídeo direto'),{once:true});video.load()}catch(e){fallback(e)}}
   function loadYTApi(){return new Promise((resolve,reject)=>{if(window.YT?.Player)return resolve();window.onYouTubeIframeAPIReady=resolve;const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.onerror=reject;document.head.appendChild(s);setTimeout(()=>window.YT?.Player?resolve():reject(new Error('YouTube API timeout')),10000)})}
   async function initYouTube(){try{await loadYTApi();const vars={playsinline:1,rel:0,modestbranding:1};if(playlistId){vars.listType='playlist';vars.list=playlistId}const cfg={width:'100%',height:'100%',playerVars:vars,events:{onReady:e=>{loading.classList.add('hide');setMode('youtube',playlistId?'playlist YouTube':'YouTube');const p=readProgress();if(!playlistId&&p&&p.time>20)e.target.seekTo(p.time,true);if(settings.speed&&e.target.setPlaybackRate)e.target.setPlaybackRate(Number(settings.speed));if(typeof settings.volume==='number'&&e.target.setVolume)e.target.setVolume(Math.round(settings.volume*100));clearInterval(ytTicker);ytTicker=setInterval(()=>{saveProgress(false);updateUpNextPreview()},1000)},onStateChange:e=>{if(e.data===0){saveProgress(true);updateContinueText();startCountdown()}if(e.data===2)saveProgress(true)},onError:e=>{loading.classList.add('hide');const code=Number(e?.data)||0;console.warn('YouTube embed error',code);$('notice').classList.add('show');$('notice').innerHTML=`<h3>Este vídeo não abriu dentro do JogaHub</h3><p>O YouTube bloqueou ou não conseguiu iniciar esta incorporação (erro ${code||'desconhecido'}).</p><p><a class="btn primary" href="${safe(sourceHref)}" target="_blank" rel="noopener noreferrer">Abrir este episódio no YouTube</a></p>`;stageShell.style.display='none';}}};if(youtubeId)cfg.videoId=youtubeId;ytPlayer=new YT.Player('ytHost',cfg)}catch(e){fallback(e)}}
@@ -507,13 +586,15 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   async function setupRemotePlayback(){const btn=$('remoteBtn');if(!btn)return;try{if(video.remote&&typeof video.remote.prompt==='function'){btn.hidden=false;btn.onclick=async()=>{try{await video.remote.prompt()}catch(e){if(e?.name!=='AbortError')toast('Nenhum dispositivo disponível para transmitir')}};video.remote.addEventListener?.('connect',()=>{btn.textContent='📺 conectado';toast('Transmissão conectada')});video.remote.addEventListener?.('disconnect',()=>btn.textContent='📺 transmitir')}else if('WebKitPlaybackTargetAvailabilityEvent'in window){btn.hidden=false;video.setAttribute('x-webkit-airplay','allow');btn.textContent='📺 AirPlay';btn.onclick=()=>video.webkitShowPlaybackTargetPicker?.()}}catch{}}
   setupRemotePlayback();
 
-  async function diagnoseDriveError(reason=''){const box=loading.querySelector('div');if(!box)return;box.innerHTML=`<div class="error-card"><h3>Player direto indisponível</h3><p>O JogaHub não conseguiu reproduzir este arquivo diretamente. Isso costuma acontecer por bloqueio do Google Drive, permissão do arquivo ou codec não suportado pelo navegador.</p><code>${safe(String(reason||'reprodução direta bloqueada'))}</code><p>Alternando para o modo compatível do Google Drive…</p></div>`}
+  function diagnoseDriveError(reason='unknown'){
+    showDriveDiagnostic(reason);
+  }
 
   async function init(){if(provider==='youtube'&&(youtubeId||playlistId)){await initYouTube();return}if(provider==='iframe'&&u){await initDrive();return}await initArchive()}init();
   async function removeCurrentDownload(){const key=currentItem?.id||id,reg=loadMediaRegistry(),saved=reg[key];if(!saved)return;const cache=await caches.open(MEDIA_CACHE);await cache.delete(saved.url);delete reg[key];saveMediaRegistry(reg);$('downloadBtn').dataset.saved='';$('downloadBtn').textContent='⬇ baixar offline'}
   async function downloadCurrent(){const btn=$('downloadBtn'),key=currentItem?.id||id;if(!directMediaUrl||!key)return;const reg=loadMediaRegistry();if(reg[key]){if(confirm('Remover este vídeo dos downloads offline?'))await removeCurrentDownload();return}if(!navigator.onLine){alert('Conecte-se à internet para fazer o download.');return}try{btn.disabled=true;btn.classList.add('downloading');$('downloadMeter').classList.add('show');$('downloadText').textContent='Baixando vídeo…';const res=await fetch(directMediaUrl,{mode:'cors'});if(!res.ok)throw new Error('download '+res.status);const total=Number(res.headers.get('content-length'))||directMediaSize||0;const [cacheStream,progressStream]=res.body.tee();const headers=new Headers(res.headers);const cache=await caches.open(MEDIA_CACHE);const saving=cache.put(directMediaUrl,new Response(cacheStream,{status:res.status,statusText:res.statusText,headers}));const reader=progressStream.getReader();let done=0;while(true){const r=await reader.read();if(r.done)break;done+=r.value.byteLength;const pct=total?Math.min(100,Math.round(done/total*100)):0;$('downloadPct').textContent=total?`${pct}%`:formatBytes(done);$('downloadBar').style.width=total?`${pct}%`:'35%';btn.textContent=total?`⬇ ${pct}%`:`⬇ ${formatBytes(done)}`}await saving;reg[key]={id:key,title:currentItem?.title||title,year:currentItem?.year||'',genre:currentItem?.genre||'',thumb:currentItem?.thumb||video.poster||'',url:directMediaUrl,size:done,mime:directMediaMime,savedAt:Date.now(),archiveId,playerHref:location.pathname.split('/').pop()+location.search};saveMediaRegistry(reg);btn.dataset.saved='1';btn.textContent='✓ salvo offline';$('downloadText').textContent='Download concluído';$('downloadPct').textContent='100%';$('downloadBar').style.width='100%';setTimeout(()=>$('downloadMeter').classList.remove('show'),1400)}catch(e){console.error(e);alert('Não foi possível salvar este vídeo offline. A fonte pode bloquear o download ou não haver espaço suficiente.');$('downloadMeter').classList.remove('show');btn.textContent='⬇ tentar novamente'}finally{btn.disabled=false;btn.classList.remove('downloading')}}
   $('downloadBtn').onclick=downloadCurrent;
-  $('driveModeBtn').onclick=async()=>{if(provider!=='iframe')return;if(mode==='enhanced'){localStorage.setItem(driveModeKey(),'compat');useDriveFallback()}else{localStorage.setItem(driveModeKey(),'auto');localStorage.setItem('jogahub.drive.playerMode','auto');clearDriveFail(currentItem?.driveFileId||'');$('driveModeBtn').disabled=true;try{await useDriveDirect(true,true)}catch(e){useDriveFallback(false)}finally{$('driveModeBtn').disabled=false}}};
+  $('driveModeBtn').onclick=async()=>{if(provider!=='iframe')return;if(mode==='enhanced'){localStorage.setItem(driveModeKey(),'compat');useDriveFallback()}else{localStorage.setItem(driveModeKey(),'auto');localStorage.setItem('jogahub.drive.playerMode','auto');clearDriveFail(currentItem?.driveFileId||'');$('driveModeBtn').disabled=true;try{await useDriveDirect(true,true)}catch(e){diagnoseDriveError(e?.driveIssue||'unknown');useDriveFallback(false)}finally{$('driveModeBtn').disabled=false}}};
   $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});video.addEventListener('volumechange',()=>saveSettings({volume:video.volume}));video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl)});
   function seek(delta){if(mode==='enhanced')video.currentTime=Math.max(0,Math.min(video.duration||Infinity,video.currentTime+delta));else if(mode==='youtube'&&ytPlayer?.seekTo)ytPlayer.seekTo(Math.max(0,getTime()+delta),true)}
   $('rewindBtn').onclick=()=>seek(-10);$('forwardBtn').onclick=()=>seek(10);$('restartBtn').onclick=()=>{localStorage.removeItem(progressKeyNow());if(mode==='enhanced'){video.currentTime=0;video.play().catch(()=>{})}else if(mode==='youtube'&&ytPlayer){ytPlayer.seekTo(0,true);ytPlayer.playVideo()}updateContinueText()};$('fullBtn').onclick=async()=>{const target=stage;try{await (target.requestFullscreen||target.webkitRequestFullscreen)?.call(target);if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{})}catch{}};$('pipBtn').onclick=async()=>{if(mode!=='enhanced')return;try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled)await video.requestPictureInPicture()}catch{}};if(!document.pictureInPictureEnabled)$('pipBtn').style.display='none';
