@@ -29,6 +29,7 @@ const SHELL_FILES = [
   './js/data-drive-filmes.js?v=7',
   './js/drive-snapshot.js?v=4',
   './js/drive-sync.js?v=16',
+  './js/player-drive-core.js?v=1',
   './js/site-upgrades.js?v=5',
   './js/imdb-ratings.js?v=2',
   './js/data-tv.js?v=144',
