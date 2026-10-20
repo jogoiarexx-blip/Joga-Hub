@@ -1,6 +1,66 @@
 /* JogaHub — snapshot automático do Google Drive. Gerado por GitHub Actions/Drive sync. */
 window.JOGAHUB_DRIVE_SNAPSHOT = [
   {
+    "id": "1oTcWXheHXUzdotlsR-evrtYl5oPbUnfR",
+    "name": "Profundezas S01E02 WEB-DL 1080p x265 DUAL 5.1.mkv",
+    "mime": "video/matroska",
+    "size": "781042316",
+    "path": "filmes e serie/Series/Profundezas S01 2026 WEB-DL 1080p x265 DUAL 5.1",
+    "url": "https://drive.google.com/file/d/1oTcWXheHXUzdotlsR-evrtYl5oPbUnfR/view",
+    "player": "https://drive.google.com/file/d/1oTcWXheHXUzdotlsR-evrtYl5oPbUnfR/preview",
+    "updated": "2026-10-19T22:44:30.129Z"
+  },
+  {
+    "id": "1GxxFuge2vuAWFGfEj1crgzm0htSQPiyH",
+    "name": "Profundezas S01E01 WEB-DL 1080p x265 DUAL 5.1.mkv",
+    "mime": "video/matroska",
+    "size": "1029714791",
+    "path": "filmes e serie/Series/Profundezas S01 2026 WEB-DL 1080p x265 DUAL 5.1",
+    "url": "https://drive.google.com/file/d/1GxxFuge2vuAWFGfEj1crgzm0htSQPiyH/view",
+    "player": "https://drive.google.com/file/d/1GxxFuge2vuAWFGfEj1crgzm0htSQPiyH/preview",
+    "updated": "2026-10-19T22:44:30.053Z"
+  },
+  {
+    "id": "1PPu5gmjGj0tybBe8CWmNE28I3Kh5m596",
+    "name": "Profundezas S01E05 WEB-DL 1080p x265 DUAL 5.1.mkv",
+    "mime": "video/matroska",
+    "size": "894015013",
+    "path": "filmes e serie/Series/Profundezas S01 2026 WEB-DL 1080p x265 DUAL 5.1",
+    "url": "https://drive.google.com/file/d/1PPu5gmjGj0tybBe8CWmNE28I3Kh5m596/view",
+    "player": "https://drive.google.com/file/d/1PPu5gmjGj0tybBe8CWmNE28I3Kh5m596/preview",
+    "updated": "2026-10-19T22:44:24.540Z"
+  },
+  {
+    "id": "1NnaOZYUxBDCsGK_Au1JKtdqm_u9mIoTo",
+    "name": "Profundezas S01E04 WEB-DL 1080p x265 DUAL 5.1.mkv",
+    "mime": "video/matroska",
+    "size": "850087744",
+    "path": "filmes e serie/Series/Profundezas S01 2026 WEB-DL 1080p x265 DUAL 5.1",
+    "url": "https://drive.google.com/file/d/1NnaOZYUxBDCsGK_Au1JKtdqm_u9mIoTo/view",
+    "player": "https://drive.google.com/file/d/1NnaOZYUxBDCsGK_Au1JKtdqm_u9mIoTo/preview",
+    "updated": "2026-10-19T22:44:19.162Z"
+  },
+  {
+    "id": "1mDaDlJRaQy7zNGPMZNEViX_t0zfuoI_3",
+    "name": "Profundezas S01E06 WEB-DL 1080p x265 DUAL 5.1.mkv",
+    "mime": "video/matroska",
+    "size": "806592290",
+    "path": "filmes e serie/Series/Profundezas S01 2026 WEB-DL 1080p x265 DUAL 5.1",
+    "url": "https://drive.google.com/file/d/1mDaDlJRaQy7zNGPMZNEViX_t0zfuoI_3/view",
+    "player": "https://drive.google.com/file/d/1mDaDlJRaQy7zNGPMZNEViX_t0zfuoI_3/preview",
+    "updated": "2026-10-19T22:44:16.573Z"
+  },
+  {
+    "id": "1MaOYgbKaCye9AeQDpRn8dpe-Mahj97E8",
+    "name": "Profundezas S01E03 WEB-DL 1080p x265 DUAL 5.1.mkv",
+    "mime": "video/matroska",
+    "size": "860898623",
+    "path": "filmes e serie/Series/Profundezas S01 2026 WEB-DL 1080p x265 DUAL 5.1",
+    "url": "https://drive.google.com/file/d/1MaOYgbKaCye9AeQDpRn8dpe-Mahj97E8/view",
+    "player": "https://drive.google.com/file/d/1MaOYgbKaCye9AeQDpRn8dpe-Mahj97E8/preview",
+    "updated": "2026-10-19T22:44:13.889Z"
+  },
+  {
     "id": "1yxC5qlWLAajWamGlu0Sz-1UeK5M8vl3M",
     "name": "13 - To'hajiilee.mp4",
     "mime": "video/mp4",
