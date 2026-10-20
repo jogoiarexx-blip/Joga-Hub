@@ -35,6 +35,7 @@ const context = {
   URL
 };
 context.window = {
+  JOGAHUB_DRIVE_SYNC_URL: 'https://example.invalid/exec',
   JOGAHUB_DRIVE_SNAPSHOT: rawFiles,
   addEventListener() {},
   dispatchEvent() {},
@@ -112,6 +113,25 @@ if (profundezasFiles.length) {
 
 const directPreferred = items.filter(item => /\.mp4$/i.test(item._driveName || '') && /x264|h[ ._-]?264/i.test(item._driveName || ''));
 if (!directPreferred.length) throw new Error('Nenhum MP4/H.264 reconhecido para reprodução direta');
+
+// Exercita o núcleo de sincronização HTTP com resposta truncada e depois completa.
+// A leitura incompleta deve manter as entradas carregadas do snapshot.
+const idsBefore = new Set(context.FILMES_CATALOGO.filter(item => item.driveFileId).map(item => item.driveFileId));
+context.fetch = async () => ({ok:true,json:async()=>({ok:true,files:[rawFiles[0]],total:1,errors:[]})});
+await context.window.JOGAHUB_DRIVE_SYNC.sync();
+const afterPartial = new Set(context.FILMES_CATALOGO.filter(item => item.driveFileId).map(item => item.driveFileId));
+if (afterPartial.size !== idsBefore.size || [...idsBefore].some(id => !afterPartial.has(id))) {
+  throw new Error('Uma sincronização incompleta apagou arquivos previamente carregados');
+}
+if (context.window.JOGAHUB_DRIVE_SYNC.getStatus().success) {
+  throw new Error('Resposta truncada foi aceita como sincronização bem-sucedida');
+}
+
+context.fetch = async () => ({ok:true,json:async()=>({ok:true,files:rawFiles,total:rawFiles.length,errors:[]})});
+await context.window.JOGAHUB_DRIVE_SYNC.sync();
+if (!context.window.JOGAHUB_DRIVE_SYNC.getStatus().success) {
+  throw new Error('Leitura completa do Drive não foi aceita');
+}
 
 console.log(JSON.stringify({
   rawFiles: rawFiles.length,
