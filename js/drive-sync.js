@@ -141,7 +141,13 @@ function addFiles(files,sourceRoot,options={}){
     if(existing.has(f.id))continue;
     const p=parse(f.name,f.path||''),seriesKey=p.serie?norm(p.seriesTitle).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
     const displayTitle=p.serie&&p.episode?'E'+String(p.episode).padStart(2,'0')+' — '+(p.seriesTitle||p.title):p.title;
-    FILMES_CATALOGO.push({id:'drive-auto-'+f.id,type:'filme',title:displayTitle,year:p.year||'Google Drive',genre:p.serie?'Série • Google Drive':'Filme • Google Drive',mediaType:p.serie?'serie':'filme',language:'Conforme o arquivo',portuguese:true,colorContent:true,accent:'var(--brand-blue)',thumb:p.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp',...(p.serie?{seriesId:seriesKey,seriesTitle:p.seriesTitle||p.title,season:p.season,episode:p.episode}:{}),driveFileId:f.id,driveFileSize:f.size,driveMime:f.mime,drivePlayerUrl:f.player||('https://drive.google.com/file/d/'+f.id+'/preview'),sourceUrl:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),url:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),sourceLabel:'Google Drive',sourceCollection:sourceRoot?.name||'Google Drive',embed:false,desc:'Conteúdo sincronizado automaticamente da pasta principal do Google Drive.',nostalgiaTags:['Google Drive',p.serie?'série':'filme'],_driveName:f.name||'',_drivePath:f.path||'',_driveUpdated:f.updated||''});
+    const resourceKey=String(f.resourceKey||f.resourcekey||'').trim()||(()=>{
+      for(const link of [f.url,f.player]){
+        try{const key=new URL(link).searchParams.get('resourcekey');if(key)return key}catch{}
+      }
+      return '';
+    })();
+    FILMES_CATALOGO.push({id:'drive-auto-'+f.id,type:'filme',title:displayTitle,year:p.year||'Google Drive',genre:p.serie?'Série • Google Drive':'Filme • Google Drive',mediaType:p.serie?'serie':'filme',language:'Conforme o arquivo',portuguese:true,colorContent:true,accent:'var(--brand-blue)',thumb:p.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp',...(p.serie?{seriesId:seriesKey,seriesTitle:p.seriesTitle||p.title,season:p.season,episode:p.episode}:{}),driveFileId:f.id,driveFileSize:f.size,driveMime:f.mime,driveResourceKey:resourceKey,drivePlayerUrl:f.player||('https://drive.google.com/file/d/'+f.id+'/preview'),sourceUrl:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),url:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),sourceLabel:'Google Drive',sourceCollection:sourceRoot?.name||'Google Drive',embed:false,desc:'Conteúdo sincronizado automaticamente da pasta principal do Google Drive.',nostalgiaTags:['Google Drive',p.serie?'série':'filme'],_driveName:f.name||'',_drivePath:f.path||'',_driveUpdated:f.updated||''});
     existing.add(f.id);newIds.add(f.id);if(!oldIds.has(f.id))added++;
   }
   const removed=options.replace?[...oldIds].filter(id=>!newIds.has(id)).length:0;
