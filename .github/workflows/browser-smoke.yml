@@ -48,6 +48,13 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Instalar navegador Chromium
         run: npx playwright install --with-deps chromium
+      - name: Preparar vídeo de teste MP4 e WebM
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          ffmpeg -version | head -n 1
       - name: Testar PC, celular e PWA offline
         run: npm run test:browser
         env:
