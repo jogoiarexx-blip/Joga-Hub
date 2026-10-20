@@ -7,6 +7,7 @@ on:
       - 'js/drive-sync.js'
       - 'js/drive-snapshot.js'
       - 'js/app.js'
+      - 'js/catalog-core.js'
       - 'js/data-links.js'
       - 'js/data-filmes.js'
       - 'js/launcher-upgrade.js'
@@ -14,6 +15,7 @@ on:
       - 'link-player.html'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/test-catalog-core.mjs'
       - 'tools/drive-snapshot-policy.mjs'
       - 'tools/test-drive-snapshot-policy.mjs'
       - '.github/workflows/validate-media-core.yml'
@@ -22,12 +24,14 @@ on:
       - 'js/drive-sync.js'
       - 'js/drive-snapshot.js'
       - 'js/app.js'
+      - 'js/catalog-core.js'
       - 'js/data-filmes.js'
       - 'js/launcher-upgrade.js'
       - 'js/tv-catalog.js'
       - 'link-player.html'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/test-catalog-core.mjs'
       - 'tools/drive-snapshot-policy.mjs'
       - 'tools/test-drive-snapshot-policy.mjs'
 
@@ -43,6 +47,7 @@ jobs:
       - name: Validar sintaxe do app
         run: |
           node --check js/app.js
+          node --check js/catalog-core.js
           node --check js/data-links.js
           node --check js/data-filmes.js
           node --check js/launcher-upgrade.js
@@ -62,6 +67,9 @@ jobs:
           }
           console.log('link-player.html:',blocks.length,'bloco(s) JavaScript válido(s)');
           NODE
+
+      - name: Validar núcleo isolado de catálogo
+        run: node --test tools/test-catalog-core.mjs
 
       - name: Validar catálogo e parser do Drive
         run: node tools/test-drive-core.mjs
