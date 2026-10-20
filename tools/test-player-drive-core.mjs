@@ -16,6 +16,14 @@ test('formatos não suportados usam modo compatibilidade',()=>{
   assert.equal(core.needsCompatiblePlayer('','video/quicktime'),true);
 });
 
+test('identifica corretamente formatos diretos MP4, WebM e Ogg',()=>{
+  assert.equal(core.directMime('video.webm',''), 'video/webm');
+  assert.equal(core.directMime('arquivo.WEBM','application/octet-stream'), 'video/webm');
+  assert.equal(core.directMime('filme.mp4','video/mp4'), 'video/mp4');
+  assert.equal(core.directMime('filme.ogv','video/ogg'), 'video/ogg');
+  assert.equal(core.directMime('filme.m4v','video/x-m4v'), 'video/mp4');
+});
+
 test('trocar para o Drive cancela sucesso atrasado de rota direta',()=>{
   const state=core.makeSession();
   const token=state.beginDirect();
