@@ -1,0 +1,64 @@
+name: Testar JogaHub no navegador
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/browser-smoke.yml'
+      - 'package.json'
+      - 'playwright.config.mjs'
+      - 'tests/browser/**'
+      - 'tools/serve-static.mjs'
+      - 'index.html'
+      - 'link-player.html'
+      - 'sw.js'
+      - 'manifest.webmanifest'
+      - 'js/**'
+      - 'css/**'
+  pull_request:
+    paths:
+      - '.github/workflows/browser-smoke.yml'
+      - 'package.json'
+      - 'playwright.config.mjs'
+      - 'tests/browser/**'
+      - 'tools/serve-static.mjs'
+      - 'index.html'
+      - 'link-player.html'
+      - 'sw.js'
+      - 'manifest.webmanifest'
+      - 'js/**'
+      - 'css/**'
+
+permissions:
+  contents: read
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar Playwright
+        run: npm install --no-audit --no-fund
+      - name: Instalar navegador Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Testar PC, celular e PWA offline
+        run: npm run test:browser
+        env:
+          CI: 'true'
+      - name: Salvar relatório e traces de falhas
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jogahub-browser-failures
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
