@@ -1,9 +1,10 @@
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
-const [snapshotCode, syncCode] = await Promise.all([
+const [snapshotCode, syncCode, catalogCode] = await Promise.all([
   readFile('js/drive-snapshot.js', 'utf8'),
-  readFile('js/drive-sync.js', 'utf8')
+  readFile('js/drive-sync.js', 'utf8'),
+  readFile('js/app.js', 'utf8')
 ]);
 
 const snapshotMatch = snapshotCode.match(/window\.JOGAHUB_DRIVE_SNAPSHOT\s*=\s*(\[[\s\S]*\]);?\s*$/);
@@ -86,6 +87,27 @@ if (knownSeries.length) {
   const requiredSeasons = [1, 2, 3, 4, 5];
   const missingSeasons = requiredSeasons.filter(season => !seasons.includes(season));
   if (missingSeasons.length) throw new Error('Temporadas de Breaking Bad ausentes ou interpretadas incorretamente: ' + missingSeasons.join(',') + ' (encontradas: ' + seasons.join(',') + ')');
+}
+
+// A lista de novidades não pode tirar episódios dos agrupamentos de séries.
+for (const groupName of ['driveSeriesItems', 'youtubeSeriesItems', 'remainingSeries']) {
+  const line = catalogCode.split('\n').find(line => line.includes('const ' + groupName + '='));
+  if (!line) throw new Error('Agrupamento de séries ausente: ' + groupName);
+  if (/used\.has\(/.test(line)) throw new Error('Agrupamento dependente dos destaques, causando temporadas incompletas: ' + groupName);
+}
+
+// Valida a nova série pelo conteúdo real do snapshot, sem inventar episódios.
+const profundezasFiles = rawFiles.filter(file => /Profundezas\s+S01/i.test(String(file.path || '')));
+if (profundezasFiles.length) {
+  const expected = new Set(profundezasFiles.map(file => file.id));
+  const actual = items.filter(item => expected.has(item.driveFileId));
+  if (actual.length !== expected.size || actual.some(item => item.mediaType !== 'serie' || Number(item.season) !== 1)) {
+    throw new Error('Profundezas não foi registrada corretamente como série da 1ª temporada');
+  }
+  const episodes = actual.map(item => Number(item.episode)).sort((a,b) => a-b);
+  if (new Set(episodes).size !== episodes.length || episodes.some(episode => episode < 1)) {
+    throw new Error('Episódios inválidos ou repetidos em Profundezas: ' + episodes);
+  }
 }
 
 const directPreferred = items.filter(item => /\.mp4$/i.test(item._driveName || '') && /x264|h[ ._-]?264/i.test(item._driveName || ''));
