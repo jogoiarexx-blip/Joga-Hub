@@ -23,7 +23,10 @@
     if(code===429||code===503)return 'limited';
     const type=String(contentType).split(';')[0].trim().toLowerCase();
     if(type==='text/html'||type==='application/xhtml+xml'||type==='application/json'||type==='text/plain')return 'response';
-    if(Number(mediaCode)===3||Number(mediaCode)===4)return 'codec';
+    if(Number(mediaCode)===3)return 'codec';
+    // MEDIA_ERR_SRC_NOT_SUPPORTED (4) também ocorre para login HTML e 403.
+    // Só é codec comprovado se o HEAD revelar uma resposta de mídia válida.
+    if(Number(mediaCode)===4&&code>=200&&code<300&&type.startsWith('video/'))return 'codec';
     if(Number(mediaCode)===2)return 'network';
     if(timedOut)return 'timeout';
     if(code>=500)return 'network';
