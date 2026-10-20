@@ -96,8 +96,8 @@ test.describe('PWA e continuidade offline', () => {
     // Não desligar a rede antes de concluir o pré-cache do núcleo.
     await expect.poll(async () => page.evaluate(async () => {
       const cache = await caches.open('jogahub-1.4.2-shell');
-      const url = new URL('/js/app.js?v=152', location.href).href;
-      return Boolean(await cache.match(url) && await cache.match(new URL('/js/catalog-core.js?v=1', location.href).href));
+      const url = new URL('/js/app.js?v=153', location.href).href;
+      return Boolean(await cache.match(url) && await cache.match(new URL('/js/catalog-core.js?v=1', location.href).href) && await cache.match(new URL('/js/navigation-core.js?v=1', location.href).href));
     }), { timeout: 25_000 }).toBe(true);
 
     await context.setOffline(true);
