@@ -876,40 +876,22 @@ function renderLiveTv(){
   if(empty) empty.hidden=channels.length>0;
 }
 
+// Filtros e opções de navegação são calculados no módulo independente.
+const NAV_CORE=window.JOGAHUB_NAV_CORE;
+if(!NAV_CORE)throw new Error('Núcleo de navegação ausente: carregue navigation-core.js antes de app.js');
 function renderGenreFilters(){
-  const pool = itemsForView(activeType);
-  if(activeType === 'jogo'){
-    const categories = [...new Set(pool.map(i => i.category || 'outros'))]
-      .sort((a,b)=>(GAME_CATEGORIES[a]?.order||99)-(GAME_CATEGORIES[b]?.order||99));
-    document.getElementById('filters').innerHTML = ['todos', ...categories].map((g,i) => {
-      const c = g === 'todos' ? {label:'Todos os jogos',icon:'🎮'} : (GAME_CATEGORIES[g] || GAME_CATEGORIES.outros);
-      return `<button class="filter-btn${i===0?' active':''}" data-genre="${escapeHTML(g)}" type="button">${c.icon} ${escapeHTML(c.label)}</button>`;
-    }).join('');
-    return;
-  }
-  if(activeType === 'tv'){ document.getElementById('filters').innerHTML=''; return; }
-  if(activeType === 'emulador'){ document.getElementById('filters').innerHTML=''; return; }
-  if(activeType === 'radio'){ document.getElementById('filters').innerHTML=''; return; }
-  if(['filme','serie','anime'].includes(activeType)){
-    const options=[['todos','🍿 Todos'],...(activeType==='serie'?[['breaking-bad','🧪 Breaking Bad'],['doramas','📱 Doramas curtos']]:[]),['youtube-curated','▶ YouTube selecionado'],['youtube-pt','🇧🇷 YouTube PT'],['archive-pt','🏛️ Archive PT'],['gratis','🆓 Grátis'],['infantil','🧸 Infantil'],['acao','💥 Ação'],['comedia','😂 Comédia'],['romance','❤️ Romance'],['terror','👻 Terror'],['ficcao','🚀 Ficção científica'],['dec70','🕺 Até 70'],['dec80','📼 Anos 80'],['dec90','📺 Anos 90'],['dec2000','💿 Anos 2000'],['portugues','🇧🇷 Português'],['favoritos','♥ Minha Lista'],['continuar','▶ Continuar']];
-    document.getElementById('filters').innerHTML=options.map((o,i)=>`<button class="filter-btn${i===0?' active':''}" data-genre="${o[0]}" type="button">${o[1]}</button>`).join('');
-    return;
-  }
-  const genres = ['todos', ...new Set(pool.map(i => i.genre))];
-  document.getElementById('filters').innerHTML = genres.map((g,i) =>
-    `<button class="filter-btn${i===0?' active':''}" data-genre="${escapeHTML(g)}" type="button">${escapeHTML(g)}</button>`
+  const filters=document.getElementById('filters');
+  if(!filters)return;
+  const options=NAV_CORE.filterOptions(activeType,itemsForView(activeType),GAME_CATEGORIES);
+  filters.innerHTML=options.map(([genre,label],index)=>
+    `<button class="filter-btn${index===0?' active':''}" data-genre="${escapeHTML(genre)}" type="button">${escapeHTML(label)}</button>`
   ).join('');
 }
 function sortByTypeOrder(list){
-  const favorites = loadFavorites();
-  return [...list].sort((a,b) => {
-    const favDiff = Number(favorites.has(b.id)) - Number(favorites.has(a.id));
-    if(favDiff) return favDiff;
-    return TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type);
-  });
+  return NAV_CORE.sortByTypeOrder(list,loadFavorites(),TYPE_ORDER);
 }
 function normalize(text=''){
-  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  return NAV_CORE.normalize(text);
 }
 function applyFilters(){
   if(activeType==='radio'){
@@ -933,39 +915,15 @@ function applyFilters(){
   const activeBtn = document.querySelector('.filter-btn.active');
   const genre = activeBtn ? activeBtn.dataset.genre : 'todos';
   const favorites=loadFavorites();
-  const filtered = ITEMS.filter(i => {
-    const searchable = itemSearchIndex(i);
-    const movieFilter = !['filme','serie','anime'].includes(activeType) || genre === 'todos'
-      || (genre === 'jackie' && i.jackieChan === true)
-      || (genre === 'youtube-curated' && i.youtubeCurated === true)
-      || (genre === 'youtube-pt' && (i.youtubePt === true || (i.youtubeId && (i.portuguese || /portugu/i.test(i.language || '')))))
-      || (genre === 'archive-pt' && i.archiveLicensed === true)
-      || (genre === 'gratis' && i.freeLegal)
-      || (genre === 'classicos-tv' && i.classicTv)
-      || (genre === 'breaking-bad' && (i.seriesId === 'breaking-bad-drive' || i.seriesId === 'breaking-bad' || normalize(i.seriesTitle || '') === 'breaking bad'))
-      || (genre === 'doramas' && i.dorama)
-      || (genre === 'infantil' && i.kids)
-      || (genre === 'animes' && i.anime)
-      || (genre === 'luta' && i.wrestling)
-      || (genre === 'acao' && (i.filmGenre === 'acao' || normalize(i.genre||'').includes('acao')))
-      || (genre === 'comedia' && (i.filmGenre === 'comedia' || normalize(i.genre||'').includes('comedia')))
-      || (genre === 'romance' && (i.filmGenre === 'romance' || normalize(i.genre||'').includes('romance')))
-      || (genre === 'terror' && (i.filmGenre === 'terror' || normalize(i.genre||'').includes('terror')))
-      || (genre === 'ficcao' && (i.filmGenre === 'ficcao' || normalize(i.genre||'').includes('ficcao')))
-      || (genre === 'dec70' && itemDecade(i) === '70-')
-      || (genre === 'dec80' && itemDecade(i) === '80')
-      || (genre === 'dec90' && itemDecade(i) === '90')
-      || (genre === 'dec2000' && itemDecade(i) === '2000')
-      || (genre === 'portugues' && (i.portuguese || /portugu/i.test(i.language || '')))
-      || (genre === 'coloridos' && i.colorContent && (i.portuguese || /portugu/i.test(i.language || '')))
-      || (genre === 'series' && i.mediaType === 'serie')
-      || (genre === 'filmes' && i.mediaType !== 'serie' && i.mediaType !== 'colecao')
-      || (genre === 'colecoes' && i.mediaType === 'colecao')
-      || (genre === 'favoritos' && favorites.has(i.id))
-      || (genre === 'continuar' && !!movieProgress(i));
-    return (activeType === 'todos' || contentView(i) === activeType)
-      && (['filme','serie','anime'].includes(activeType) ? movieFilter : (genre === 'todos' || (activeType === 'jogo' ? (i.category || 'outros') === genre : i.genre === genre)))
-      && (!term || searchable.includes(term));
+  const filtered=NAV_CORE.filterItems(ITEMS,{
+    view:activeType,
+    genre,
+    term,
+    favorites,
+    searchIndex:itemSearchIndex,
+    contentView,
+    itemDecade,
+    movieProgress
   });
   renderItems(sortByTypeOrder(filtered));
   const movieNotice = document.getElementById('movieNotice');
