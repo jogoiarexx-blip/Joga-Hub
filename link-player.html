@@ -422,10 +422,45 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   $('seekBar')?.addEventListener('pointermove',scrubPreviewAt);$('seekBar')?.addEventListener('pointerleave',()=>$('scrubPreview')?.classList.remove('show'));$('seekBar')?.addEventListener('pointerup',()=>setTimeout(()=>$('scrubPreview')?.classList.remove('show'),400));
   function showRecovery(msg='A reprodução está instável.'){$('recoveryText').textContent=msg;$('recoveryCard').classList.add('show')}
   function hideRecovery(){$('recoveryCard').classList.remove('show')}
-  async function recoverPlayback(){hideRecovery();if(mode!=='enhanced')return;stage.classList.add('recovering');const t=video.currentTime||0,wasPlaying=!video.paused,src=video.currentSrc||video.src;try{video.pause();video.removeAttribute('src');video.load();await new Promise(r=>setTimeout(r,250));video.src=src;video.load();await waitForDriveVideo(7000);if(Number.isFinite(t)&&t>0)video.currentTime=Math.max(0,t-1);if(wasPlaying)await video.play().catch(()=>{});toast('Reprodução recuperada');stallTimes=[]}catch(e){console.warn('recuperação falhou',e);if(provider==='iframe'&&currentItem?.driveFileId)useDriveFallback(false);else toast('Não foi possível recuperar automaticamente')}finally{stage.classList.remove('recovering')}}
+  let recoveryPending=false;
+  async function recoverPlayback(){
+    if(mode!=='enhanced'||recoveryPending)return;
+    const isDrive=provider==='iframe'&&driveSession.getMode()==='direct';
+    const token=isDrive?driveSession.beginRecovery():null;
+    if(isDrive&&token===null)return;
+    recoveryPending=true;hideRecovery();stage.classList.add('recovering');
+    const t=video.currentTime||0,wasPlaying=!video.paused,src=video.currentSrc||video.src;
+    try{
+      if(!src)throw new Error('origem de vídeo ausente');
+      video.pause();video.removeAttribute('src');video.load();
+      await waitForDriveVideo(7000,()=>{video.src=src;video.load()});
+      if(isDrive&&!driveSession.isCurrent(token))return;
+      if(mode!=='enhanced')return;
+      if(Number.isFinite(t)&&t>0)video.currentTime=Math.max(0,t-1);
+      if(wasPlaying)await video.play().catch(()=>{});
+      toast('Reprodução recuperada');stallTimes=[];
+    }catch(error){
+      if(isDrive&&!driveSession.isCurrent(token))return;
+      console.warn('recuperação falhou',error);
+      if(provider==='iframe'&&currentItem?.driveFileId)useDriveFallback(false);
+      else toast('Não foi possível recuperar automaticamente');
+    }finally{
+      if(isDrive)driveSession.endRecovery(token);
+      recoveryPending=false;stage.classList.remove('recovering');
+    }
+  }
   $('retryPlaybackBtn')?.addEventListener('click',recoverPlayback);$('compatPlaybackBtn')?.addEventListener('click',()=>{hideRecovery();if(provider==='iframe')useDriveFallback()});$('dismissRecoveryBtn')?.addEventListener('click',hideRecovery);
-  function onPlaybackStall(){if(mode!=='enhanced')return;const now=Date.now();if(now-lastStallAt<750)return;lastStallAt=now;stallTimes=stallTimes.filter(t=>now-t<30000);stallTimes.push(now);if(stallTimes.length>=3&&bufferAhead()<3){showRecovery(`O vídeo travou ${stallTimes.length} vezes nos últimos 30 segundos. Você pode tentar recuperar sem perder o ponto atual.`);if(settings.autoRecoverDrive&&provider==='iframe'&&stallTimes.length>=5)recoverPlayback()}}
-  video.addEventListener('stalled',onPlaybackStall);video.addEventListener('waiting',()=>{if(bufferAhead()<.8)onPlaybackStall()});video.addEventListener('playing',()=>{stallTimes=stallTimes.filter(t=>Date.now()-t<15000);updateQualityChip()});video.addEventListener('loadedmetadata',()=>{updateQualityChip();renderChapterMarks()});video.addEventListener('durationchange',renderChapterMarks);
+  function onPlaybackStall(){
+    if(mode!=='enhanced'||recoveryPending)return;
+    if(!PLAYER_DRIVE_CORE.shouldTrackStall({paused:video.paused,ended:video.ended,seeking:video.seeking,readyState:video.readyState,buffer:bufferAhead()}))return;
+    const now=Date.now();if(now-lastStallAt<750)return;
+    lastStallAt=now;stallTimes=stallTimes.filter(t=>now-t<30000);stallTimes.push(now);
+    if(stallTimes.length>=3){
+      showRecovery(`O vídeo travou ${stallTimes.length} vezes nos últimos 30 segundos. Você pode tentar recuperar sem perder o ponto atual.`);
+      if(settings.autoRecoverDrive&&provider==='iframe'&&stallTimes.length>=5)recoverPlayback();
+    }
+  }
+  video.addEventListener('stalled',onPlaybackStall);video.addEventListener('waiting',()=>{if(bufferAhead()<.8)onPlaybackStall()});video.addEventListener('error',()=>{if(mode==='enhanced'&&provider==='iframe'&&driveSession.getMode()==='direct'&&!recoveryPending){showRecovery('Ocorreu um erro ao reproduzir o arquivo diretamente.');if(settings.autoRecoverDrive)recoverPlayback()}});video.addEventListener('playing',()=>{stallTimes=stallTimes.filter(t=>Date.now()-t<15000);updateQualityChip()});video.addEventListener('loadedmetadata',()=>{updateQualityChip();renderChapterMarks()});video.addEventListener('durationchange',renderChapterMarks);
   const autoRecoverToggle=$('autoRecoverToggle');if(autoRecoverToggle){autoRecoverToggle.checked=settings.autoRecoverDrive!==false;autoRecoverToggle.addEventListener('change',()=>{settings.autoRecoverDrive=autoRecoverToggle.checked;saveSettings({autoRecoverDrive:settings.autoRecoverDrive})})}
   async function setupRemotePlayback(){const btn=$('remoteBtn');if(!btn)return;try{if(video.remote&&typeof video.remote.prompt==='function'){btn.hidden=false;btn.onclick=async()=>{try{await video.remote.prompt()}catch(e){if(e?.name!=='AbortError')toast('Nenhum dispositivo disponível para transmitir')}};video.remote.addEventListener?.('connect',()=>{btn.textContent='📺 conectado';toast('Transmissão conectada')});video.remote.addEventListener?.('disconnect',()=>btn.textContent='📺 transmitir')}else if('WebKitPlaybackTargetAvailabilityEvent'in window){btn.hidden=false;video.setAttribute('x-webkit-airplay','allow');btn.textContent='📺 AirPlay';btn.onclick=()=>video.webkitShowPlaybackTargetPicker?.()}}catch{}}
   setupRemotePlayback();
