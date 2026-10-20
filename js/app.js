@@ -277,9 +277,11 @@ function itemHref(item){
     return item.sourceUrl || `https://drive.google.com/drive/folders/${encodeURIComponent(item.driveFolderId)}`;
   }
   if(item.type === 'filme' && item.driveFileId){
-    const url = `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/preview`;
     const source = item.sourceUrl || `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/view`;
-    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=iframe&id=${encodeURIComponent(item.id || '')}&driveFileId=${encodeURIComponent(item.driveFileId || '')}&driveName=${encodeURIComponent(item._driveName || '')}&driveMime=${encodeURIComponent(item.driveMime || '')}&seriesId=${encodeURIComponent(item.seriesId || '')}&seriesTitle=${encodeURIComponent(item.seriesTitle || '')}&season=${encodeURIComponent(item.season || '')}&episode=${encodeURIComponent(item.episode || '')}`;
+    let resourceKey=String(item.driveResourceKey||'').trim();
+    if(!resourceKey)try{resourceKey=new URL(source).searchParams.get('resourcekey')||''}catch{}
+    const url = `https://drive.google.com/file/d/${encodeURIComponent(item.driveFileId)}/preview${resourceKey?'?resourcekey='+encodeURIComponent(resourceKey):''}`;
+    return `link-player.html?url=${encodeURIComponent(url)}&external=${encodeURIComponent(source)}&title=${encodeURIComponent(item.title || '')}&type=filme&provider=iframe&id=${encodeURIComponent(item.id || '')}&driveFileId=${encodeURIComponent(item.driveFileId || '')}&driveName=${encodeURIComponent(item._driveName || '')}&driveMime=${encodeURIComponent(item.driveMime || '')}&driveResourceKey=${encodeURIComponent(resourceKey)}&seriesId=${encodeURIComponent(item.seriesId || '')}&seriesTitle=${encodeURIComponent(item.seriesTitle || '')}&season=${encodeURIComponent(item.season || '')}&episode=${encodeURIComponent(item.episode || '')}`;
   }
   if(isExternalItem(item)){
     if(item.embed === true){
