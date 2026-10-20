@@ -82,7 +82,10 @@ for (const item of items) {
 const knownSeries = items.filter(item => item.seriesTitle === 'Breaking Bad');
 if (knownSeries.length) {
   const seasons = [...new Set(knownSeries.map(item => Number(item.season)))].sort((a,b) => a-b);
-  if (seasons.join(',') !== '1,2,3,4') throw new Error('Temporadas de Breaking Bad não foram interpretadas corretamente: ' + seasons.join(','));
+  // Exige as temporadas já conhecidas, mas não falha quando uma nova temporada é adicionada.
+  const requiredSeasons = [1, 2, 3, 4, 5];
+  const missingSeasons = requiredSeasons.filter(season => !seasons.includes(season));
+  if (missingSeasons.length) throw new Error('Temporadas de Breaking Bad ausentes ou interpretadas incorretamente: ' + missingSeasons.join(',') + ' (encontradas: ' + seasons.join(',') + ')');
 }
 
 const directPreferred = items.filter(item => /\.mp4$/i.test(item._driveName || '') && /x264|h[ ._-]?264/i.test(item._driveName || ''));
