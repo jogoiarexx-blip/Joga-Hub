@@ -133,6 +133,24 @@ if (!context.window.JOGAHUB_DRIVE_SYNC.getStatus().success) {
   throw new Error('Leitura completa do Drive não foi aceita');
 }
 
+// Chaves de recurso precisam sobreviver ao sincronizador mesmo quando
+// chegam apenas no link original, pois alguns compartilhamentos as exigem.
+const sharedKeyFile={
+  ...rawFiles[0],
+  id:'qa-resourcekey-file',
+  name:'Arquivo de teste resourcekey 2026.mp4',
+  path:'Arquivo de teste resourcekey 2026.mp4',
+  url:'https://drive.google.com/file/d/qa-resourcekey-file/view?resourcekey=chave-de-teste',
+  player:'https://drive.google.com/file/d/qa-resourcekey-file/preview?resourcekey=chave-de-teste'
+};
+const keyedFiles=[...rawFiles,sharedKeyFile];
+context.fetch=async()=>({ok:true,json:async()=>({ok:true,files:keyedFiles,total:keyedFiles.length,errors:[]})});
+await context.window.JOGAHUB_DRIVE_SYNC.sync();
+const keyedItem=context.FILMES_CATALOGO.find(item=>item.driveFileId===sharedKeyFile.id);
+if(keyedItem?.driveResourceKey!=='chave-de-teste'){
+  throw new Error('Chave de recurso compartilhado foi perdida durante a sincronização');
+}
+
 console.log(JSON.stringify({
   rawFiles: rawFiles.length,
   catalogItems: items.length,
