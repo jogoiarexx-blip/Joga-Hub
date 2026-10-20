@@ -14,6 +14,8 @@ on:
       - 'link-player.html'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/drive-snapshot-policy.mjs'
+      - 'tools/test-drive-snapshot-policy.mjs'
       - '.github/workflows/validate-media-core.yml'
   pull_request:
     paths:
@@ -26,6 +28,8 @@ on:
       - 'link-player.html'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/drive-snapshot-policy.mjs'
+      - 'tools/test-drive-snapshot-policy.mjs'
 
 jobs:
   validate:
@@ -61,3 +65,6 @@ jobs:
 
       - name: Validar catálogo e parser do Drive
         run: node tools/test-drive-core.mjs
+
+      - name: Validar política de integridade do catálogo
+        run: node --test tools/test-drive-snapshot-policy.mjs
