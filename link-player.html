@@ -165,17 +165,17 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
       drivePlayerUrl:raw
     };
   }
-  function driveResourceKeyFor(item){
+  function driveResourceKeyFor(item,allowCurrentQuery=false){
     if(item?.driveResourceKey)return String(item.driveResourceKey).trim();
-    if(q.get('driveResourceKey'))return String(q.get('driveResourceKey')).trim();
-    for(const link of [item?.sourceUrl,item?.drivePlayerUrl,rawExternal,raw]){
+    if(allowCurrentQuery&&q.get('driveResourceKey'))return String(q.get('driveResourceKey')).trim();
+    for(const link of [item?.sourceUrl,item?.drivePlayerUrl,...(allowCurrentQuery?[rawExternal,raw]:[])]){
       try{const url=new URL(link);if(url.hostname==='drive.google.com'||url.hostname==='drive.usercontent.google.com'){
         const key=url.searchParams.get('resourcekey');if(key)return key;
       }}catch{}
     }
     return '';
   }
-  const driveResourceKey=driveResourceKeyFor(currentItem);
+  const driveResourceKey=driveResourceKeyFor(currentItem,true);
   if(provider==='iframe'&&driveResourceKey){
     for(const field of ['u','external']){
       const address=field==='u'?u:external;
