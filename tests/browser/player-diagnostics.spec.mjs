@@ -76,3 +76,29 @@ test('MKV reconhecido avisa codec sem fingir permissão negada',async({page})=>{
   await expect(page.locator('#stage')).toHaveClass(/fallback/);
   expect(attempts).toBe(0);
 });
+
+
+test('resourcekey de compartilhamento é mantida no iframe, origem e links diretos',async({page})=>{
+  const params=new URLSearchParams(url('Episódio.mp4').split('?')[1]);
+  params.set('driveResourceKey','chave-qa.123');
+  let captured='';
+  await page.route(route1,async route=>{
+    captured=route.request().url();
+    await route.fulfill({status:403,headers:{'Access-Control-Allow-Origin':'*','Content-Type':'text/html'},body:'acesso negado'});
+  });
+  await page.goto('/link-player.html?'+params,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#driveDiagnostic')).toHaveAttribute('data-reason','access',{timeout:15000});
+  expect(new URL(captured).searchParams.get('resourcekey')).toBe('chave-qa.123');
+  expect(new URL(await page.locator('#frame').getAttribute('src')).searchParams.get('resourcekey')).toBe('chave-qa.123');
+  expect(new URL(await page.locator('#external').getAttribute('href')).searchParams.get('resourcekey')).toBe('chave-qa.123');
+});
+
+test('resourcekey encontrada no link original é aproveitada sem mudar o ID',async({page})=>{
+  const params=new URLSearchParams(url('Episódio.mkv').split('?')[1]);
+  params.set('external','https://drive.google.com/file/d/'+fileId+'/view?resourcekey=legacy-abc');
+  await page.goto('/link-player.html?'+params,{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toHaveClass(/fallback/);
+  const preview=new URL(await page.locator('#frame').getAttribute('src'));
+  expect(preview.pathname).toBe('/file/d/'+fileId+'/preview');
+  expect(preview.searchParams.get('resourcekey')).toBe('legacy-abc');
+});
