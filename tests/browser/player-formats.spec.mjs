@@ -56,9 +56,18 @@ for(const entry of [
   {name:'MP4 H.264',file:'video.mp4',mime:'video/mp4',source:()=>mp4},
   {name:'WebM VP8',file:'video.webm',mime:'video/webm',source:()=>webm}
 ]){
-  test('decodifica vídeo real '+entry.name+' no Drive Engine',async({page})=>{
+  test('valida vídeo real '+entry.name+' e fallback de codec não suportado',async({page})=>{
     await serveDriveFixture(page,entry.source(),entry.mime);
     await page.goto(playerUrl(entry.file,entry.mime),{waitUntil:'domcontentloaded'});
+    const codec=entry.mime==='video/mp4'?'video/mp4; codecs="avc1.42E01E"':'video/webm; codecs="vp8"';
+    const supported=await page.locator('#video').evaluate((video,mime)=>video.canPlayType(mime),codec);
+    if(!supported){
+      // Chromium sem decoder patenteado: MP4/H.264 NÃO deve ser reportado como reproduzido.
+      await expect(page.locator('#stage')).toHaveClass(/fallback/,{timeout:20000});
+      await expect(page.locator('#video')).not.toHaveAttribute('src');
+      await expect(page.locator('#frame')).toHaveAttribute('src',/^https:\/\/drive\.google\.com\/file\/d\//);
+      return;
+    }
     await expect(page.locator('#stage')).toHaveClass(/enhanced/,{timeout:20000});
     const actual=await page.locator('#video').evaluate(video=>({
       readyState:video.readyState,
