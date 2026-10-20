@@ -280,9 +280,83 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   function recentDriveFailure(fileId){const f=readJson(driveFailKey(fileId));return !!(f?.updatedAt&&Date.now()-f.updatedAt<DRIVE_FAIL_TTL)}
   function driveDirectCandidates(fileId){const id=encodeURIComponent(fileId||'');const all=[`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`,`https://drive.google.com/uc?export=download&id=${id}`];const saved=readJson(driveRouteKey(fileId));if(saved?.url&&Date.now()-Number(saved.updatedAt||0)<DRIVE_ROUTE_TTL&&all.includes(saved.url))return [saved.url,...all.filter(x=>x!==saved.url)];return all}
   function driveTimeoutMs(){const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(settings.dataSaver)return 6500;if(c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return 14000;if(c?.effectiveType==='3g')return 11000;return 8500}
-  function waitForDriveVideo(timeout=driveTimeoutMs()){return new Promise((resolve,reject)=>{let done=false;const ok=()=>{if(done)return;done=true;cleanup();resolve(true)},bad=()=>{if(done)return;done=true;cleanup();reject(video.error||new Error('vídeo não carregou'))},cleanup=()=>{clearTimeout(t);video.removeEventListener('loadedmetadata',ok);video.removeEventListener('canplay',ok);video.removeEventListener('error',bad)};video.addEventListener('loadedmetadata',ok,{once:true});video.addEventListener('canplay',ok,{once:true});video.addEventListener('error',bad,{once:true});const t=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error('tempo limite da rota direta'))},timeout)})}
-  async function useDriveDirect(autoplay=false,force=false){const fileId=currentItem?.driveFileId;if(!fileId)throw new Error('driveFileId ausente');$('driveModeBtn').hidden=false;$('driveModeBtn').textContent='☁ usar modo Drive';if(!force&&recentDriveFailure(fileId))throw new Error('rota direta falhou recentemente');loading.classList.remove('hide');loadingText.textContent='Drive Engine 5.0: escolhendo a melhor rota…';frame.removeAttribute('src');video.pause();video.removeAttribute('src');video.poster=currentItem?.thumb||'';const candidates=driveDirectCandidates(fileId);let lastError=null;for(let i=0;i<candidates.length;i++){const candidate=candidates[i],started=performance.now();try{loadingText.textContent=`Drive Engine 5.0: testando rota ${i+1}/${candidates.length}…`;directMediaUrl=candidate;directMediaMime='video/mp4';video.src=candidate;video.preload=settings.dataSaver?'metadata':'auto';video.load();await waitForDriveVideo();clearDriveEpisodeOnly();rememberDriveSuccess(fileId,candidate,performance.now()-started);const p=readProgress();if(p&&p.time>20&&!p.episodeOnly&&p.time<video.duration-20)video.currentTime=Math.min(p.time,Math.max(0,video.duration-5));video.playbackRate=Number(settings.speed)||1;if(typeof settings.volume==='number')video.volume=Math.max(0,Math.min(1,settings.volume));$('speed').value=String(video.playbackRate);loading.classList.add('hide');pc.hidden=false;setMode('enhanced','Google Drive • Drive Engine 5.0');syncCustomControls();showControls(3500);$('audioTrack').hidden=true;$('subtitleTrack').hidden=true;const routeSaved=readJson(driveRouteKey(fileId));const routeNote=routeSaved?.url===candidate?'rota otimizada memorizada':'rota direta';const info=[currentItem?.genre,currentItem?.year,currentItem?.language,formatTime(video.duration),'Google Drive',routeNote].filter(Boolean);$('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('');$('driveTipText').innerHTML=`<b>Drive Engine 5.0 ativo.</b> ${safe(routeNote)} • retomada exata e recuperação automática.`;if(autoplay)video.play().catch(()=>{});warmNextDriveEpisode();return true}catch(e){lastError=e;console.warn('Drive candidate falhou',candidate,e);video.pause();video.removeAttribute('src');video.load()}}rememberDriveFailure(fileId,lastError?.message||lastError||'todas as rotas falharam');throw lastError||new Error('reprodução direta indisponível')}
-  function useDriveFallback(persist=true){if(provider!=='iframe')return fallback();saveProgress(true);if(persist)localStorage.setItem(driveModeKey(),'compat');fallback(persist?'modo compatibilidade solicitado':'fallback automático do Drive Engine')}
+  // Registra os eventos antes do load; rotas em cache podem carregar imediatamente.
+  function waitForDriveVideo(timeout=driveTimeoutMs(),start=()=>{}){
+    return new Promise((resolve,reject)=>{
+      let done=false, timer=0;
+      const cleanup=()=>{clearTimeout(timer);video.removeEventListener('loadedmetadata',ok);video.removeEventListener('canplay',ok);video.removeEventListener('error',bad)};
+      const ok=()=>{if(done)return;done=true;cleanup();resolve(true)};
+      const bad=error=>{if(done)return;done=true;cleanup();reject(error instanceof Error?error:(video.error||new Error('vídeo não carregou')))};
+      video.addEventListener('loadedmetadata',ok);
+      video.addEventListener('canplay',ok);
+      video.addEventListener('error',bad);
+      timer=setTimeout(()=>bad(new Error('tempo limite da rota direta')),timeout);
+      try{start();if(video.readyState>=1&&!video.error)ok()}catch(error){bad(error)}
+    });
+  }
+  async function useDriveDirect(autoplay=false,force=false){
+    const fileId=currentItem?.driveFileId;
+    if(!fileId)throw new Error('driveFileId ausente');
+    if(!force&&recentDriveFailure(fileId))throw new Error('rota direta falhou recentemente');
+    const token=driveSession.beginDirect();
+    $('driveModeBtn').hidden=false;
+    $('driveModeBtn').textContent='☁ usar modo Drive';
+    loading.classList.remove('hide');
+    loadingText.textContent='Drive Engine: escolhendo a melhor rota…';
+    frame.removeAttribute('src');
+    video.pause();video.removeAttribute('src');
+    video.poster=currentItem?.thumb||'';
+    const candidates=driveDirectCandidates(fileId);
+    let lastError=null;
+    for(let i=0;i<candidates.length;i++){
+      if(!driveSession.isCurrent(token))return false;
+      const candidate=candidates[i],started=performance.now();
+      try{
+        loadingText.textContent=`Drive Engine: testando rota ${i+1}/${candidates.length}…`;
+        directMediaUrl=candidate;directMediaMime='video/mp4';
+        video.preload=settings.dataSaver?'metadata':'auto';
+        await waitForDriveVideo(driveTimeoutMs(),()=>{video.src=candidate;video.load()});
+        if(!driveSession.confirmDirect(token))return false;
+        clearDriveEpisodeOnly();
+        rememberDriveSuccess(fileId,candidate,performance.now()-started);
+        const p=readProgress();
+        if(p&&p.time>20&&!p.episodeOnly&&Number.isFinite(video.duration)&&p.time<video.duration-20)
+          video.currentTime=Math.min(p.time,Math.max(0,video.duration-5));
+        video.playbackRate=Number(settings.speed)||1;
+        if(typeof settings.volume==='number')video.volume=Math.max(0,Math.min(1,settings.volume));
+        $('speed').value=String(video.playbackRate);
+        loading.classList.add('hide');pc.hidden=false;
+        setMode('enhanced','Google Drive • reprodução direta');
+        syncCustomControls();showControls(3500);
+        $('audioTrack').hidden=true;$('subtitleTrack').hidden=true;
+        const routeSaved=readJson(driveRouteKey(fileId));
+        const routeNote=routeSaved?.url===candidate?'rota otimizada memorizada':'rota direta';
+        const info=[currentItem?.genre,currentItem?.year,currentItem?.language,formatTime(video.duration),'Google Drive',routeNote].filter(Boolean);
+        $('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('');
+        $('driveTipText').innerHTML=`<b>Drive Engine ativo.</b> ${safe(routeNote)} • retomada exata e recuperação automática.`;
+        if(autoplay)video.play().catch(()=>{});
+        warmNextDriveEpisode();return true;
+      }catch(error){
+        if(!driveSession.isCurrent(token))return false;
+        lastError=error;
+        console.warn('Drive candidate falhou',candidate,error);
+        video.pause();video.removeAttribute('src');video.load();
+      }
+    }
+    if(!driveSession.failDirect(token))return false;
+    directMediaUrl='';
+    rememberDriveFailure(fileId,lastError?.message||lastError||'todas as rotas falharam');
+    throw lastError||new Error('reprodução direta indisponível');
+  }
+  function useDriveFallback(persist=true){
+    if(provider!=='iframe')return fallback();
+    saveProgress(true);
+    driveSession.switchToCompatible();
+    if(persist)localStorage.setItem(driveModeKey(),'compat');
+    fallback(persist?'modo compatibilidade solicitado':'fallback automático do Drive Engine');
+    video.pause();video.removeAttribute('src');video.load();
+    directMediaUrl='';$('downloadBtn').hidden=true;
+  }
   function warmNextDriveEpisode(){if(settings.dataSaver||!nextItem?.driveFileId||!navigator.onLine)return;const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(c?.saveData||c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return;try{const host=document.head;['https://drive.usercontent.google.com','https://drive.google.com'].forEach(h=>{if(document.querySelector(`link[data-jh-preconnect="${h}"]`))return;const l=document.createElement('link');l.rel='preconnect';l.href=h;l.crossOrigin='anonymous';l.dataset.jhPreconnect=h;host.appendChild(l)})}catch{}}
   async function initDrive(){if(await loadOfflineCopy())return;if(!currentItem?.driveFileId){useDriveFallback(false);return}if(PLAYER_DRIVE_CORE.needsCompatiblePlayer(currentItem._driveName,currentItem.driveMime)){useDriveFallback(false);return}driveMode=localStorage.getItem(driveModeKey())||localStorage.getItem('jogahub.drive.playerMode')||'auto';$('driveModeBtn').hidden=false;if(driveMode==='compat'){useDriveFallback();return}try{await useDriveDirect(false,false)}catch(e){console.warn('JogaHub Drive Engine 5.0:',e);diagnoseDriveError(e?.message||e);if(driveSession.getMode()!=='compatible')useDriveFallback(false)}}
   async function initArchive(){if(type!=='filme'||!archiveId||!u){fallback('sem archiveId');return}if(!currentItem?.archivePlaylist&&await loadOfflineCopy())return;try{loadingText.textContent='Consultando os arquivos do Internet Archive…';const res=await fetch(`https://archive.org/metadata/${encodeURIComponent(archiveId)}`,{mode:'cors'});if(!res.ok)throw new Error(`metadata ${res.status}`);const data=await res.json(),files=Array.isArray(data.files)?data.files:[],allPlayable=files.filter(f=>f?.name&&/\.(mp4|webm|ogv|ogg)$/i.test(f.name)&&!/thumb|sample/i.test(f.name));const score=f=>{const n=(f.name||'').toLowerCase(),fmt=(f.format||'').toLowerCase();let s=0;if(/\.mp4$/i.test(n))s+=100;if(/h\.264|mpeg4|512kb/.test(fmt+n))s+=40;if((f.source||'')==='original')s+=20;if((Number(f.size)||0)>20e6)s+=10;return s};if(!allPlayable.length)throw new Error('nenhum vídeo direto');const grouped=new Map();for(const f of allPlayable){const key=archiveCanonical(f);const prev=grouped.get(key);if(!prev||score(f)>score(prev))grouped.set(key,f)}archivePlaylistFiles=[...grouped.values()].sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'pt-BR',{numeric:true,sensitivity:'base'}));if(currentItem?.archivePlaylist&&archivePlaylistFiles.length>1){const requested=Math.max(0,Math.min(archivePlaylistFiles.length-1,Number(q.get('ep')||0)));selectArchiveEpisode(requested,false);return}archivePlaylistFiles.sort((a,b)=>score(b)-score(a));const f=archivePlaylistFiles[0];archiveEpisodeKey='';directMediaUrl=archiveFileUrl(f);directMediaSize=Number(f.size)||0;directMediaMime=(f.format||'').toLowerCase().includes('webm')?'video/webm':'video/mp4';video.poster=`https://archive.org/services/img/${encodeURIComponent(archiveId)}`;video.src=directMediaUrl;$('downloadBtn').hidden=false;files.filter(f=>f?.name&&/\.vtt$/i.test(f.name)).slice(0,8).forEach((f,i)=>{const tr=document.createElement('track');tr.kind='subtitles';tr.label=f.title||f.language||`Legenda ${i+1}`;tr.srclang=(f.language||'pt').toString().slice(0,2);tr.src=`https://archive.org/download/${encodeURIComponent(archiveId)}/${f.name.split('/').map(encodeURIComponent).join('/')}`;video.appendChild(tr)});video.addEventListener('loadedmetadata',()=>{const p=readProgress();if(p&&p.time>20&&p.time<video.duration-20)video.currentTime=Math.min(p.time,Math.max(0,video.duration-5));video.playbackRate=Number(settings.speed)||1;if(typeof settings.volume==='number')video.volume=Math.max(0,Math.min(1,settings.volume));$('speed').value=String(video.playbackRate);loading.classList.add('hide');setMode('enhanced','player aprimorado');const info=[currentItem?.genre,currentItem?.year,currentItem?.language,formatTime(video.duration),directMediaSize?formatBytes(directMediaSize):''].filter(Boolean);$('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('')},{once:true});video.addEventListener('error',()=>fallback('falha no vídeo direto'),{once:true});video.load()}catch(e){fallback(e)}}
