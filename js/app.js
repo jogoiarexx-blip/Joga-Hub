@@ -661,7 +661,8 @@ function renderMovieHub(list){
     rows+=section('📺 Nostalgia da TV','Desenhos, séries e clássicos que ainda não apareceram nas seções anteriores.',classicTv);
 
     // Séries selecionadas do YouTube: agrupadas em uma capa, como as séries do Drive.
-    const youtubeSeriesItems=pool.filter(i=>i.youtubeCurated && i.mediaType==='serie' && !used.has(mediaIdentity(i)));
+    // As séries precisam manter todos os episódios, mesmo quando algum apareceu nos destaques.
+    const youtubeSeriesItems=pool.filter(i=>i.youtubeCurated && i.mediaType==='serie');
     if(youtubeSeriesItems.length){
       const ytGroups=[]; const ytGroupMap=new Map();
       for(const item of youtubeSeriesItems){
@@ -681,7 +682,8 @@ function renderMovieHub(list){
     rows+=section('🎬 Filmes do Google Drive','Cada filme aparece separado e abre diretamente no player do JogaHub.',driveMovies,'catalog-drive');
 
     // Séries do Drive: uma capa por série, com episódios navegáveis no player.
-    const driveSeriesItems=pool.filter(i=>i.driveFileId && i.mediaType==='serie' && !used.has(mediaIdentity(i)));
+    // Nunca usar o conjunto global de destaques para montar temporadas incompletas.
+    const driveSeriesItems=pool.filter(i=>i.driveFileId && i.mediaType==='serie');
     if(driveSeriesItems.length){
       const driveGroups=[]; const driveGroupMap=new Map();
       for(const item of driveSeriesItems){
@@ -694,7 +696,7 @@ function renderMovieHub(list){
     }
 
     // Séries restantes: um cartão por série. Episódios continuam acessíveis dentro da página/player.
-    const remainingSeries=pool.filter(i=>i.mediaType==='serie' && !used.has(mediaIdentity(i)));
+    const remainingSeries=pool.filter(i=>i.mediaType==='serie' && !i.driveFileId && !i.youtubeCurated);
     const groups=[]; const groupMap=new Map();
     for(const item of remainingSeries){
       const key=item.seriesId || normalize(item.seriesTitle || item.title);
@@ -976,7 +978,7 @@ function applyFilters(){
       || (genre === 'archive-pt' && i.archiveLicensed === true)
       || (genre === 'gratis' && i.freeLegal)
       || (genre === 'classicos-tv' && i.classicTv)
-      || (genre === 'breaking-bad' && i.seriesId === 'breaking-bad-drive')
+      || (genre === 'breaking-bad' && (i.seriesId === 'breaking-bad-drive' || i.seriesId === 'breaking-bad' || normalize(i.seriesTitle || '') === 'breaking bad'))
       || (genre === 'doramas' && i.dorama)
       || (genre === 'infantil' && i.kids)
       || (genre === 'animes' && i.anime)
