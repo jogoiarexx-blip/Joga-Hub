@@ -1,0 +1,14 @@
+{
+  "name": "jogahub-browser-qa",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Testes automatizados de navegação e PWA do JogaHub",
+  "scripts": {
+    "test:browser": "playwright test",
+    "test:browser:headed": "playwright test --headed",
+    "serve:test": "node tools/serve-static.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
