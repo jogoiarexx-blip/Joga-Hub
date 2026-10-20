@@ -10,6 +10,16 @@
     return COMPATIBLE_NAME.test(String(name || '')) || COMPATIBLE_MIME.test(String(mime || ''));
   }
 
+  function directMime(name='',mime='') {
+    const reported=String(mime||'').toLowerCase().split(';')[0].trim();
+    if(['video/mp4','video/webm','video/ogg','video/x-m4v'].includes(reported))
+      return reported==='video/x-m4v'?'video/mp4':reported;
+    const ext=String(name||'').split(/[?#]/)[0].toLowerCase();
+    if(/\.webm$/.test(ext))return 'video/webm';
+    if(/\.og[vg]$/.test(ext))return 'video/ogg';
+    return 'video/mp4';
+  }
+
   function makeSession() {
     let revision = 0;
     let mode = 'idle';
@@ -79,6 +89,6 @@
   }
 
   root.JOGAHUB_PLAYER_DRIVE_CORE=Object.freeze({
-    needsCompatiblePlayer,makeSession,hasExactProgress,episodeProgress,shouldTrackStall
+    needsCompatiblePlayer,directMime,makeSession,hasExactProgress,episodeProgress,shouldTrackStall
   });
 })(window);
