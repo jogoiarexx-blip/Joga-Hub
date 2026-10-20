@@ -10,8 +10,8 @@ test('inicializa sem perder a biblioteca de jogos', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#games')).not.toBeEmpty();
   // A faixa legada de tipos fica oculta nos layouts atuais.
-  // Use o botão realmente visível no header, sidebar ou menu mobile.
-  const gamesNav = page.locator('button[data-view="jogo"]:visible').first();
+  // Use o botão realmente visível na sidebar ou no menu mobile.
+  const gamesNav = page.locator('button[data-sidebar-view="jogo"]:visible, button[data-view="jogo"]:visible').first();
   await expect(gamesNav).toBeVisible();
   await gamesNav.click();
   await expect(page.locator('#typeTabs [data-type="jogo"]')).toHaveAttribute('aria-pressed', 'true');
