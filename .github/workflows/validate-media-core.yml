@@ -14,8 +14,10 @@ on:
       - 'js/launcher-upgrade.js'
       - 'js/tv-catalog.js'
       - 'link-player.html'
+      - 'js/player-drive-core.js'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/test-player-drive-core.mjs'
       - 'tools/test-catalog-core.mjs'
       - 'tools/test-navigation-core.mjs'
       - 'tools/drive-snapshot-policy.mjs'
@@ -32,8 +34,10 @@ on:
       - 'js/launcher-upgrade.js'
       - 'js/tv-catalog.js'
       - 'link-player.html'
+      - 'js/player-drive-core.js'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/test-player-drive-core.mjs'
       - 'tools/test-catalog-core.mjs'
       - 'tools/test-navigation-core.mjs'
       - 'tools/drive-snapshot-policy.mjs'
@@ -53,11 +57,15 @@ jobs:
           node --check js/app.js
           node --check js/catalog-core.js
           node --check js/navigation-core.js
+          node --check js/player-drive-core.js
           node --check js/data-links.js
           node --check js/data-filmes.js
           node --check js/launcher-upgrade.js
           node --check js/drive-sync.js
           node --check js/tv-catalog.js
+
+      - name: Validar Drive Engine e recuperação do player
+        run: node --test tools/test-player-drive-core.mjs
 
       - name: Validar JavaScript do player HTML
         run: |
