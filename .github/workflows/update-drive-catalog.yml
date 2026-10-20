@@ -33,6 +33,7 @@ jobs:
       - name: Atualizar snapshot do Drive
         env:
           DRIVE_SYNC_URL: ${{ vars.DRIVE_SYNC_URL }}
+          DRIVE_ALLOW_REMOVALS: ${{ vars.DRIVE_ALLOW_REMOVALS }}
         run: node tools/update-drive-snapshot.mjs
 
       - name: Publicar somente se houver mudança
