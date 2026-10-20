@@ -41,7 +41,7 @@ test('metadados e normalização funcionam sem depender do DOM',()=>{
 test('opções do menu de jogos mantêm ordem e categorias',()=>{
   const opts=nav.filterOptions('jogo',items.filter(i=>i.type==='jogo'),categories);
   assert.deepEqual(ids(opts.map(x=>({id:x[0]}))), ['todos','acao','corrida']);
-  assert.deepEqual(opts.map(x=>x[1]), ['🎮 Todos os jogos','💥 Ação','🏁 Corrida']);
+  assert.deepEqual(Array.from(opts,x=>x[1]), ['🎮 Todos os jogos','💥 Ação','🏁 Corrida']);
 });
 
 test('séries preservam seus filtros originais, inclusive Breaking Bad',()=>{
