@@ -1,69 +1,33 @@
 /* JOGAHUB 1.4.2 — home, busca, favoritos, TV e progresso de leitura */
 
-const TYPES = {
-  jogo:  { label: 'Jogos', action: 'jogar', icon: '🎮', singular: 'jogo' },
-  filme: { label: 'Filmes', action: 'assistir', icon: '🎬', singular: 'filme' },
-  serie: { label: 'Séries', action: 'assistir', icon: '📺', singular: 'série' },
-  anime: { label: 'Animes', action: 'assistir', icon: '🍥', singular: 'anime' },
-  emulador: { label: 'Emuladores', action: 'abrir', icon: '🕹️', singular: 'emulador' },
-  radio: { label: 'Rádios', action: 'ouvir', icon: '📻', singular: 'rádio' }
-};
-const TYPE_ORDER = ['todos', 'jogo', 'filme', 'serie', 'anime', 'emulador', 'radio'];
-const GAME_CATEGORIES = {
-  arcade: {label:'Arcade', icon:'🕹️', order:1},
-  acao: {label:'Ação', icon:'💥', order:2},
-  corrida: {label:'Corrida', icon:'🏁', order:3},
-  estrategia: {label:'Estratégia', icon:'🛡️', order:4},
-  survival: {label:'Survival', icon:'☣️', order:5},
-  cartas: {label:'Cartas', icon:'🃏', order:6},
-  rpg: {label:'RPG & Aventura', icon:'⚔️', order:7},
-  plataforma: {label:'Plataforma', icon:'🧗', order:8},
-  'shoot-em-up': {label:'Shoot ’em up', icon:'🚀', order:9},
-  'simulação': {label:'Simulação', icon:'🔧', order:10},
-  outros: {label:'Outros', icon:'🎮', order:99}
-};
+// Metadados e estado do catálogo foram isolados em catalog-core.js.
+const CATALOG_CORE = window.JOGAHUB_CATALOG_CORE;
+if (!CATALOG_CORE) throw new Error('O núcleo do catálogo não foi carregado antes de app.js');
+const { types: TYPES, typeOrder: TYPE_ORDER, gameCategories: GAME_CATEGORIES } = CATALOG_CORE;
+const catalogState = CATALOG_CORE.createState({
+  onChange: () => window.JOGAHUB_RENDER_CURRENT(),
+  requestFrame: callback => requestAnimationFrame(callback)
+});
 let ITEMS = [];
-const RUNTIME_ITEMS = [];
-const SEARCH_INDEX = new Map();
-function itemSearchIndex(item){
-  const key=String(item?.id||'');
-  if(key&&SEARCH_INDEX.has(key))return SEARCH_INDEX.get(key);
-  const value=normalize([
-    item?.title,item?.seriesTitle,item?.desc,item?.genre,item?.filmGenre,item?.category,item?.type,item?.language,item?.sourceLabel,item?.sourceCollection,item?._driveName,item?._drivePath,
-    ...(item?.nostalgiaTags||[]),TYPES[item?.type]?.label,GAME_CATEGORIES[item?.category]?.label
-  ].filter(Boolean).join(' '));
-  if(key)SEARCH_INDEX.set(key,value);
-  return value;
+
+function itemSearchIndex(item) {
+  return catalogState.searchIndex(item);
 }
-function registerRuntimeItems(additions){
-  const seenIds=new Set([...ITEMS,...RUNTIME_ITEMS].map(item=>item.id));
-  const seenMedia=new Set([...ITEMS,...RUNTIME_ITEMS].map(item=>
-    item.archiveId?'archive:'+item.archiveId:item.youtubeId?'youtube:'+item.youtubeId:'').filter(Boolean));
-  let changed=false;
-  for(const item of additions||[]){
-    const mediaKey=item?.archiveId?'archive:'+item.archiveId:item?.youtubeId?'youtube:'+item.youtubeId:'';
-    if(!item?.id||seenIds.has(item.id)||(mediaKey&&seenMedia.has(mediaKey)))continue;
-    RUNTIME_ITEMS.push(item);seenIds.add(item.id);
-    if(mediaKey)seenMedia.add(mediaKey);
-    changed=true;
-  }
-  if(changed)scheduleCatalogRefresh();
+
+function registerRuntimeItems(additions) {
+  return catalogState.registerRuntimeItems(additions, ITEMS);
 }
-let catalogRefreshFrame=0;
-function scheduleCatalogRefresh(){
-  if(catalogRefreshFrame)return;
-  catalogRefreshFrame=requestAnimationFrame(()=>{
-    catalogRefreshFrame=0;
-    window.JOGAHUB_RENDER_CURRENT();
-  });
-}
-function rebuildCatalogItems(){
-  SEARCH_INDEX.clear();
-  const merged=[...JOGOS, ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : []), ...(typeof FILMES !== 'undefined' ? FILMES : []), ...RUNTIME_ITEMS];
-  const seen=new Set();
-  ITEMS=merged.filter(item=>item.id!=='exemplo'&&item.id&&!seen.has(item.id)&&seen.add(item.id));
+
+function rebuildCatalogItems() {
+  const sources = [
+    ...JOGOS,
+    ...(typeof LINK_ITEMS !== 'undefined' ? LINK_ITEMS : []),
+    ...(typeof FILMES !== 'undefined' ? FILMES : [])
+  ];
+  ITEMS = catalogState.rebuild(sources);
   window.JOGAHUB_ITEMS = ITEMS;
 }
+
 rebuildCatalogItems();
 window.JOGAHUB_REFRESH_ITEMS = rebuildCatalogItems;
 const APP_VERSION = '1.4.2';
