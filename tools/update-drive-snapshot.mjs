@@ -1,8 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { readDrivePayload, missingFileIds, isVideoFile } from './drive-snapshot-policy.mjs';
+import { readDrivePayload, missingFileIds, isVideoFile, isSubtitleFile } from './drive-snapshot-policy.mjs';
 
 const CONFIG_PATH = 'js/data-drive-filmes.js';
 const SNAPSHOT_PATH = 'js/drive-snapshot.js';
+const SUBTITLE_PATH = 'js/drive-subtitles.js';
 
 function stripResourceKey(raw) {
   if (!raw) return '';
@@ -75,6 +76,13 @@ try {
   preserveSnapshot(error?.message || String(error));
 }
 
+// Nova versão do Apps Script envia legendas separadamente. Não apagar o acervo
+// histórico quando o Web App instalado ainda utilizar o protocolo antigo.
+const rawSubtitles=Array.isArray(payload.subtitles)?payload.subtitles:null;
+if(rawSubtitles&&payload.subtitleCount!==undefined&&Number(payload.subtitleCount)!==rawSubtitles.length)
+  preserveSnapshot('Apps Script retornou listagem de legendas incompleta');
+const subtitleFiles=rawSubtitles?.map(normalizeFile).filter(f=>f&&isSubtitleFile(f))||null;
+
 const byId = new Map();
 for (const source of raw) {
   const file = normalizeFile(source);
@@ -127,4 +135,18 @@ if (previous !== output) {
   console.log('Snapshot atualizado:', files.length, 'arquivos');
 } else {
   console.log('Snapshot já está atualizado:', files.length, 'arquivos');
+}
+
+if(subtitleFiles){
+  const distinct=[...new Map(subtitleFiles.map(f=>[f.id,{id:f.id,name:f.name,mime:f.mime,path:f.path,updated:f.updated}])).values()];
+  const subtitleContent='/* Legendas auxiliares do Drive; nunca aparecem como filmes. */\n'+
+    'window.JOGAHUB_DRIVE_SUBTITLES = '+JSON.stringify(distinct,null,2)+';\n';
+  let previousSub='';
+  try{previousSub=await readFile(SUBTITLE_PATH,'utf8')}catch(error){
+    if(error?.code!=='ENOENT')preserveSnapshot('Falha lendo legendas antigas: '+error);
+  }
+  if(previousSub!==subtitleContent){
+    await writeFile(SUBTITLE_PATH,subtitleContent,'utf8');
+    console.log('Legendas atualizadas:',distinct.length);
+  }
 }
