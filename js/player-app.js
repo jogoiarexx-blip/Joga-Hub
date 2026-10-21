@@ -12,6 +12,10 @@
   const PLAYER_DRIVE_CORE=window.JOGAHUB_PLAYER_DRIVE_CORE;
   if(!PLAYER_DRIVE_CORE)throw new Error('Núcleo do player Drive não carregado');
   const driveSession=PLAYER_DRIVE_CORE.makeSession();
+  const RECONNECT=window.JOGAHUB_PLAYER_DRIVE_RECONNECT;
+  if(!RECONNECT)throw new Error('Módulo de recuperação de rede do Drive não carregado');
+  const driveReconnect=RECONNECT.makeGate();
+  let driveReconnectTimer=0;
   const recoveryBudget=PLAYER_DRIVE_CORE.makeRecoveryBudget();
   let driveAttemptController=null, recoveryController=null;
   const driveHealth=window.JOGAHUB_DRIVE_HEALTH?.createStore();
@@ -269,6 +273,15 @@
   function driveRouteKey(fileId){return `jogahub.drive.route.${fileId}`}
   function driveFailKey(fileId){return `jogahub.drive.fail.${fileId}`}
   function driveModeKey(){return `jogahub.drive.mode.${currentItem?.seriesId||currentItem?.id||'global'}`}
+  function armDriveReconnect(kind){
+    if(provider!=='iframe'||!currentItem?.driveFileId||settings.autoRecoverDrive===false||
+      localStorage.getItem(driveModeKey())==='compat')return false;
+    return driveReconnect.arm(kind);
+  }
+  function cancelDriveReconnect(){
+    clearTimeout(driveReconnectTimer);driveReconnectTimer=0;
+    driveReconnect.clear();
+  }
   function readJson(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}}
   function writeJson(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch{}}
   function clearDriveFail(fileId){try{localStorage.removeItem(driveFailKey(fileId))}catch{}}
@@ -338,6 +351,12 @@
   async function useDriveDirect(autoplay=false,force=false){
     const fileId=currentItem?.driveFileId;
     if(!fileId)throw new Error('driveFileId ausente');
+    if(navigator.onLine===false){
+      armDriveReconnect('loading');
+      const offline=new Error('Conexão indisponível para iniciar reprodução');
+      offline.driveIssue='offline';
+      throw offline;
+    }
     const cachedFailure=!force&&recentDriveFailure(fileId);
     if(cachedFailure){
       const error=new Error('Falha direta recente: '+cachedFailure.code);
@@ -405,6 +424,7 @@
           status:observation.status,contentType:observation.contentType,
           mediaCode,online:navigator.onLine,timedOut
         });
+        if(code==='offline')armDriveReconnect('loading');
         lastIssue=code;
         lastStatus=observation.status||0;
         video.pause();video.removeAttribute('src');video.load();
@@ -419,6 +439,7 @@
     throw failure;
   }
   function useDriveFallback(persist=true){
+    if(persist)cancelDriveReconnect();
     resetSeekWatch();stopVideoFrameMonitor();
     const seekNotice=$('seekHealthNotice');if(seekNotice)seekNotice.hidden=true;
     if(provider!=='iframe')return fallback();
@@ -660,6 +681,11 @@
   let recoveryPending=false,healthyPlaybackSince=0;
   async function recoverPlayback(){
     if(mode!=='enhanced'||recoveryPending)return;
+    if(provider==='iframe'&&navigator.onLine===false){
+      armDriveReconnect('playback');
+      showRecovery('A conexão caiu. O JogaHub preservou o ponto atual e tentará recuperar quando a internet voltar.');
+      return;
+    }
     const isDrive=provider==='iframe'&&driveSession.getMode()==='direct';
     const token=isDrive?driveSession.beginRecovery():null;
     if(isDrive&&token===null)return;
@@ -694,6 +720,7 @@
     }catch(error){
       if(controller.signal.aborted||(isDrive&&!driveSession.isCurrent(token)))return;
       console.warn('recuperação falhou',error);
+      if(provider==='iframe'&&navigator.onLine===false)armDriveReconnect('loading');
       if(provider==='iframe'&&currentItem?.driveFileId)useDriveFallback(false);
       else toast('Não foi possível recuperar automaticamente');
     }finally{
@@ -704,6 +731,11 @@
   }
   function autoRecoverPlayback(){
     if(mode!=='enhanced'||recoveryPending||provider!=='iframe'||driveSession.getMode()!=='direct')return;
+    if(navigator.onLine===false){
+      armDriveReconnect('playback');
+      showRecovery('Sem conexão. A reprodução será recuperada quando a internet voltar.');
+      return;
+    }
     const now=Date.now(), state=recoveryBudget.status(now);
     if(state.exhausted){
       showRecovery('A recuperação automática já foi tentada. Alternando para o modo Drive para evitar travamentos repetidos.');
@@ -712,6 +744,39 @@
     }
     if(recoveryBudget.begin(now))recoverPlayback();
   }
+  // Quando a rede cai, não gasta o orçamento de recuperação nem reinicia
+  // desnecessariamente a mídia; o usuário pode optar pelo modo Drive.
+  window.addEventListener('offline',()=>{
+    if(provider!=='iframe'||!currentItem?.driveFileId)return;
+    if(mode==='enhanced'&&driveSession.getMode()==='direct'){
+      if(armDriveReconnect('playback'))
+        showRecovery('Sem internet. O ponto atual foi preservado; a recuperação poderá continuar ao reconectar.');
+    }else if(driveSession.getMode()==='loading'){
+      armDriveReconnect('loading');
+    }
+  });
+  window.addEventListener('online',()=>{
+    if(!driveReconnect.status().armed)return;
+    clearTimeout(driveReconnectTimer);
+    driveReconnectTimer=setTimeout(async()=>{
+      driveReconnectTimer=0;
+      if(navigator.onLine===false)return;
+      const kind=driveReconnect.take();
+      if(!kind||provider!=='iframe'||!currentItem?.driveFileId||
+        settings.autoRecoverDrive===false||localStorage.getItem(driveModeKey())==='compat')return;
+      try{
+        if(kind==='playback'&&mode==='enhanced'&&driveSession.getMode()==='direct')
+          await recoverPlayback();
+        else
+          await useDriveDirect(true,true);
+        if(mode==='enhanced')hideRecovery();
+      }catch(error){
+        if(driveSession.getMode()==='compatible')return;
+        diagnoseDriveError(error?.driveIssue||'unknown');
+        useDriveFallback(false);
+      }
+    },900);
+  });
   video.addEventListener('timeupdate',()=>{
     if(mode==='enhanced'&&!video.paused&&!recoveryPending&&healthyPlaybackSince&&Date.now()-healthyPlaybackSince>90000){
       recoveryBudget.reset();healthyPlaybackSince=Date.now();
@@ -796,7 +861,7 @@
   }
   $('downloadBtn').onclick=downloadCurrent;
   $('driveModeBtn').onclick=async()=>{if(provider!=='iframe')return;if(mode==='enhanced'){localStorage.setItem(driveModeKey(),'compat');useDriveFallback()}else{localStorage.setItem(driveModeKey(),'auto');localStorage.setItem('jogahub.drive.playerMode','auto');clearDriveFail(currentItem?.driveFileId||'');$('driveModeBtn').disabled=true;try{await useDriveDirect(true,true)}catch(e){diagnoseDriveError(e?.driveIssue||'unknown');useDriveFallback(false)}finally{$('driveModeBtn').disabled=false}}};
-  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});let volumeSaveTimer=0;video.addEventListener('volumechange',()=>{clearTimeout(volumeSaveTimer);volumeSaveTimer=setTimeout(()=>saveSettings({volume:video.volume}),350)});video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);clearInterval(statsTicker);offlineManager.cancel();stopVideoFrameMonitor();resetSeekWatch();clearTimeout(volumeSaveTimer);saveSettings({volume:video.volume});releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl);cleanDriveSubtitle()});
+  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});let volumeSaveTimer=0;video.addEventListener('volumechange',()=>{clearTimeout(volumeSaveTimer);volumeSaveTimer=setTimeout(()=>saveSettings({volume:video.volume}),350)});video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);clearInterval(statsTicker);cancelDriveReconnect();driveAttemptController?.abort();recoveryController?.abort();offlineManager.cancel();stopVideoFrameMonitor();resetSeekWatch();clearTimeout(volumeSaveTimer);saveSettings({volume:video.volume});releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl);cleanDriveSubtitle()});
   function seek(delta){if(mode==='enhanced')seekToChecked(Math.max(0,(video.currentTime||0)+delta));else if(mode==='youtube'&&ytPlayer?.seekTo)ytPlayer.seekTo(Math.max(0,getTime()+delta),true)}
   $('rewindBtn').onclick=()=>seek(-10);$('forwardBtn').onclick=()=>seek(10);$('restartBtn').onclick=()=>{localStorage.removeItem(progressKeyNow());if(mode==='enhanced'){video.currentTime=0;video.play().catch(()=>{})}else if(mode==='youtube'&&ytPlayer){ytPlayer.seekTo(0,true);ytPlayer.playVideo()}updateContinueText()};$('fullBtn').onclick=async()=>{
     const result=await BROWSER_CORE.requestFullscreen(stage,video);
