@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.4.3-shell';
+const SHELL = 'jogahub-1.4.4-shell';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
 
@@ -13,7 +13,7 @@ function isObsoleteHubCache(name){
 const SHELL_FILES = [
   './index.html',
   './link-player.html',
-  './css/player.css?v=1',
+  './css/player.css?v=2',
   './manifest.webmanifest?v=142',
   './css/style.css?v=150',
   './css/hud-pro.css?v=125',
@@ -37,7 +37,7 @@ const SHELL_FILES = [
   './js/drive-health-core.js?v=1',
   './js/player-drive-core.js?v=1',
   './js/player-drive-routes.js?v=1',
-  './js/player-app.js?v=2',
+  './js/player-app.js?v=3',
   './js/player-media-qa.js?v=1',
   './js/player-drive-diagnostics.js?v=1',
   './js/player-episode-core.js?v=1',
