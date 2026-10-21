@@ -78,7 +78,7 @@ test('HTML de player carrega CSS, planejador e controlador nesta ordem',async()=
   const html=await readFile('link-player.html','utf8');
   const stylesheet=html.indexOf('css/player.css?v=2');
   const plannerIndex=html.indexOf('js/player-drive-routes.js?v=1');
-  const controller=html.indexOf('js/player-app.js?v=5');
+  const controller=html.indexOf('js/player-app.js?v=6');
   assert.ok(stylesheet>=0&&plannerIndex>=0&&controller>plannerIndex);
   assert.ok(!/<style[\s>]/i.test(html));
   assert.ok(!/<script>([\s\S]*?)<\/script>/i.test(html));
@@ -88,6 +88,6 @@ test('HTML de player carrega CSS, planejador e controlador nesta ordem',async()=
   assert.ok(html.includes('js/player-offline-manager.js?v=2'));
   const sw=await readFile('sw.js','utf8');
   assert.ok(sw.includes('js/player-drive-routes.js?v=1'));
-  assert.ok(sw.includes('js/player-app.js?v=5'));
+  assert.ok(sw.includes('js/player-app.js?v=6'));
   assert.ok(sw.includes('css/player.css?v=2'));
 });
