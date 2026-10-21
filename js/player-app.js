@@ -641,7 +641,7 @@
   document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement){try{screen.orientation?.unlock?.()}catch{}}});
 
   // Player 5.0 — diagnóstico, Drive Engine, scrub preview, recuperação inteligente e transmissão remota
-  let stallTimes=[],statsTicker=0,lastVideoFrames={total:0,dropped:0},lastStallAt=0;
+  const stallTracker=PLAYER_DRIVE_CORE.makeStallTracker();let statsTicker=0,lastVideoFrames={total:0,dropped:0};
   let frameTiming=null,frameWatchHandle=0,frameWatchActive=false;
   function applyCaptionStyle(){document.documentElement.style.setProperty('--cue-size',`${Number(settings.captionSize)||100}%`);document.documentElement.style.setProperty('--cue-bg',String(Number(settings.captionBg)||.72));if($('captionSizeSelect'))$('captionSizeSelect').value=String(Number(settings.captionSize)||100);if($('captionBgSelect'))$('captionBgSelect').value=String(Number(settings.captionBg)||.72)}
   applyCaptionStyle();
@@ -716,7 +716,7 @@
       }
       if(controller.signal.aborted||(isDrive&&!driveSession.isCurrent(token))||mode!=='enhanced')return;
       if(wasPlaying)await video.play().catch(()=>{});
-      toast('Reprodução recuperada');stallTimes=[];healthyPlaybackSince=Date.now();
+      toast('Reprodução recuperada');stallTracker.reset();healthyPlaybackSince=Date.now();
     }catch(error){
       if(controller.signal.aborted||(isDrive&&!driveSession.isCurrent(token)))return;
       console.warn('recuperação falhou',error);
@@ -786,14 +786,14 @@
   function onPlaybackStall(){
     if(mode!=='enhanced'||recoveryPending)return;
     if(!PLAYER_DRIVE_CORE.shouldTrackStall({paused:video.paused,ended:video.ended,seeking:video.seeking,readyState:video.readyState,buffer:bufferAhead()}))return;
-    const now=Date.now();if(now-lastStallAt<750)return;
-    lastStallAt=now;stallTimes=stallTimes.filter(t=>now-t<30000);stallTimes.push(now);
-    if(stallTimes.length>=3){
-      showRecovery(`O vídeo travou ${stallTimes.length} vezes nos últimos 30 segundos. Você pode tentar recuperar sem perder o ponto atual.`);
-      if(settings.autoRecoverDrive&&provider==='iframe'&&stallTimes.length>=5)autoRecoverPlayback();
+    const result=stallTracker.mark();
+    if(!result.accepted)return;
+    if(result.count>=3){
+      showRecovery(`O vídeo travou ${result.count} vezes nos últimos 30 segundos. Você pode tentar recuperar sem perder o ponto atual.`);
+      if(settings.autoRecoverDrive&&provider==='iframe'&&result.count>=5)autoRecoverPlayback();
     }
   }
-  video.addEventListener('stalled',onPlaybackStall);video.addEventListener('waiting',()=>{if(bufferAhead()<.8)onPlaybackStall()});video.addEventListener('error',()=>{if(mode==='enhanced'&&provider==='iframe'&&driveSession.getMode()==='direct'&&!recoveryPending){showRecovery('Ocorreu um erro ao reproduzir o arquivo diretamente.');if(settings.autoRecoverDrive)autoRecoverPlayback()}});video.addEventListener('playing',()=>{healthyPlaybackSince=Date.now();stallTimes=stallTimes.filter(t=>Date.now()-t<15000);updateQualityChip()});video.addEventListener('loadedmetadata',()=>{updateQualityChip();renderChapterMarks()});video.addEventListener('durationchange',renderChapterMarks);
+  video.addEventListener('stalled',onPlaybackStall);video.addEventListener('waiting',()=>{if(bufferAhead()<.8)onPlaybackStall()});video.addEventListener('error',()=>{if(mode==='enhanced'&&provider==='iframe'&&driveSession.getMode()==='direct'&&!recoveryPending){showRecovery('Ocorreu um erro ao reproduzir o arquivo diretamente.');if(settings.autoRecoverDrive)autoRecoverPlayback()}});video.addEventListener('playing',()=>{healthyPlaybackSince=Date.now();stallTracker.reset();updateQualityChip()});video.addEventListener('loadedmetadata',()=>{updateQualityChip();renderChapterMarks()});video.addEventListener('durationchange',renderChapterMarks);
   const autoRecoverToggle=$('autoRecoverToggle');if(autoRecoverToggle){autoRecoverToggle.checked=settings.autoRecoverDrive!==false;autoRecoverToggle.addEventListener('change',()=>{settings.autoRecoverDrive=autoRecoverToggle.checked;saveSettings({autoRecoverDrive:settings.autoRecoverDrive})})}
   async function setupRemotePlayback(){const btn=$('remoteBtn');if(!btn)return;try{if(video.remote&&typeof video.remote.prompt==='function'){btn.hidden=false;btn.onclick=async()=>{try{await video.remote.prompt()}catch(e){if(e?.name!=='AbortError')toast('Nenhum dispositivo disponível para transmitir')}};video.remote.addEventListener?.('connect',()=>{btn.textContent='📺 conectado';toast('Transmissão conectada')});video.remote.addEventListener?.('disconnect',()=>btn.textContent='📺 transmitir')}else if('WebKitPlaybackTargetAvailabilityEvent'in window){btn.hidden=false;video.setAttribute('x-webkit-airplay','allow');btn.textContent='📺 AirPlay';btn.onclick=()=>video.webkitShowPlaybackTargetPicker?.()}}catch{}}
   setupRemotePlayback();

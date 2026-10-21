@@ -57,6 +57,8 @@
   function directCapability(video,mime){
     // A ausência de resposta de canPlayType só autoriza pular formatos
     // com contêiner explicitamente conhecido; MP4 sem codec é ambíguo.
+    // MIME vazio não comprova contêiner reproduzível: abrir modo compatível.
+    if(!mime)return false;
     if(!video||typeof video.canPlayType!=='function')return true;
     return !['video/webm','video/ogg'].includes(mime)||!!video.canPlayType(mime);
   }
