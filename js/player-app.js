@@ -152,11 +152,17 @@
   }
   $('cancelNext').onclick=()=>{autoNextSuppressed=true;cancelCountdown();toast('Reprodução automática cancelada para este episódio')};$('playNext').onclick=()=>{autoNextSuppressed=false;playNextEpisode()};
   async function loadOfflineCopy(){
-    const saved=loadMediaRegistry()[currentItem?.id||id];
+    const mediaKey=currentItem?.id||id;
+    const saved=loadMediaRegistry()[mediaKey];
     if(!saved?.url||!('caches'in window))return false;
     try{
       const cache=await caches.open(MEDIA_CACHE),res=await cache.match(saved.url);
-      if(!res)return false;
+      if(!res){
+        // Se o navegador removeu o arquivo do Cache API por falta de espaço,
+        // limpar o índice antigo para permitir baixar novamente.
+        await offlineManager.remove(mediaKey);
+        return false;
+      }
       let playableUrl='';
       if(navigator.serviceWorker?.controller){
         const route=new URL('./offline-media',location.href);
