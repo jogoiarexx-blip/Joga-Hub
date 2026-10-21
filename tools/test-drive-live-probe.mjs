@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {classifyProbe,probeDrive,parseContentRange,evaluateRange} from './drive-live-probe.mjs';
+import {classifyProbe,probeDrive,parseContentRange,evaluateRange,planRangeChecks} from './drive-live-probe.mjs';
 
 test('falhas reais do Drive são classificadas sem confundir login e codec',()=>{
   assert.equal(classifyProbe(403,'video/mp4'),'access');
@@ -29,12 +29,15 @@ test('sondagem lê só HEAD e cabeçalhos de 4 KiB via GET sem baixar corpo',asy
   const r=await probeDrive('qa-drive-media-test-01',fake,'hidden-resource-key');
   assert.equal(r.usable,true);
   assert.equal(r.range.kind,'byte-range');
-  assert.deepEqual(seen.map(x=>x.method),['HEAD','GET','GET']);
+  assert.deepEqual(seen.map(x=>x.method),['HEAD','GET','GET','GET','GET']);
+  assert.deepEqual(r.plannedPercents,[25,50,90]);
+  assert.deepEqual(r.checks.map(c=>c.percent),[25,50,90]);
+  assert.ok(r.checks.every(c=>c.ok));
   assert.equal(r.distantSeek,true);
   assert.equal(r.verifiedRange,true);
   assert.equal(seen[1].range,'bytes=0-4095');
   assert.equal(seen[1].key,'hidden-resource-key');
-  assert.deepEqual(cancelled,['HEAD','GET','GET']);
+  assert.deepEqual(cancelled,['HEAD','GET','GET','GET','GET']);
 });
 
 test('sondagem inválida não faz requisições',async()=>{
@@ -96,4 +99,52 @@ test('HTTP 403 ou 429 nunca faz sondagem distante',async()=>{
   assert.equal(gets,1);
   assert.equal(result.usable,false);
   assert.equal(result.range.kind,'access');
+});
+
+
+test('planeja sondagens de 25%, 50% e 90% apenas para arquivos grandes',()=>{
+  assert.deepEqual(planRangeChecks(1_000_000),[]);
+  assert.deepEqual(planRangeChecks(12_000_000).map(x=>x.percent),[25,50,90]);
+  const checks=planRangeChecks(12_000_000);
+  assert.ok(checks.every(c=>c.start>=0&&c.end<12_000_000&&c.end-c.start<4096));
+});
+
+test('servidor que ignora especificamente o Range em 90% NÃO passa',async()=>{
+  let getCount=0;
+  const fake=async(url,opts)=>{
+    if(opts.method==='HEAD')return {status:200,headers:{get:()=>''},url:url.href,body:{cancel:async()=>{}}};
+    getCount++;
+    const m=/bytes=(\d+)-(\d+)/.exec(opts.headers.Range);
+    const start=Number(m[1]),end=Number(m[2]);
+    const ninety=getCount===4;
+    const headers={get:key=>({
+      'content-type':ninety?'video/mp4':'application/octet-stream',
+      'content-range':ninety?'':'bytes '+start+'-'+end+'/12000000',
+      'content-length':String(end-start+1)
+    })[key]||''};
+    return {status:ninety?200:206,headers,url:url.href,body:{cancel:async()=>{}}};
+  };
+  const result=await probeDrive('qa-drive-media-test-01',fake);
+  assert.equal(getCount,4);
+  assert.equal(result.usable,true);
+  assert.equal(result.verifiedRange,false);
+  assert.equal(result.distantSeek,false);
+  assert.equal(result.rangeReason,'media-headers-no-range');
+  assert.deepEqual(result.checks.map(x=>x.ok),[true,true,false]);
+});
+
+test('arquivo de até 2MB não exige sondagens distantes',async()=>{
+  let gets=0;
+  const fake=async(url,opts)=>{
+    if(opts.method==='GET')gets++;
+    return {status:opts.method==='HEAD'?200:206,
+      headers:{get:key=>({'content-type':'video/mp4',
+        'content-range':'bytes 0-4095/1500000','content-length':'4096'})[key]||''},
+      url:url.href,body:{cancel:async()=>{}}};
+  };
+  const result=await probeDrive('qa-drive-media-test-01',fake);
+  assert.equal(gets,1);
+  assert.equal(result.verifiedRange,true);
+  assert.equal(result.distantSeek,null);
+  assert.deepEqual(result.plannedPercents,[]);
 });
