@@ -20,6 +20,8 @@ on:
       - 'css/player.css'
       - 'js/player-app.js'
       - 'js/player-drive-routes.js'
+      - 'js/player-offline-manager.js'
+      - 'tools/test-player-offline-manager.mjs'
       - 'tools/test-player-drive-routes.mjs'
       - 'js/player-drive-core.js'
       - 'js/player-media-qa.js'
@@ -62,6 +64,8 @@ on:
       - 'css/player.css'
       - 'js/player-app.js'
       - 'js/player-drive-routes.js'
+      - 'js/player-offline-manager.js'
+      - 'tools/test-player-offline-manager.mjs'
       - 'tools/test-player-drive-routes.mjs'
       - 'js/player-drive-core.js'
       - 'js/player-media-qa.js'
@@ -103,6 +107,7 @@ jobs:
           node --check js/navigation-core.js
           node --check js/player-drive-core.js
           node --check js/player-drive-routes.js
+          node --check js/player-offline-manager.js
           node --check js/player-app.js
           node --check js/player-media-qa.js
           node --check js/player-browser-core.js
@@ -142,6 +147,9 @@ jobs:
 
       - name: Validar módulos extraídos do player e privacidade do cache Drive
         run: node --test tools/test-player-drive-routes.mjs
+
+      - name: Validar downloads offline, cancelamento e integridade do cache
+        run: node --test tools/test-player-offline-manager.mjs
 
       - name: Validar núcleo isolado de catálogo
         run: node --test tools/test-catalog-core.mjs
