@@ -751,6 +751,12 @@
   };
   if(!BROWSER_CORE.pictureInPictureAvailable(document,video))$('pipBtn').style.display='none';
   if(!BROWSER_CORE.fullscreenAvailable(stage,video))$('fullBtn').disabled=true;
+  const morePlayerControls=$('morePlayerControls');
+  morePlayerControls?.addEventListener('click',()=>{
+    const opened=$('toolbar').classList.toggle('show-advanced');
+    morePlayerControls.setAttribute('aria-expanded',String(opened));
+    morePlayerControls.textContent=opened?'⋯ menos opções':'⋯ mais opções';
+  });
   $('miniBtn').onclick=()=>{const on=stageShell.classList.toggle('mini');$('miniBtn').textContent=on?'▱ fechar mini':'▱ mini';if(on)document.body.classList.remove('cinema')};$('cinemaBtn').onclick=()=>{const on=document.body.classList.toggle('cinema');stageShell.classList.remove('mini');$('miniBtn').textContent='▱ mini';$('cinemaBtn').textContent=on?'◑ sair cinema':'◐ cinema'};$('backBtn').onclick=()=>{if(history.length>1)history.back();else location.href='index.html'};
   let controlsLocked=false;
   const lockBtn=$('lockBtn'); if(lockBtn) lockBtn.onclick=()=>{controlsLocked=!controlsLocked;document.body.classList.toggle('controls-locked',controlsLocked);lockBtn.textContent=controlsLocked?'🔓 desbloquear':'🔒 bloquear'};
