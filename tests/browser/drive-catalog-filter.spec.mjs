@@ -39,7 +39,7 @@ test('cache antigo com legendas não as exibe e mantém recurso da URL @crossbro
   }));
   await page.goto('/?view=serie',{waitUntil:'domcontentloaded'});
   const info=await page.evaluate(()=>{
-    const items=window.FILMES_CATALOGO.filter(i=>String(i.id||'').startsWith('drive-auto-'));
+    const items=FILMES_CATALOGO.filter(i=>String(i.id||'').startsWith('drive-auto-'));
     return {
       ids:items.map(i=>i.driveFileId),
       key:items.find(i=>i.driveFileId==='qa-video-catalog-1')?.driveResourceKey,
