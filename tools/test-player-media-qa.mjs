@@ -66,3 +66,16 @@ test('diferença de relógio/quadro não é tratada como sincronização de áud
   assert.equal(qa.frameClockDelta(NaN,42),null);
   assert.equal(qa.frameClockDelta(0,0),0);
 });
+
+
+test('clipes curtos não ficam assistidos quando ainda falta muito tempo',()=>{
+  assert.equal(qa.finishedByProgress(0,2),false);
+  assert.equal(qa.finishedByProgress(.5,2),false);
+  assert.equal(qa.finishedByProgress(1.95,2),true);
+  assert.equal(qa.finishedByProgress(58.5,65),false);
+  assert.equal(qa.finishedByProgress(61.8,65),true);
+  assert.equal(qa.finishedByProgress(3550,3600),false);
+  assert.equal(qa.finishedByProgress(3581,3600),true);
+  assert.equal(qa.finishedByProgress(1,0),false);
+  assert.equal(qa.finishedByProgress(0,65,true),true);
+});
