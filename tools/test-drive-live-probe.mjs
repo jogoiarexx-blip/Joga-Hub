@@ -148,3 +148,28 @@ test('arquivo de até 2MB não exige sondagens distantes',async()=>{
   assert.equal(result.distantSeek,null);
   assert.deepEqual(result.plannedPercents,[]);
 });
+
+
+test('tamanho alterado durante buscas distantes interrompe tentativas desnecessárias',async()=>{
+  let gets=0;
+  const fake=async(url,opts)=>{
+    if(opts.method==='HEAD')return {status:200,headers:{get:()=>''},url:url.href,body:{cancel:async()=>{}}};
+    gets++;
+    const match=/^bytes=(\d+)-(\d+)$/.exec(opts.headers.Range);
+    const start=Number(match?.[1]||0),end=Number(match?.[2]||4095);
+    const total=gets===1?12000000:13000000;
+    const headers={get:key=>({
+      'content-type':'video/mp4',
+      'content-range':'bytes '+start+'-'+end+'/'+total,
+      'content-length':String(end-start+1)
+    })[key]||''};
+    return {status:206,headers,url:url.href,body:{cancel:async()=>{}}};
+  };
+  const result=await probeDrive('qa-drive-media-test-01',fake);
+  assert.equal(gets,2);
+  assert.equal(result.usable,true);
+  assert.equal(result.verifiedRange,false);
+  assert.equal(result.distantSeek,false);
+  assert.equal(result.rangeReason,'size-changed');
+  assert.deepEqual(result.checks.map(c=>c.percent),[25]);
+});
