@@ -15,6 +15,7 @@ on:
       - 'js/tv-catalog.js'
       - 'link-player.html'
       - 'js/player-drive-core.js'
+      - 'js/player-browser-core.js'
       - 'js/player-drive-diagnostics.js'
       - 'js/drive-health-core.js'
       - 'js/drive-health-panel.js'
@@ -22,6 +23,7 @@ on:
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
       - 'tools/test-player-drive-core.mjs'
+      - 'tools/test-player-browser-core.mjs'
       - 'tools/test-player-drive-diagnostics.mjs'
       - 'tools/test-drive-health-core.mjs'
       - 'tools/test-player-episode-core.mjs'
@@ -42,6 +44,7 @@ on:
       - 'js/tv-catalog.js'
       - 'link-player.html'
       - 'js/player-drive-core.js'
+      - 'js/player-browser-core.js'
       - 'js/player-drive-diagnostics.js'
       - 'js/drive-health-core.js'
       - 'js/drive-health-panel.js'
@@ -49,6 +52,7 @@ on:
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
       - 'tools/test-player-drive-core.mjs'
+      - 'tools/test-player-browser-core.mjs'
       - 'tools/test-player-drive-diagnostics.mjs'
       - 'tools/test-drive-health-core.mjs'
       - 'tools/test-player-episode-core.mjs'
@@ -72,6 +76,7 @@ jobs:
           node --check js/catalog-core.js
           node --check js/navigation-core.js
           node --check js/player-drive-core.js
+          node --check js/player-browser-core.js
           node --check js/player-drive-diagnostics.js
           node --check js/drive-health-core.js
           node --check js/drive-health-panel.js
@@ -90,6 +95,9 @@ jobs:
 
       - name: Validar privacidade e estado do painel Drive
         run: node --test tools/test-drive-health-core.mjs
+
+      - name: Validar compatibilidade entre navegadores
+        run: node --test tools/test-player-browser-core.mjs
 
       - name: Validar sequência e passagem de episódios
         run: node --test tools/test-player-episode-core.mjs
