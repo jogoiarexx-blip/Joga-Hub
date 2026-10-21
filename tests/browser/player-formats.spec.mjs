@@ -91,3 +91,58 @@ test('resposta HTTP inválida não é confundida com MP4 reproduzível',async({p
   await expect(page.locator('#video')).not.toHaveAttribute('src');
   await expect(page.locator('#frame')).toHaveAttribute('src',/^https:\/\/drive\.google\.com\/file\/d\//);
 });
+
+
+test('conexão 2G evita pré-carregamento agressivo sem impedir abrir WebM @crossbrowser',async({page})=>{
+  await page.addInitScript(()=>{
+    const conn={effectiveType:'2g',saveData:true,downlink:0.4};
+    Object.defineProperty(navigator,'connection',{configurable:true,value:conn});
+    Object.defineProperty(navigator,'deviceMemory',{configurable:true,value:1});
+  });
+  await serveDriveFixture(page,webm,'video/webm');
+  await page.goto(playerUrl('video.webm','video/webm'),{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toHaveClass(/enhanced/,{timeout:20000});
+  expect(await page.locator('#video').getAttribute('preload')).toBe('metadata');
+  const state=await page.evaluate(()=>{
+    const p=window.JOGAHUB_PLAYER_DRIVE_CORE.connectionPolicy({
+      effectiveType:navigator.connection.effectiveType,
+      saveData:navigator.connection.saveData,
+      downlink:navigator.connection.downlink,
+      deviceMemory:navigator.deviceMemory
+    });
+    return {timeout:p.timeout,warmNext:p.warmNext};
+  });
+  expect(state).toEqual({timeout:16000,warmNext:false});
+});
+
+test('recuperação recarrega o vídeo e preserva o ponto de reprodução',async({page})=>{
+  await serveDriveFixture(page,webm,'video/webm');
+  await page.goto(playerUrl('video.webm','video/webm'),{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toHaveClass(/enhanced/,{timeout:20000});
+  await page.locator('#video').evaluate(video=>{video.currentTime=.9});
+  await expect.poll(()=>page.locator('#video').evaluate(video=>video.currentTime)).toBeGreaterThan(.6);
+  await page.locator('#retryPlaybackBtn').evaluate(button=>button.click());
+  await expect(page.locator('#stage')).not.toHaveClass(/recovering/,{timeout:12000});
+  await expect.poll(()=>page.locator('#video').evaluate(video=>video.currentTime),{timeout:12000}).toBeGreaterThan(.6);
+  const progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('jogahub.movie.progress.drive-auto-e2e-video-real-1')||'null'));
+  expect(progress?.time).toBeGreaterThan(.6);
+});
+
+test('trocar para iframe durante a recuperação cancela carga antiga sem perder posição @crossbrowser',async({page})=>{
+  await serveDriveFixture(page,webm,'video/webm');
+  await page.goto(playerUrl('video.webm','video/webm'),{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toHaveClass(/enhanced/,{timeout:20000});
+  await page.locator('#video').evaluate(video=>{video.currentTime=.9});
+  await expect.poll(()=>page.locator('#video').evaluate(video=>video.currentTime)).toBeGreaterThan(.6);
+  await page.evaluate(()=>{
+    document.getElementById('retryPlaybackBtn').click();
+    document.getElementById('driveModeBtn').click();
+  });
+  await expect(page.locator('#stage')).toHaveClass(/fallback/);
+  await expect(page.locator('#video')).not.toHaveAttribute('src');
+  await expect(page.locator('#frame')).toHaveAttribute('src',/^https:\/\/drive\.google\.com\/file\/d\//);
+  await page.waitForTimeout(250);
+  await expect(page.locator('#stage')).toHaveClass(/fallback/);
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('jogahub.movie.progress.drive-auto-e2e-video-real-1')||'null'));
+  expect(saved?.time).toBeGreaterThan(.6);
+});
