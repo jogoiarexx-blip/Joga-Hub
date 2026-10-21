@@ -49,7 +49,7 @@
         const totalRaw=Number(response.headers.get('content-length'));
         const total=Number.isSafeInteger(totalRaw)&&totalRaw>0?totalRaw:0;
         let downloaded=0;
-        const stream=response.body.pipeThrough(new TransformStream({
+        const stream=response.body.pipeThrough(new root.TransformStream({
           transform(chunk,streamController){
             if(controller.signal.aborted)throw new DOMException('Cancelado','AbortError');
             downloaded+=chunk.byteLength;
