@@ -1,0 +1,34 @@
+.drive-health-modal{z-index:2200}
+.drive-health-panel{width:min(900px,calc(100% - 20px));max-height:min(88dvh,850px);overflow-y:auto;background:#101622;color:#edf4ff;border:1px solid #364461;border-radius:18px;padding:18px;box-shadow:0 20px 75px #000b}
+.drive-health-modal[hidden]{display:none!important}
+.drive-health-head{display:flex;justify-content:space-between;align-items:start;gap:12px}
+.drive-health-head h2{font-size:clamp(18px,2.8vw,24px);margin:4px 0 6px}
+.drive-health-head p,.drive-health-note{color:#acb9ce;font-size:13px;line-height:1.5;margin:0}
+.drive-health-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 9px}
+.drive-health-controls input,.drive-health-controls select{background:#0c1320;color:#f2f6ff;border:1px solid #3d526d;border-radius:10px;padding:10px 12px;font:inherit;min-height:44px}
+.drive-health-controls input{flex:1 1 230px;min-width:0}
+.drive-health-controls select{flex:1 1 155px}
+.drive-health-stats{padding:10px 12px;background:#172236;border-radius:11px;font-size:13px;line-height:1.5}
+.drive-health-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.drive-health-toolbar button,.drive-health-more{cursor:pointer;background:#263246;color:#e7f0ff;border:1px solid #4e6582;border-radius:9px;padding:9px 12px;font:inherit}
+.drive-health-list{display:grid;gap:9px;margin:12px 0}
+.drive-health-item{display:flex;gap:12px;justify-content:space-between;align-items:center;background:#172030;border:1px solid #344055;padding:13px;border-radius:12px;min-width:0}
+.drive-health-item[data-state="failed"]{border-left:3px solid #f0a25f}
+.drive-health-item[data-state="direct"]{border-left:3px solid #75bfa0}
+.drive-health-item[data-state="compatible"]{border-left:3px solid #9c9ee9}
+.drive-health-copy{display:grid;gap:5px;min-width:0;flex:1}
+.drive-health-title{font-weight:750;overflow-wrap:anywhere}
+.drive-health-state{font-size:12px;color:#d0dcf0;line-height:1.4}
+.drive-health-date{font-size:11px;color:#a4b0c3}
+.drive-health-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px}
+.drive-health-actions a,.drive-health-actions button{font-size:12px;font-weight:650;padding:8px 10px;border-radius:8px;border:1px solid #4b6284;background:#263751;color:#e5efff;text-decoration:none;cursor:pointer;white-space:nowrap}
+.drive-health-actions .drive-health-link{background:#1d4d6b}
+.drive-health-empty{padding:22px 12px;text-align:center;color:#b6c4d8}
+.drive-health-more{display:block;margin:12px auto}
+.drive-health-more[hidden]{display:none}
+@media(max-width:600px){
+  .drive-health-panel{padding:13px;max-height:calc(100dvh - 20px)}
+  .drive-health-item{display:block}
+  .drive-health-actions{margin-top:10px;justify-content:flex-start}
+  .drive-health-actions a,.drive-health-actions button{min-height:38px}
+}
