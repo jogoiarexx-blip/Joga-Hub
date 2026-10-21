@@ -10,6 +10,17 @@
     if(!Number.isFinite(t)||t<0)return null;
     return Number.isFinite(d)&&d>0?Math.min(t,Math.max(0,d-.05)):t;
   }
+  function isNoopSeek(target,currentTime,tolerance=.2){
+    const t=Number(target),actual=Number(currentTime);
+    return Number.isFinite(t)&&Number.isFinite(actual)&&t>=0&&Math.abs(t-actual)<=tolerance;
+  }
+  function frameClockDelta(currentTime,mediaTime){
+    const a=Number(currentTime),b=Number(mediaTime);
+    if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0)return null;
+    // Diferença entre relógio do vídeo e o tempo do quadro apresentado.
+    // NÃO mede sincronização entre áudio e vídeo.
+    return Math.max(-10,Math.min(10,a-b));
+  }
   function rangeInfo(ranges,target){
     let count=0,start=null,end=null,includesTarget=false;
     try{
@@ -65,6 +76,6 @@
     };
   }
   root.JOGAHUB_PLAYER_MEDIA_QA=Object.freeze({
-    targetTime,rangeInfo,audioEvidence,playbackEvidence,seekResult,mediaSnapshot
+    targetTime,isNoopSeek,frameClockDelta,rangeInfo,audioEvidence,playbackEvidence,seekResult,mediaSnapshot
   });
 })(window);
