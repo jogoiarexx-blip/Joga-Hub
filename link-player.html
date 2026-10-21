@@ -35,6 +35,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
 .drive-diagnostic strong{display:block;margin-bottom:4px;font-size:14px}
 .drive-diagnostic p{margin:5px 0}
 .drive-diagnostic #driveDiagnosticAction{color:#c8d2ff;font-weight:650}
+#driveSubtitleNotice:not([hidden]){display:flex;flex-wrap:wrap}#driveSubtitleNotice[hidden],#driveSubtitleLink[hidden]{display:none!important}
 </style>
 <script src="js/data-filmes.js?v=139"></script>
 <script src="js/data-drive-filmes.js?v=7"></script>
@@ -112,6 +113,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     </div>
   </section>
   <div id="driveTip" class="drive-tip"><span class="dot"></span><span id="driveTipText"><b>Player JogaHub</b> tentando reprodução direta do Google Drive.</span></div>
+  <div id="driveSubtitleNotice" class="drive-tip" hidden><span id="driveSubtitleText"></span> <a id="driveSubtitleLink" target="_blank" rel="noopener noreferrer" hidden>Abrir legenda original</a></div>
   <section id="driveDiagnostic" class="drive-diagnostic" role="status" aria-live="polite" hidden><strong id="driveDiagnosticTitle"></strong><p id="driveDiagnosticDetail"></p><p id="driveDiagnosticAction"></p></section>
   <section class="info"><div><h1 id="title">Conteúdo online</h1><div id="meta" class="meta"></div><p id="desc" class="desc"></p><div id="continueText" class="continue"></div><div id="sleepStatus" class="sleep-status"></div></div><div class="side"><button class="btn" id="restartBtn" type="button">↺ começar do início</button></div></section>
   <section id="seriesBox" class="series-box" hidden><h2 id="seriesTitle"></h2><p id="seriesSummary"></p><div id="seasonChips" class="season-chips"></div></section>
@@ -318,7 +320,50 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   function archiveCanonical(f){const original=String(f?.original||'').trim();if(original)return original.toLowerCase();return String(f?.name||'').toLowerCase().replace(/\.[^.]+$/,'').replace(/([._ -])(512kb|h\.?264|mpeg4|webm|derivative|ia)$/i,'')}
   function archiveFileUrl(f){const path=String(f.name||'').split('/').map(encodeURIComponent).join('/');return `https://archive.org/download/${encodeURIComponent(archiveId)}/${path}`}
   function renderArchiveEpisodes(){if(!archivePlaylistFiles.length)return;$('seriesBox').hidden=false;$('episodes').hidden=false;$('seriesTitle').textContent=currentItem?.seriesTitle||currentItem?.title||'Série';$('seriesSummary').textContent=`${archivePlaylistFiles.length} ${archivePlaylistFiles.length===1?'episódio encontrado':'episódios encontrados'} diretamente neste item do Internet Archive. A lista é montada automaticamente pelo JogaHub.`;$('seasonChips').innerHTML='<span class="season-chip active">Temporada 1</span>';$('episodesTitle').textContent=`📺 ${currentItem?.seriesTitle||currentItem?.title||'Série'} · Temporada 1`;$('episodeCount').textContent=`${archivePlaylistFiles.length} ${archivePlaylistFiles.length===1?'episódio':'episódios'}`;$('episodeList').innerHTML=archivePlaylistFiles.map((f,i)=>{let p=null;try{p=JSON.parse(localStorage.getItem(`${baseProgressKey}:${archiveCanonical(f)}`)||'null')}catch{}const status=p?.finished?'✓ assistido':p&&p.duration&&p.time>20?`${Math.round(p.time/p.duration*100)}% visto`:i===archivePlaylistIndex?'reproduzindo':'assistir ›';return `<button type="button" class="episode-row${i===archivePlaylistIndex?' current':''}" data-archive-episode="${i}" style="width:100%;border-left:0;border-right:0;border-top:0;text-align:left"><span class="episode-index">${i+1}</span><span class="episode-copy"><b>${safe(archiveEpisodeLabel(f,i))}</b><span>Temporada 1 • Episódio ${i+1}</span></span><span class="episode-action">${status}</span></button>`}).join('');$('episodeList').querySelectorAll('[data-archive-episode]').forEach(btn=>btn.onclick=()=>selectArchiveEpisode(Number(btn.dataset.archiveEpisode),true));$('prevBtn').disabled=archivePlaylistIndex<=0;$('nextBtn').disabled=archivePlaylistIndex>=archivePlaylistFiles.length-1;$('prevBtn').onclick=playPrevEpisode;$('nextBtn').onclick=playNextEpisode;syncQuickEpisodeNav()}
-  function clearVideoTracks(){video.querySelectorAll('track').forEach(t=>t.remove())}
+  let driveSubtitleObjectUrl='',driveSubtitleAbort=null;
+  function cleanDriveSubtitle(){
+    driveSubtitleAbort?.abort();driveSubtitleAbort=null;
+    if(driveSubtitleObjectUrl){URL.revokeObjectURL(driveSubtitleObjectUrl);driveSubtitleObjectUrl=''}
+    video.querySelectorAll('track[data-drive-subtitle]').forEach(t=>t.remove());
+  }
+  function showSubtitleInfo(message){
+    const notice=$('driveSubtitleNotice'),link=$('driveSubtitleLink'),text=$('driveSubtitleText');
+    const sub=currentItem?.driveSubtitles?.[0];
+    if(!notice||!link||!text)return;
+    notice.hidden=!sub;if(!sub)return;
+    text.textContent=message;
+    const url=window.JOGAHUB_DRIVE_SUBTITLE_CORE?.externalUrl(sub);
+    link.hidden=!url;if(url)link.href=url;
+  }
+  async function loadDriveSubtitles(){
+    cleanDriveSubtitle();
+    const sub=currentItem?.driveSubtitles?.[0];
+    if(!sub||mode!=='enhanced'||provider!=='iframe'){showSubtitleInfo('');return}
+    showSubtitleInfo('Legenda externa encontrada. Preparando faixa CC…');
+    const core=window.JOGAHUB_DRIVE_SUBTITLE_CORE;
+    const url=core?.downloadUrl(sub);if(!url)return;
+    const controller=new AbortController();driveSubtitleAbort=controller;
+    const timer=setTimeout(()=>controller.abort(),6500);
+    try{
+      const response=await fetch(url,{mode:'cors',signal:controller.signal,cache:'no-store'});
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      if(Number(response.headers.get('content-length')||0)>2*1024*1024)throw new Error('Legenda maior que 2 MB');
+      const raw=await response.text();
+      if(raw.length>2*1024*1024)throw new Error('Legenda muito grande');
+      const vtt=core.toVtt(raw);
+      if(!vtt||controller.signal.aborted||mode!=='enhanced')throw new Error('Formato ou acesso incompatível');
+      const blob=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));
+      driveSubtitleObjectUrl=blob;
+      const track=document.createElement('track');track.dataset.driveSubtitle='1';
+      track.kind='subtitles';track.label='Legenda externa (Drive)';
+      track.srclang='pt';track.src=blob;video.appendChild(track);
+      refreshTrackControls();
+      showSubtitleInfo('Legenda disponível no seletor CC. Se não aparecer, abra o arquivo original.');
+    }catch(error){
+      if(!controller.signal.aborted)showSubtitleInfo('Não foi possível carregar a legenda diretamente (CORS, rede ou permissão).');
+    }finally{clearTimeout(timer);if(driveSubtitleAbort===controller)driveSubtitleAbort=null}
+  }
+    function clearVideoTracks(){video.querySelectorAll('track').forEach(t=>t.remove())}
   function selectArchiveEpisode(index,autoplay=false){if(index<0||index>=archivePlaylistFiles.length)return;saveProgress(true);archivePlaylistIndex=index;const f=archivePlaylistFiles[index];archiveEpisodeKey=archiveCanonical(f);directMediaUrl=archiveFileUrl(f);directMediaSize=Number(f.size)||0;directMediaMime=(f.format||'').toLowerCase().includes('webm')?'video/webm':'video/mp4';video.pause();clearVideoTracks();video.src=directMediaUrl;video.poster=`https://archive.org/services/img/${encodeURIComponent(archiveId)}`;$('topTitle').textContent=`${currentItem?.seriesTitle||'Pole Position'} — ${archiveEpisodeLabel(f,index)}`;$('title').textContent=`${currentItem?.seriesTitle||currentItem?.title||'Série'} — ${archiveEpisodeLabel(f,index)}`;$('downloadBtn').hidden=false;loading.classList.remove('hide');loadingText.textContent=`Carregando episódio ${index+1} de ${archivePlaylistFiles.length}…`;renderArchiveEpisodes();video.addEventListener('loadedmetadata',()=>{const p=readProgress();if(p&&p.time>20&&!p.finished&&p.time<video.duration-20)video.currentTime=Math.min(p.time,Math.max(0,video.duration-5));video.playbackRate=Number(settings.speed)||1;if(typeof settings.volume==='number')video.volume=Math.max(0,Math.min(1,settings.volume));$('speed').value=String(video.playbackRate);loading.classList.add('hide');setMode('enhanced',`episódio ${index+1}/${archivePlaylistFiles.length}`);const info=[currentItem?.genre,currentItem?.year,currentItem?.language,`Episódio ${index+1}/${archivePlaylistFiles.length}`,formatTime(video.duration),directMediaSize?formatBytes(directMediaSize):''].filter(Boolean);$('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('');if(autoplay)video.play().catch(()=>{})},{once:true});video.load()}
   function refreshTrackControls(){
     const audioSel=$('audioTrack'), subSel=$('subtitleTrack');
@@ -452,6 +497,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
         hideDriveDiagnostic();
         syncCustomControls();showControls(3500);
         $('audioTrack').hidden=true;$('subtitleTrack').hidden=true;
+        loadDriveSubtitles().catch(error=>console.warn('Legenda externa:',error));
         const routeSaved=readJson(driveRouteKey(fileId));
         const routeNote=routeSaved?.url===candidate?'rota otimizada memorizada':'rota direta';
         const info=[currentItem?.genre,currentItem?.year,currentItem?.language,formatTime(video.duration),'Google Drive',routeNote].filter(Boolean);
@@ -491,6 +537,8 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   }
   function useDriveFallback(persist=true){
     if(provider!=='iframe')return fallback();
+    cleanDriveSubtitle();
+    showSubtitleInfo('Legenda externa disponível no Drive. O iframe controla suas próprias faixas.');
     saveProgress(true);
     driveAttemptController?.abort();driveAttemptController=null;
     recoveryController?.abort();recoveryController=null;
@@ -726,7 +774,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   async function downloadCurrent(){const btn=$('downloadBtn'),key=currentItem?.id||id;if(!directMediaUrl||!key)return;const reg=loadMediaRegistry();if(reg[key]){if(confirm('Remover este vídeo dos downloads offline?'))await removeCurrentDownload();return}if(!navigator.onLine){alert('Conecte-se à internet para fazer o download.');return}try{btn.disabled=true;btn.classList.add('downloading');$('downloadMeter').classList.add('show');$('downloadText').textContent='Baixando vídeo…';const res=await fetch(directMediaUrl,{mode:'cors'});if(!res.ok)throw new Error('download '+res.status);const total=Number(res.headers.get('content-length'))||directMediaSize||0;const [cacheStream,progressStream]=res.body.tee();const headers=new Headers(res.headers);const cache=await caches.open(MEDIA_CACHE);const saving=cache.put(directMediaUrl,new Response(cacheStream,{status:res.status,statusText:res.statusText,headers}));const reader=progressStream.getReader();let done=0;while(true){const r=await reader.read();if(r.done)break;done+=r.value.byteLength;const pct=total?Math.min(100,Math.round(done/total*100)):0;$('downloadPct').textContent=total?`${pct}%`:formatBytes(done);$('downloadBar').style.width=total?`${pct}%`:'35%';btn.textContent=total?`⬇ ${pct}%`:`⬇ ${formatBytes(done)}`}await saving;reg[key]={id:key,title:currentItem?.title||title,year:currentItem?.year||'',genre:currentItem?.genre||'',thumb:currentItem?.thumb||video.poster||'',url:directMediaUrl,size:done,mime:directMediaMime,savedAt:Date.now(),archiveId,playerHref:location.pathname.split('/').pop()+location.search};saveMediaRegistry(reg);btn.dataset.saved='1';btn.textContent='✓ salvo offline';$('downloadText').textContent='Download concluído';$('downloadPct').textContent='100%';$('downloadBar').style.width='100%';setTimeout(()=>$('downloadMeter').classList.remove('show'),1400)}catch(e){console.error(e);alert('Não foi possível salvar este vídeo offline. A fonte pode bloquear o download ou não haver espaço suficiente.');$('downloadMeter').classList.remove('show');btn.textContent='⬇ tentar novamente'}finally{btn.disabled=false;btn.classList.remove('downloading')}}
   $('downloadBtn').onclick=downloadCurrent;
   $('driveModeBtn').onclick=async()=>{if(provider!=='iframe')return;if(mode==='enhanced'){localStorage.setItem(driveModeKey(),'compat');useDriveFallback()}else{localStorage.setItem(driveModeKey(),'auto');localStorage.setItem('jogahub.drive.playerMode','auto');clearDriveFail(currentItem?.driveFileId||'');$('driveModeBtn').disabled=true;try{await useDriveDirect(true,true)}catch(e){diagnoseDriveError(e?.driveIssue||'unknown');useDriveFallback(false)}finally{$('driveModeBtn').disabled=false}}};
-  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});let volumeSaveTimer=0;video.addEventListener('volumechange',()=>{clearTimeout(volumeSaveTimer);volumeSaveTimer=setTimeout(()=>saveSettings({volume:video.volume}),350)});video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);clearInterval(statsTicker);clearTimeout(volumeSaveTimer);saveSettings({volume:video.volume});releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl)});
+  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});let volumeSaveTimer=0;video.addEventListener('volumechange',()=>{clearTimeout(volumeSaveTimer);volumeSaveTimer=setTimeout(()=>saveSettings({volume:video.volume}),350)});video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);clearInterval(statsTicker);clearTimeout(volumeSaveTimer);saveSettings({volume:video.volume});releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl);cleanDriveSubtitle()});
   function seek(delta){if(mode==='enhanced')video.currentTime=Math.max(0,Math.min(video.duration||Infinity,video.currentTime+delta));else if(mode==='youtube'&&ytPlayer?.seekTo)ytPlayer.seekTo(Math.max(0,getTime()+delta),true)}
   $('rewindBtn').onclick=()=>seek(-10);$('forwardBtn').onclick=()=>seek(10);$('restartBtn').onclick=()=>{localStorage.removeItem(progressKeyNow());if(mode==='enhanced'){video.currentTime=0;video.play().catch(()=>{})}else if(mode==='youtube'&&ytPlayer){ytPlayer.seekTo(0,true);ytPlayer.playVideo()}updateContinueText()};$('fullBtn').onclick=async()=>{
     const result=await BROWSER_CORE.requestFullscreen(stage,video);
