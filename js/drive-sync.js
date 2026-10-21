@@ -74,7 +74,18 @@ function parse(name,path){
 }
 function normalizeFile(f){
   if(!f||!f.id)return null;
-  return {id:String(f.id),name:String(f.name??f.nome??''),mime:String(f.mime||''),size:Number(f.size??f.tamanho??0)||0,path:String(f.path??f.caminho??f.pasta??''),url:String(f.url??f.link??''),player:String(f.player??''),resourceKey:String(f.resourceKey??f.resourcekey??''),updated:String(f.updated??f.atualizado??'')};
+  const source=String(f.url??f.link??''),player=String(f.player||'');
+  let resourceKey=String(f.resourceKey??f.resourcekey??'').trim();
+  if(!resourceKey)for(const link of [source,player]){
+    try{
+      const u=new URL(link);
+      if(u.protocol==='https:'&&(u.hostname==='drive.google.com'||u.hostname==='drive.usercontent.google.com')){
+        resourceKey=u.searchParams.get('resourcekey')||'';
+        if(resourceKey)break;
+      }
+    }catch{}
+  }
+  return {id:String(f.id),name:String(f.name??f.nome??''),mime:String(f.mime||''),size:Number(f.size??f.tamanho??0)||0,path:String(f.path??f.caminho??f.pasta??''),url:source,player,resourceKey,updated:String(f.updated??f.atualizado??'')};
 }
 function normalizeResponse(j){
   if(!j||typeof j!=='object')throw new Error('Resposta vazia do Apps Script');
