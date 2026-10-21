@@ -1,10 +1,11 @@
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
-const [snapshotCode, syncCode, catalogCode] = await Promise.all([
+const [snapshotCode, syncCode, catalogCode, mediaPolicyCode] = await Promise.all([
   readFile('js/drive-snapshot.js', 'utf8'),
   readFile('js/drive-sync.js', 'utf8'),
-  readFile('js/app.js', 'utf8')
+  readFile('js/app.js', 'utf8'),
+  readFile('js/drive-media-policy.js', 'utf8')
 ]);
 
 const snapshotMatch = snapshotCode.match(/window\.JOGAHUB_DRIVE_SNAPSHOT\s*=\s*(\[[\s\S]*\]);?\s*$/);
@@ -42,12 +43,18 @@ context.window = {
   JOGAHUB_REFRESH_ITEMS() {}
 };
 
+vm.runInNewContext(mediaPolicyCode, context, {filename:'js/drive-media-policy.js'});
 vm.runInNewContext(syncCode, context, { filename: 'js/drive-sync.js' });
 
 const items = context.FILMES_CATALOGO.filter(item => String(item.id || '').startsWith('drive-auto-'));
 if (!items.length) throw new Error('Nenhum item do Drive foi montado');
+const mediaPolicy=context.window.JOGAHUB_DRIVE_MEDIA_POLICY;
+if(items.some(item=>!mediaPolicy.isVideo({name:item._driveName,mime:item.driveMime})))
+  throw new Error('Arquivo que não é vídeo foi incluído no catálogo');
+if(rawFiles.some(file=>!mediaPolicy.isVideo(file))&&items.length>=rawFiles.length)
+  throw new Error('O catálogo não removeu os SRT/atalhos do snapshot antigo');
 
-const rawRootVideos = rawFiles.filter(file => String(file.path || '').split('/').filter(Boolean).length === 1);
+const rawRootVideos = rawFiles.filter(file => context.window.JOGAHUB_DRIVE_MEDIA_POLICY.isVideo(file) && String(file.path || '').split('/').filter(Boolean).length === 1);
 const normalizeMovieKey = name => {
   let value = String(name || '')
     .replace(/\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i, '')
@@ -140,6 +147,7 @@ const sharedKeyFile={
   id:'qa-resourcekey-file',
   name:'Arquivo de teste resourcekey 2026.mp4',
   path:'Arquivo de teste resourcekey 2026.mp4',
+  resourceKey:'chave-de-teste',
   url:'https://drive.google.com/file/d/qa-resourcekey-file/view?resourcekey=chave-de-teste',
   player:'https://drive.google.com/file/d/qa-resourcekey-file/preview?resourcekey=chave-de-teste'
 };
@@ -150,6 +158,10 @@ const keyedItem=context.FILMES_CATALOGO.find(item=>item.driveFileId===sharedKeyF
 if(keyedItem?.driveResourceKey!=='chave-de-teste'){
   throw new Error('Chave de recurso compartilhado foi perdida durante a sincronização');
 }
+const cachedFile=JSON.parse(storage.get('jogahub_drive_catalog_cache_v6_compact')||'[]')
+  .find(item=>item.id===sharedKeyFile.id);
+if(cachedFile?.resourceKey!=='chave-de-teste')
+  throw new Error('Chave de recurso não persistiu no cache local sem URL');
 
 console.log(JSON.stringify({
   rawFiles: rawFiles.length,
