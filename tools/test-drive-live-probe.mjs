@@ -9,7 +9,7 @@ test('falhas reais do Drive são classificadas sem confundir login e codec',()=>
   assert.equal(classifyProbe(200,'text/html','','accounts.google.com'),'login-or-response');
   assert.equal(classifyProbe(206,'application/octet-stream','bytes 0-4095/9000000'),'byte-range');
   assert.equal(classifyProbe(200,'video/mp4'),'media-headers-no-range');
-  assert.equal(classifyProbe(206,'application/octet-stream','','drive.google.com'),'unconfirmed');
+  assert.equal(classifyProbe(206,'application/octet-stream','','drive.google.com'),'invalid-range');
 });
 
 test('sondagem lê só HEAD e cabeçalhos de 4 KiB via GET sem baixar corpo',async()=>{
