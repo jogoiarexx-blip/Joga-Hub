@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.4.5-shell';
+const SHELL = 'jogahub-1.4.6-shell';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
 
@@ -37,8 +37,8 @@ const SHELL_FILES = [
   './js/drive-health-core.js?v=1',
   './js/player-drive-core.js?v=1',
   './js/player-drive-routes.js?v=1',
-  './js/player-offline-manager.js?v=1',
-  './js/player-app.js?v=4',
+  './js/player-offline-manager.js?v=2',
+  './js/player-app.js?v=5',
   './js/player-media-qa.js?v=1',
   './js/player-drive-diagnostics.js?v=1',
   './js/player-episode-core.js?v=1',
