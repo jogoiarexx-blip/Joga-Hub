@@ -25,6 +25,11 @@ export default defineConfig({
       name: 'mobile-390x844',
       use: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
     },
+    // Suites curtas dedicadas a motores de navegador diferentes.
+    // A regressão completa continua nos dois projetos Chromium anteriores.
+    { name: 'firefox-desktop', grep: /@crossbrowser/, use: { browserName: 'firefox', viewport: { width: 1366, height: 768 } } },
+    { name: 'webkit-desktop', grep: /@crossbrowser/, use: { browserName: 'webkit', viewport: { width: 1366, height: 768 } } },
+    { name: 'webkit-mobile', grep: /@crossbrowser/, use: { browserName: 'webkit', viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true } },
   ],
   webServer: {
     command: 'node tools/serve-static.mjs',
