@@ -103,3 +103,28 @@ test('selecionar posição atual não causa falso timeout ou nova requisição',
   await expect(page.locator('#statsGrid')).toContainText('Posição já selecionada');
   await expect(page.locator('#seekHealthNotice')).toBeHidden();
 });
+
+
+test('saltos em 25%, 50% e 90% preservam retomada a 90% @crossbrowser',async({page})=>{
+  await mediaRoutes(page);
+  await page.goto(href(),{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toHaveClass(/enhanced/,{timeout:20000});
+  const duration=await page.locator('#video').evaluate(v=>v.duration);
+  expect(duration).toBeGreaterThan(60);
+  for(const percentage of [.25,.50,.90]){
+    await jump(page,duration*percentage);
+    await expect.poll(()=>page.locator('#video').evaluate(v=>v.seeking),{timeout:10000}).toBe(false);
+  }
+  // Envia o mesmo evento de checkpoint produzido por pausa do usuário.
+  await page.locator('#video').evaluate(v=>v.dispatchEvent(new Event('pause')));
+  const key='jogahub.movie.progress.drive-auto-'+id;
+  await expect.poll(()=>page.evaluate(k=>JSON.parse(localStorage.getItem(k)||'null')?.time||0,key),
+    {timeout:10000}).toBeGreaterThan(duration*.88);
+  const saved=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)||'null'),key);
+  expect(saved.finished).toBe(false);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toHaveClass(/enhanced/,{timeout:20000});
+  await expect.poll(()=>page.locator('#video').evaluate(v=>v.currentTime),{timeout:15000})
+    .toBeGreaterThan(duration*.88);
+  await expect(page.locator('#driveDiagnostic')).toBeHidden();
+});
