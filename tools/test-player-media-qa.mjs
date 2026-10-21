@@ -52,3 +52,17 @@ test('snapshot do elemento não causa exceções quando APIs opcionais faltam',(
   assert.equal(state.seekable.count,0);
   assert.equal(qa.mediaSnapshot(null).playback.state,'unloaded');
 });
+
+
+test('seek no ponto atual não requer rede nem timeout',()=>{
+  assert.equal(qa.isNoopSeek(40.05,40),true);
+  assert.equal(qa.isNoopSeek(40.5,40),false);
+  assert.equal(qa.isNoopSeek(NaN,40),false);
+  assert.equal(qa.isNoopSeek(0,0),true);
+  assert.equal(qa.isNoopSeek(-2,0),false);
+});
+test('diferença de relógio/quadro não é tratada como sincronização de áudio',()=>{
+  assert.equal(qa.frameClockDelta(42.25,42),.25);
+  assert.equal(qa.frameClockDelta(NaN,42),null);
+  assert.equal(qa.frameClockDelta(0,0),0);
+});
