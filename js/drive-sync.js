@@ -11,6 +11,8 @@ const OBSOLETE_URLS=['https://script.google.com/macros/s/AKfycbxXQk9M6_VLSyspyNf
 const DEFAULT_URL=String(window.JOGAHUB_DRIVE_SYNC_URL||'').trim();
 const root=window.JOGAHUB_DRIVE_ROOT||{id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',name:'Filmes e Séries'};
 const ROOTS=[{id:root.id,name:root.name}];
+const MEDIA_POLICY=window.JOGAHUB_DRIVE_MEDIA_POLICY;
+if(!MEDIA_POLICY)throw new Error('Classificação de vídeos do Drive não carregada');
 let syncPromise=null;
 let lastSuccess=false;
 
@@ -72,20 +74,22 @@ function parse(name,path){
 }
 function normalizeFile(f){
   if(!f||!f.id)return null;
-  return {id:String(f.id),name:String(f.name??f.nome??''),mime:String(f.mime||''),size:Number(f.size??f.tamanho??0)||0,path:String(f.path??f.caminho??f.pasta??''),url:String(f.url??f.link??''),player:String(f.player??''),updated:String(f.updated??f.atualizado??'')};
+  return {id:String(f.id),name:String(f.name??f.nome??''),mime:String(f.mime||''),size:Number(f.size??f.tamanho??0)||0,path:String(f.path??f.caminho??f.pasta??''),url:String(f.url??f.link??''),player:String(f.player??''),resourceKey:String(f.resourceKey??f.resourcekey??''),updated:String(f.updated??f.atualizado??'')};
 }
 function normalizeResponse(j){
   if(!j||typeof j!=='object')throw new Error('Resposta vazia do Apps Script');
   if(j.ok===false||j.sucesso===false)throw new Error(j.error||j.erro||'O Apps Script informou uma falha');
   const raw=Array.isArray(j.files)?j.files:(Array.isArray(j.itens)?j.itens:(Array.isArray(j.items)?j.items:null));
   if(!raw)throw new Error('Resposta inválida: lista de arquivos não encontrada');
-  const files=raw.map(normalizeFile).filter(Boolean);
-  if(!files.length)throw new Error('Resposta vazia: catálogo anterior preservado');
-  if(files.length!==raw.length)throw new Error('Resposta incompleta: um ou mais arquivos sem ID');
+  const normalized=raw.map(normalizeFile).filter(Boolean);
+  if(!normalized.length)throw new Error('Resposta vazia: catálogo anterior preservado');
+  if(normalized.length!==raw.length)throw new Error('Resposta incompleta: um ou mais arquivos sem ID');
   if(j.total!==undefined&&j.total!==null){
-    const declared=Number(j.total),actual=new Set(files.map(f=>f.id)).size;
+    const declared=Number(j.total),actual=new Set(normalized.map(f=>f.id)).size;
     if(!Number.isSafeInteger(declared)||declared!==actual)throw new Error('Resposta incompleta: total do Drive inconsistente');
   }
+  const files=normalized.filter(MEDIA_POLICY.isVideo);
+  if(!files.length)throw new Error('A resposta não contém arquivos de vídeo válidos; catálogo anterior preservado');
   return {files,errors:Array.isArray(j.errors)?j.errors:[],rootName:String(j.pastaRaiz||j.rootName||root.name||'Google Drive')};
 }
 function preferred(a,b){
@@ -103,7 +107,7 @@ function semanticKey(f){
 function deduplicateFiles(files){
   const byId=new Map(),byMeaning=new Map();let duplicates=0;
   for(const raw of files||[]){
-    const f=normalizeFile(raw);if(!f)continue;
+    const f=normalizeFile(raw);if(!f||!MEDIA_POLICY.isVideo(f))continue;
     if(byId.has(f.id)){byId.set(f.id,preferred(byId.get(f.id),f));duplicates++}else byId.set(f.id,f);
   }
   for(const f of byId.values()){
@@ -114,7 +118,7 @@ function deduplicateFiles(files){
 }
 function compactForCache(file){
   const f=normalizeFile(file);if(!f)return null;
-  return {id:f.id,name:f.name,mime:f.mime,size:f.size,path:f.path,updated:f.updated};
+  return {id:f.id,name:f.name,mime:f.mime,size:f.size,path:f.path,resourceKey:f.resourceKey||'',updated:f.updated};
 }
 function latestUpdated(files){let latest=0;for(const f of files||[])latest=Math.max(latest,Date.parse(f?.updated)||0);return latest}
 function readCache(){try{const value=JSON.parse(safeGet(DATA_KEY)||'[]');return Array.isArray(value)?value.map(normalizeFile).filter(Boolean):[]}catch{return []}}
@@ -177,7 +181,7 @@ async function requestCatalog(baseUrl,folderId){
 function hydrateInitial(){
   LEGACY_DATA_KEYS.forEach(safeRemove);
   const cached=readCache();
-  const snapshot=Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT)?window.JOGAHUB_DRIVE_SNAPSHOT.map(normalizeFile).filter(Boolean):[];
+  const snapshot=Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT)?window.JOGAHUB_DRIVE_SNAPSHOT.map(normalizeFile).filter(f=>f&&MEDIA_POLICY.isVideo(f)):[];
   const cacheLatest=latestUpdated(cached),snapshotLatest=latestUpdated(snapshot);
   const useSnapshot=snapshot.length>0&&(!cached.length||snapshotLatest>cacheLatest||(snapshotLatest===cacheLatest&&snapshot.length>cached.length));
   const initial=useSnapshot?snapshot:cached;
