@@ -31,7 +31,7 @@ test('preferência válida prioriza rota conhecida e mantém alternativa como fa
   assert.ok(!raw.includes('https://'));
   assert.ok(!raw.includes('resourcekey'));
   assert.equal(planner.readPreference(storage,key,now+1000).route,'uc');
-  assert.deepEqual(planner.candidates(id,'current-key',planner.readPreference(storage,key,now+1000)).map(x=>x.route),['uc','usercontent']);
+  assert.deepEqual(Array.from(planner.candidates(id,'current-key',planner.readPreference(storage,key,now+1000)),x=>x.route),['uc','usercontent']);
 });
 
 test('migração apaga URL legada e não mantém parâmetros privados',()=>{
