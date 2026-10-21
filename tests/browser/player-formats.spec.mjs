@@ -162,3 +162,26 @@ test('trocar para iframe durante a recuperação cancela carga antiga sem perder
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('jogahub.movie.progress.drive-auto-e2e-video-real-1')||'null'));
   expect(saved?.time).toBeGreaterThan(.6);
 });
+
+
+test('slider avança só ao confirmar, com diagnóstico de busca e áudio @crossbrowser',async({page})=>{
+  await serveDriveFixture(page,webm,'video/webm');
+  await page.goto(playerUrl('video.webm','video/webm'),{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toHaveClass(/enhanced/,{timeout:20000});
+  const before=await page.locator('#video').evaluate(v=>v.currentTime);
+  await page.locator('#seekBar').evaluate(el=>{
+    el.value='700';
+    el.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+  const afterInput=await page.locator('#video').evaluate(v=>v.currentTime);
+  expect(Math.abs(afterInput-before)).toBeLessThan(.2);
+  await page.locator('#seekBar').evaluate(el=>{
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await expect.poll(()=>page.locator('#video').evaluate(v=>v.currentTime),{timeout:10000}).toBeGreaterThan(.85);
+  await page.locator('#statsBtn').click();
+  await expect(page.locator('#statsGrid')).toContainText('Áudio (evidência)');
+  await expect(page.locator('#statsGrid')).toContainText('Decodificação');
+  await expect(page.locator('#statsGrid')).toContainText('Última busca');
+  await expect(page.locator('#statsGrid')).toContainText('Avanço confirmado',{timeout:10000});
+});
