@@ -42,6 +42,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
 <script src="js/drive-sync.js?v=16"></script>
 <script src="js/player-drive-core.js?v=1"></script>
 <script src="js/player-drive-diagnostics.js?v=1"></script>
+<script src="js/drive-health-core.js?v=1"></script>
 <script src="js/player-episode-core.js?v=1"></script>
 </head>
 <body>
@@ -137,6 +138,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   const PLAYER_DRIVE_CORE=window.JOGAHUB_PLAYER_DRIVE_CORE;
   if(!PLAYER_DRIVE_CORE)throw new Error('Núcleo do player Drive não carregado');
   const driveSession=PLAYER_DRIVE_CORE.makeSession();
+  const driveHealth=window.JOGAHUB_DRIVE_HEALTH?.createStore();
   const DRIVE_DIAGNOSTICS=window.JOGAHUB_DRIVE_DIAGNOSTICS;
   if(!DRIVE_DIAGNOSTICS)throw new Error('Módulo de diagnóstico do Drive não carregado');
   const EPISODE_CORE=window.JOGAHUB_PLAYER_EPISODE_CORE;
@@ -345,9 +347,10 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     const progress=readProgress();
     if(progress?.episodeOnly){try{localStorage.removeItem(progressKeyNow())}catch{}}
   }
-  function rememberDriveSuccess(fileId,url,elapsed){writeJson(driveRouteKey(fileId),{url,updatedAt:Date.now(),elapsed:Math.round(elapsed||0),width:video.videoWidth||0,height:video.videoHeight||0});clearDriveFail(fileId)}
+  function rememberDriveSuccess(fileId,url,elapsed){writeJson(driveRouteKey(fileId),{url,updatedAt:Date.now(),elapsed:Math.round(elapsed||0),width:video.videoWidth||0,height:video.videoHeight||0});clearDriveFail(fileId);driveHealth?.recordSuccess(fileId)}
   function rememberDriveFailure(fileId,issue){
     const code=DRIVE_DIAGNOSTICS.info(issue?.code).code;
+    driveHealth?.recordFailure(fileId,code,Number(issue?.status)||0);
     if(DRIVE_DIAGNOSTICS.ttl(code)){
       writeJson(driveFailKey(fileId),{updatedAt:Date.now(),code,status:issue?.status||0});
     }else clearDriveFail(fileId);
@@ -479,12 +482,14 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     if(!currentItem?.driveFileId){useDriveFallback(false);return}
     if(PLAYER_DRIVE_CORE.needsCompatiblePlayer(currentItem._driveName||queryDriveName,currentItem.driveMime||queryDriveMime)){
       diagnoseDriveError('codec');
+      driveHealth?.recordCompatible(currentItem.driveFileId,'codec');
       useDriveFallback(false);
       return;
     }
     const mime=PLAYER_DRIVE_CORE.directMime(currentItem?._driveName||queryDriveName,currentItem?.driveMime||queryDriveMime);
     if(!DRIVE_DIAGNOSTICS.directCapability(video,mime)){
       diagnoseDriveError('codec');
+      driveHealth?.recordCompatible(currentItem.driveFileId,'codec');
       useDriveFallback(false);
       return;
     }
