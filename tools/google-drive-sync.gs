@@ -27,6 +27,7 @@ function doGet(e) {
       path: item.caminho,
       url: item.link,
       player: item.player,
+      resourceKey: item.resourceKey || '',
       updated: item.atualizado
     }));
 
@@ -64,13 +65,25 @@ function scanFolder_(folder, pathParts, out) {
     const name = file.getName();
     const mime = file.getMimeType();
 
-    const isVideo = /^video\//i.test(mime) ||
-      mime === 'application/octet-stream' ||
-      /\.(mp4|mkv|webm|mov|avi|m4v|ogv|mpeg|mpg|3gp)$/i.test(name);
+    // 'application/octet-stream' sozinho inclui SRT e atalhos: nunca é suficiente.
+    const supportedName=/\.(mp4|mkv|webm|mov|avi|m4v|ogv|wmv|flv|mpeg|mpg|3gp|ts|m2ts)$/i.test(name);
+    const knownNonVideo=/\.(srt|vtt|ass|ssa|sub|ttml|sbv|website|html?|txt|json|pdf|zip|url)$/i.test(name);
+    const hasOtherExtension=/\.[a-z0-9]{1,8}$/i.test(name);
+    const isVideo=!knownNonVideo&&(supportedName||(!hasOtherExtension&&/^video\//i.test(mime)));
 
     if (!isVideo) continue;
 
     const id = file.getId();
+    let resourceKey='';
+    try {
+      // Apenas chaves de arquivos intencionalmente compartilhados por link.
+      // Nunca publicar chaves de arquivos restritos no endpoint acessível a visitantes.
+      const sharing=file.getSharingAccess();
+      if (sharing===DriveApp.Access.ANYONE_WITH_LINK || sharing===DriveApp.Access.ANYONE) {
+        resourceKey=String(file.getResourceKey()||'');
+      }
+    } catch (_) { /* Metadados de compartilhamento podem estar indisponíveis. */ }
+    const sharedSuffix=resourceKey?'?resourcekey='+encodeURIComponent(resourceKey):'';
     out.push({
       id: id,
       nome: name,
@@ -80,8 +93,9 @@ function scanFolder_(folder, pathParts, out) {
       caminho: currentPath,
       tamanho: file.getSize(),
       atualizado: file.getLastUpdated().toISOString(),
-      player: 'https://drive.google.com/file/d/' + id + '/preview',
-      link: 'https://drive.google.com/file/d/' + id + '/view'
+      resourceKey: resourceKey,
+      player: 'https://drive.google.com/file/d/' + id + '/preview' + sharedSuffix,
+      link: 'https://drive.google.com/file/d/' + id + '/view' + sharedSuffix
     });
   }
 
