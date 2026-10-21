@@ -9,7 +9,8 @@ function doGet(e) {
   try {
     const root = DriveApp.getFolderById(ROOT_FOLDER_ID);
     const itens = [];
-    scanFolder_(root, [], itens);
+    const legendas = [];
+    scanFolder_(root, [], itens, legendas);
     const vistos = {};
     const unicos = itens.filter(function(item) {
       if (vistos[item.id]) return false;
@@ -41,6 +42,8 @@ function doGet(e) {
       duplicadosIgnorados: itens.length - unicos.length,
       itens: unicos,
       files: files,
+      subtitles: legendas,
+      subtitleCount: legendas.length,
       errors: []
     });
   } catch (err) {
@@ -50,12 +53,13 @@ function doGet(e) {
       erro: String(err && err.message ? err.message : err),
       error: String(err && err.message ? err.message : err),
       itens: [],
-      files: []
+      files: [],
+      subtitles: []
     });
   }
 }
 
-function scanFolder_(folder, pathParts, out) {
+function scanFolder_(folder, pathParts, out, subtitles) {
   const currentParts = pathParts.concat(folder.getName());
   const currentPath = currentParts.join('/');
 
@@ -70,8 +74,8 @@ function scanFolder_(folder, pathParts, out) {
     const knownNonVideo=/\.(srt|vtt|ass|ssa|sub|ttml|sbv|website|html?|txt|json|pdf|zip|url)$/i.test(name);
     const hasOtherExtension=/\.[a-z0-9]{1,8}$/i.test(name);
     const isVideo=!knownNonVideo&&(supportedName||(!hasOtherExtension&&/^video\//i.test(mime)));
-
-    if (!isVideo) continue;
+    const isSubtitle=/\.(srt|vtt)$/i.test(name);
+    if(!isVideo&&!isSubtitle)continue;
 
     const id = file.getId();
     let resourceKey='';
@@ -84,7 +88,8 @@ function scanFolder_(folder, pathParts, out) {
       }
     } catch (_) { /* Metadados de compartilhamento podem estar indisponíveis. */ }
     const sharedSuffix=resourceKey?'?resourcekey='+encodeURIComponent(resourceKey):'';
-    out.push({
+    const target=isSubtitle?subtitles:out;
+    target.push({
       id: id,
       nome: name,
       titulo: cleanTitle_(name),
@@ -101,7 +106,7 @@ function scanFolder_(folder, pathParts, out) {
 
   const folders = folder.getFolders();
   while (folders.hasNext()) {
-    scanFolder_(folders.next(), currentParts, out);
+    scanFolder_(folders.next(), currentParts, out, subtitles);
   }
 }
 
