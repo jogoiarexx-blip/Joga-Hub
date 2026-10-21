@@ -1,8 +1,17 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { readDrivePayload, missingFileIds } from './drive-snapshot-policy.mjs';
+import { readDrivePayload, missingFileIds, isVideoFile } from './drive-snapshot-policy.mjs';
 
 const CONFIG_PATH = 'js/data-drive-filmes.js';
 const SNAPSHOT_PATH = 'js/drive-snapshot.js';
+
+function stripResourceKey(raw) {
+  if (!raw) return '';
+  try {
+    const url=new URL(raw);
+    url.searchParams.delete('resourcekey');
+    return url.toString();
+  } catch {return raw}
+}
 
 function normalizeFile(file) {
   if (!file?.id) return null;
@@ -12,8 +21,10 @@ function normalizeFile(file) {
     mime: String(file.mime || ''),
     size: String(file.size ?? file.tamanho ?? '0'),
     path: String(file.path ?? file.caminho ?? file.pasta ?? ''),
-    url: String(file.url ?? file.link ?? ''),
-    player: String(file.player || ''),
+    // O repositório/site é público: nunca persistir resourceKey de compartilhamento
+    // no snapshot versionado. O cliente recebe a chave no sync ao vivo.
+    url: stripResourceKey(String(file.url ?? file.link ?? '')),
+    player: stripResourceKey(String(file.player || '')),
     updated: String(file.updated ?? file.atualizado ?? '')
   };
 }
@@ -67,7 +78,7 @@ try {
 const byId = new Map();
 for (const source of raw) {
   const file = normalizeFile(source);
-  if (!file) continue;
+  if (!file || !isVideoFile(file)) continue;
   const previous = byId.get(file.id);
   const currentTime = Date.parse(file.updated) || 0;
   const previousTime = Date.parse(previous?.updated || '') || 0;
@@ -82,7 +93,7 @@ const files = [...byId.values()].sort((a, b) =>
   a.name.localeCompare(b.name, 'pt-BR', { numeric: true, sensitivity: 'base' })
 );
 
-if (!files.length) preserveSnapshot('Apps Script retornou catálogo vazio');
+if (!files.length) preserveSnapshot('Apps Script retornou zero arquivos de vídeo válidos');
 
 const output =
   '/* JogaHub — snapshot automático do Google Drive. Gerado por GitHub Actions/Drive sync. */\n' +
@@ -99,7 +110,9 @@ if (previous) {
   let previousFiles;
   try { previousFiles = JSON.parse(previousMatch[1]); }
   catch { preserveSnapshot('JSON do snapshot anterior inválido'); }
-  const removedIds = missingFileIds(previousFiles, files);
+  // SRT, atalhos e anexos que vazaram em versões antigas não contam como
+  // vídeos apagados; a proteção contra perda de filmes/episódios continua.
+  const removedIds = missingFileIds(previousFiles.filter(isVideoFile), files);
   if (removedIds.length && process.env.DRIVE_ALLOW_REMOVALS !== '1') {
     preserveSnapshot(
       'a nova leitura omitiu ' + removedIds.length +
