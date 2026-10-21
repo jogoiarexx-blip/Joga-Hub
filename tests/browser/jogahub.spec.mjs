@@ -95,7 +95,14 @@ test.describe('PWA e continuidade offline', () => {
     await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout: 25_000 });
     // Não desligar a rede antes de concluir o pré-cache do núcleo.
     await expect.poll(async () => page.evaluate(async () => {
-      const cache = await caches.open('jogahub-1.4.2-shell');
+      const latest=(await caches.keys()).filter(k=>/^jogahub-1\.\d+\.\d+-shell$/.test(k)).sort((a,b)=>{
+        const nums=k=>k.match(/\d+/g).map(Number);
+        const x=nums(a),y=nums(b);
+        for(let i=0;i<Math.max(x.length,y.length);i++)if((x[i]||0)!==(y[i]||0))return (y[i]||0)-(x[i]||0);
+        return 0;
+      })[0];
+      if(!latest)return false;
+      const cache=await caches.open(latest);
       const url = new URL('/js/app.js?v=153', location.href).href;
       return Boolean(await cache.match(url) && await cache.match(new URL('/js/catalog-core.js?v=1', location.href).href) && await cache.match(new URL('/js/navigation-core.js?v=1', location.href).href));
     }), { timeout: 25_000 }).toBe(true);
