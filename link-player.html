@@ -139,6 +139,8 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   const PLAYER_DRIVE_CORE=window.JOGAHUB_PLAYER_DRIVE_CORE;
   if(!PLAYER_DRIVE_CORE)throw new Error('Núcleo do player Drive não carregado');
   const driveSession=PLAYER_DRIVE_CORE.makeSession();
+  const recoveryBudget=PLAYER_DRIVE_CORE.makeRecoveryBudget();
+  let driveAttemptController=null, recoveryController=null;
   const driveHealth=window.JOGAHUB_DRIVE_HEALTH?.createStore();
   const DRIVE_DIAGNOSTICS=window.JOGAHUB_DRIVE_DIAGNOSTICS;
   if(!DRIVE_DIAGNOSTICS)throw new Error('Módulo de diagnóstico do Drive não carregado');
@@ -206,7 +208,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   function getTime(){if(mode==='enhanced')return video.currentTime||0;if(mode==='youtube'&&ytPlayer?.getCurrentTime)return ytPlayer.getCurrentTime()||0;return 0}
   function getDuration(){if(mode==='enhanced')return video.duration||0;if(mode==='youtube'&&ytPlayer?.getDuration)return ytPlayer.getDuration()||0;return 0}
   function writeProgressPayload(payload){try{localStorage.setItem(progressKeyNow(),JSON.stringify(payload));lastProgressWrite=Date.now()}catch(e){console.warn('Não foi possível salvar o progresso',e)}}
-  function saveProgress(force=false){if(playlistId)return;const dur=getDuration(),time=getTime();if(!isFinite(dur)||dur<=0)return;const payload={time,duration:dur,updatedAt:Date.now(),finished:time>=dur-20,provider:mode,itemId:currentItem?.id||itemId||'',seriesId:currentItem?.seriesId||'',season:currentItem?.season||0,episode:currentItem?.episode||0};if(force||Date.now()-lastProgressWrite>=4000){clearTimeout(saveTimer);writeProgressPayload(payload);return}clearTimeout(saveTimer);saveTimer=setTimeout(()=>writeProgressPayload({...payload,updatedAt:Date.now()}),Math.max(250,4000-(Date.now()-lastProgressWrite)))}
+  function saveProgress(force=false){if(playlistId||recoveryPending)return;const dur=getDuration(),time=getTime();if(!isFinite(dur)||dur<=0)return;const payload={time,duration:dur,updatedAt:Date.now(),finished:time>=dur-20,provider:mode,itemId:currentItem?.id||itemId||'',seriesId:currentItem?.seriesId||'',season:currentItem?.season||0,episode:currentItem?.episode||0};if(force||Date.now()-lastProgressWrite>=4000){clearTimeout(saveTimer);writeProgressPayload(payload);return}clearTimeout(saveTimer);saveTimer=setTimeout(()=>writeProgressPayload({...payload,updatedAt:Date.now()}),Math.max(250,4000-(Date.now()-lastProgressWrite)))}
   function formatTime(sec){sec=Math.max(0,Math.floor(Number(sec)||0));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return h?`${h}h ${m}min`:`${m}min ${String(s).padStart(2,'0')}s`}
   function updateContinueText(){const p=readProgress();$('continueText').textContent=p?.episodeOnly?'▶ O JogaHub lembrou este como seu último episódio aberto no Google Drive. O tempo exato continua sendo controlado pelo próprio Drive.':p&&p.time>20&&!p.finished?`▶ Você parou em ${formatTime(p.time)}. O JogaHub continuará desse ponto automaticamente.`:p?.finished?'✓ Você já assistiu este conteúdo.':''}
   updateContinueText();
@@ -376,14 +378,25 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     if(box){box.hidden=true;delete box.dataset.reason}
   }
   function driveDirectCandidates(fileId){const id=encodeURIComponent(fileId||'');const resource=driveResourceKey?'&resourcekey='+encodeURIComponent(driveResourceKey):'';const all=[`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t${resource}`,`https://drive.google.com/uc?export=download&id=${id}${resource}`];const saved=readJson(driveRouteKey(fileId));if(saved?.url&&Date.now()-Number(saved.updatedAt||0)<DRIVE_ROUTE_TTL&&all.includes(saved.url))return [saved.url,...all.filter(x=>x!==saved.url)];return all}
-  function driveTimeoutMs(){const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(settings.dataSaver)return 6500;if(c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return 14000;if(c?.effectiveType==='3g')return 11000;return 8500}
+  function driveConnectionPolicy(){
+    const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+    return PLAYER_DRIVE_CORE.connectionPolicy({
+      dataSaver:settings.dataSaver,saveData:!!c?.saveData,
+      effectiveType:c?.effectiveType||'',downlink:c?.downlink||0,
+      deviceMemory:navigator.deviceMemory||0,online:navigator.onLine,hidden:document.hidden
+    });
+  }
+  function driveTimeoutMs(){return driveConnectionPolicy().timeout}
   // Registra os eventos antes do load; rotas em cache podem carregar imediatamente.
-  function waitForDriveVideo(timeout=driveTimeoutMs(),start=()=>{}){
+  function waitForDriveVideo(timeout=driveTimeoutMs(),start=()=>{},signal=null){
     return new Promise((resolve,reject)=>{
       let done=false, timer=0;
-      const cleanup=()=>{clearTimeout(timer);video.removeEventListener('loadedmetadata',ok);video.removeEventListener('canplay',ok);video.removeEventListener('error',bad)};
+      const cleanup=()=>{clearTimeout(timer);video.removeEventListener('loadedmetadata',ok);video.removeEventListener('canplay',ok);video.removeEventListener('error',bad);signal?.removeEventListener('abort',abort)};
       const ok=()=>{if(done)return;done=true;cleanup();resolve(true)};
       const bad=error=>{if(done)return;done=true;cleanup();reject(error instanceof Error?error:(video.error||new Error('vídeo não carregou')))};
+      const abort=()=>bad(new DOMException('Carregamento cancelado','AbortError'));
+      if(signal?.aborted){abort();return}
+      signal?.addEventListener('abort',abort,{once:true});
       video.addEventListener('loadedmetadata',ok);
       video.addEventListener('canplay',ok);
       video.addEventListener('error',bad);
@@ -400,6 +413,9 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
       error.driveIssue=cachedFailure.code;
       throw error;
     }
+    driveAttemptController?.abort();
+    driveAttemptController=new AbortController();
+    const signal=driveAttemptController.signal;
     const token=driveSession.beginDirect();
     $('driveModeBtn').hidden=false;
     $('driveModeBtn').textContent='☁ usar modo Drive';
@@ -417,8 +433,8 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
       try{
         loadingText.textContent=`Drive Engine: testando rota ${i+1}/${candidates.length}…`;
         directMediaUrl=candidate;directMediaMime=PLAYER_DRIVE_CORE.directMime(currentItem?._driveName||queryDriveName,currentItem?.driveMime||queryDriveMime);
-        video.preload=settings.dataSaver?'metadata':'auto';
-        await waitForDriveVideo(driveTimeoutMs(),()=>{video.src=candidate;video.load()});
+        video.preload=driveConnectionPolicy().preload;
+        await waitForDriveVideo(driveTimeoutMs(),()=>{video.src=candidate;video.load()},signal);
         if(!driveSession.confirmDirect(token))return false;
         clearDriveEpisodeOnly();
         rememberDriveSuccess(fileId,candidate,performance.now()-started);
@@ -473,13 +489,15 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   function useDriveFallback(persist=true){
     if(provider!=='iframe')return fallback();
     saveProgress(true);
+    driveAttemptController?.abort();driveAttemptController=null;
+    recoveryController?.abort();recoveryController=null;
     driveSession.switchToCompatible();
     if(persist)localStorage.setItem(driveModeKey(),'compat');
     fallback(persist?'modo compatibilidade solicitado':'fallback automático do Drive Engine');
     video.pause();video.removeAttribute('src');video.load();
     directMediaUrl='';$('downloadBtn').hidden=true;
   }
-  function warmNextDriveEpisode(){if(settings.dataSaver||!nextItem?.driveFileId||!navigator.onLine)return;const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(c?.saveData||c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return;try{const host=document.head;['https://drive.usercontent.google.com','https://drive.google.com'].forEach(h=>{if(document.querySelector(`link[data-jh-preconnect="${h}"]`))return;const l=document.createElement('link');l.rel='preconnect';l.href=h;l.crossOrigin='anonymous';l.dataset.jhPreconnect=h;host.appendChild(l)})}catch{}}
+  function warmNextDriveEpisode(){if(!driveConnectionPolicy().warmNext||!nextItem?.driveFileId)return;const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(c?.saveData||c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return;try{const host=document.head;['https://drive.usercontent.google.com','https://drive.google.com'].forEach(h=>{if(document.querySelector(`link[data-jh-preconnect="${h}"]`))return;const l=document.createElement('link');l.rel='preconnect';l.href=h;l.crossOrigin='anonymous';l.dataset.jhPreconnect=h;host.appendChild(l)})}catch{}}
   async function initDrive(){
     if(await loadOfflineCopy())return;
     if(!currentItem?.driveFileId){useDriveFallback(false);return}
@@ -541,7 +559,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   function updateSleepStatus(){const el=$('sleepStatus');if(!el)return;if(!sleepEndsAt){el.textContent='';return}const left=Math.max(0,sleepEndsAt-Date.now()),m=Math.floor(left/60000),sec=Math.floor((left%60000)/1000);el.textContent=`⏲ pausa em ${m}:${String(sec).padStart(2,'0')}`}
   $('settingsBtn')?.addEventListener('click',()=>{$('settingsSheet').classList.add('show');syncSettingsUI()});$('closeSettings')?.addEventListener('click',()=>$('settingsSheet').classList.remove('show'));$('settingsSheet')?.addEventListener('click',e=>{if(e.target===$('settingsSheet'))$('settingsSheet').classList.remove('show')});
   $('autoplayNextToggle')?.addEventListener('change',e=>{settings.autoplayNext=e.target.checked;savePlayerPrefs();if(!settings.autoplayNext)cancelCountdown();toast(settings.autoplayNext?'Próximo episódio automático ativado':'Próximo episódio automático desativado')});
-  $('autoIntroToggle')?.addEventListener('change',e=>{settings.autoSkipIntro=e.target.checked;savePlayerPrefs()});$('autoRecapToggle')?.addEventListener('change',e=>{settings.autoSkipRecap=e.target.checked;savePlayerPrefs()});$('dataSaverToggle')?.addEventListener('change',e=>{settings.dataSaver=e.target.checked;savePlayerPrefs();video.preload=settings.dataSaver?'metadata':'auto';toast(settings.dataSaver?'Economia de dados ativada':'Pré-carregamento normal ativado')});document.querySelectorAll('[data-sleep]').forEach(b=>b.addEventListener('click',()=>setSleep(Number(b.dataset.sleep))));syncSettingsUI();video.preload=(settings.dataSaver||navigator.connection?.saveData)?'metadata':'auto';
+  $('autoIntroToggle')?.addEventListener('change',e=>{settings.autoSkipIntro=e.target.checked;savePlayerPrefs()});$('autoRecapToggle')?.addEventListener('change',e=>{settings.autoSkipRecap=e.target.checked;savePlayerPrefs()});$('dataSaverToggle')?.addEventListener('change',e=>{settings.dataSaver=e.target.checked;savePlayerPrefs();video.preload=driveConnectionPolicy().preload;toast(settings.dataSaver?'Economia de dados ativada':'Pré-carregamento controlado por metadados')});document.querySelectorAll('[data-sleep]').forEach(b=>b.addEventListener('click',()=>setSleep(Number(b.dataset.sleep))));syncSettingsUI();video.preload=driveConnectionPolicy().preload;
   function updateNetworkChip(){const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection,el=$('networkChip');if(!el)return;const online=navigator.onLine;if(!online){el.textContent='offline';el.className='network-chip warn';return}const t=c?.effectiveType||'',down=Number(c?.downlink||0);el.textContent=t?`${t}${down?` • ${down.toFixed(1)} Mb/s`:''}`:'online';el.className='network-chip '+((t==='2g'||t==='slow-2g'||(down&&down<1.2))?'warn':'good')}
   updateNetworkChip();window.addEventListener('online',updateNetworkChip);window.addEventListener('offline',updateNetworkChip);navigator.connection?.addEventListener?.('change',updateNetworkChip);
   function updateBuffered(){const el=$('bufferFill');if(!el||mode!=='enhanced'||!video.duration){if(el)el.style.width='0';return}let end=0;for(let i=0;i<video.buffered.length;i++){if(video.buffered.start(i)<=video.currentTime+1)end=Math.max(end,video.buffered.end(i))}el.style.width=`${Math.max(0,Math.min(100,end/video.duration*100))}%`}
