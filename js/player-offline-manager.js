@@ -48,13 +48,19 @@
           throw new Error('O servidor não forneceu vídeo completo para download');
         const totalRaw=Number(response.headers.get('content-length'));
         const total=Number.isSafeInteger(totalRaw)&&totalRaw>0?totalRaw:0;
-        let downloaded=0;
+        let downloaded=0,lastNotified=0;
         const stream=response.body.pipeThrough(new root.TransformStream({
           transform(chunk,streamController){
             if(controller.signal.aborted)throw new DOMException('Cancelado','AbortError');
             downloaded+=chunk.byteLength;
             if(total&&downloaded>total)throw new Error('Download maior que o declarado pela origem');
-            try{onProgress({done:downloaded,total,percent:total?Math.min(100,Math.floor(downloaded/total*100)):null})}catch{}
+            // Atualizar o DOM no máximo a cada 200ms, mesmo para milhares
+            // de chunks pequenos. Sempre informar conclusão exata.
+            const now=Date.now();
+            if(!lastNotified||now-lastNotified>=200||(total&&downloaded===total)){
+              lastNotified=now;
+              try{onProgress({done:downloaded,total,percent:total?Math.min(100,Math.floor(downloaded/total*100)):null})}catch{}
+            }
             streamController.enqueue(chunk);
           }
         }),{signal:controller.signal});
@@ -67,6 +73,7 @@
         await cache.put(url,new Response(stream,{status:200,headers}));
         if(controller.signal.aborted)throw new DOMException('Cancelado','AbortError');
         if(downloaded<=0||(total&&downloaded!==total))throw new Error('Download incompleto');
+        try{onProgress({done:downloaded,total,percent:100})}catch{}
         const entries=registry();
         const record={
           id:key,title:String(meta.title||'Vídeo offline'),year:String(meta.year||''),
