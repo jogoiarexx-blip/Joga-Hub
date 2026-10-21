@@ -5,7 +5,7 @@ on:
     inputs:
       file_id:
         description: "ID de um arquivo de vídeo compartilhado publicamente (sem URL, apenas ID)"
-        required: false
+        required: true
         type: string
 
 permissions:
