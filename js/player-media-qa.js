@@ -10,6 +10,15 @@
     if(!Number.isFinite(t)||t<0)return null;
     return Number.isFinite(d)&&d>0?Math.min(t,Math.max(0,d-.05)):t;
   }
+  function finishedByProgress(time,duration,ended=false){
+    const t=Number(time),d=Number(duration);
+    if(ended===true)return true;
+    if(!Number.isFinite(t)||!Number.isFinite(d)||d<=0||t<0)return false;
+    // Para conteúdos curtos, não marcar como assistido só porque
+    // faltam 20 segundos. Para filmes, manter margem máxima de 20s.
+    const threshold=Math.max(d*.95,d-20);
+    return t>=threshold;
+  }
   function isNoopSeek(target,currentTime,tolerance=.2){
     const t=Number(target),actual=Number(currentTime);
     return Number.isFinite(t)&&Number.isFinite(actual)&&t>=0&&Math.abs(t-actual)<=tolerance;
@@ -76,6 +85,6 @@
     };
   }
   root.JOGAHUB_PLAYER_MEDIA_QA=Object.freeze({
-    targetTime,isNoopSeek,frameClockDelta,rangeInfo,audioEvidence,playbackEvidence,seekResult,mediaSnapshot
+    targetTime,finishedByProgress,isNoopSeek,frameClockDelta,rangeInfo,audioEvidence,playbackEvidence,seekResult,mediaSnapshot
   });
 })(window);
