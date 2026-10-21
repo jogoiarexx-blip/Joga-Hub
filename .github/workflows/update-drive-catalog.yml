@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - 'tools/update-drive-snapshot.mjs'
+      - 'js/drive-subtitles.js'
       - 'js/data-drive-filmes.js'
       - '.github/workflows/update-drive-catalog.yml'
 
@@ -39,12 +40,12 @@ jobs:
       - name: Publicar somente se houver mudança
         shell: bash
         run: |
-          if git diff --quiet -- js/drive-snapshot.js; then
+          if git diff --quiet -- js/drive-snapshot.js js/drive-subtitles.js; then
             echo "Nenhuma mudança no catálogo."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/drive-snapshot.js
+          git add js/drive-snapshot.js js/drive-subtitles.js
           git commit -m "Atualiza catálogo automático do Google Drive"
           git push
