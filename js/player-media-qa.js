@@ -40,10 +40,10 @@
     if(Number(readyState)>=1)return {state:'metadata',label:'Só metadados carregados'};
     return {state:'unloaded',label:'Vídeo ainda não carregado'};
   }
-  function seekResult({target,actual,seeking=false,elapsedMs=0,timeoutMs=8500,tolerance=1.3,seekable=null}={}){
+  function seekResult({target,actual,seeked=false,seeking=false,elapsedMs=0,timeoutMs=8500,tolerance=1.3,seekable=null}={}){
     const t=finite(target),a=finite(actual);
     if(!Number.isFinite(t)||t<0)return {state:'invalid',label:'Posição solicitada inválida'};
-    if(Number.isFinite(a)&&Math.abs(t-a)<=tolerance&&!seeking)
+    if(seeked&&Number.isFinite(a)&&Math.abs(t-a)<=tolerance&&!seeking)
       return {state:'ok',label:'Avanço confirmado pelo relógio do vídeo'};
     if(elapsedMs<timeoutMs)return {state:'pending',label:'Aguardando resposta da busca'};
     const ranges=seekable||{count:0,includesTarget:false};
