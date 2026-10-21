@@ -4,9 +4,11 @@
   const archiveId=q.get('archiveId')||(()=>{try{const u=new URL(raw),m=u.pathname.match(/\/embed\/([^/]+)/);return m?decodeURIComponent(m[1]):''}catch{return''}})();
   const $=id=>document.getElementById(id), stage=$('stage'), stageShell=$('stageShell'), video=$('video'), frame=$('frame'), loading=$('loading'), loadingText=$('loadingText'), modeChip=$('modeChip');
   let u=null,external=null,currentItem=null,mode='fallback',saveTimer=0,lastProgressWrite=0,ytPlayer=null,ytTicker=0,nextItem=null,prevItem=null,nextTimer=0,nextSeconds=10,currentSeason=null,driveMode='auto',driveFallbackTimer=0,wakeLock=null,autoNextSuppressed=false;
-  const DRIVE_FAIL_TTL=10*60*1000, DRIVE_ROUTE_TTL=30*24*60*60*1000;
+  const DRIVE_FAIL_TTL=10*60*1000;
   const MEDIA_QA=window.JOGAHUB_PLAYER_MEDIA_QA;
   if(!MEDIA_QA)throw new Error('Diagnóstico de mídia não carregado');
+  const DRIVE_ROUTES=window.JOGAHUB_PLAYER_DRIVE_ROUTES;
+  if(!DRIVE_ROUTES)throw new Error('Planejador de rotas do Drive não carregado');
   const PLAYER_DRIVE_CORE=window.JOGAHUB_PLAYER_DRIVE_CORE;
   if(!PLAYER_DRIVE_CORE)throw new Error('Núcleo do player Drive não carregado');
   const driveSession=PLAYER_DRIVE_CORE.makeSession();
@@ -266,7 +268,11 @@
     const progress=readProgress();
     if(progress?.episodeOnly){try{localStorage.removeItem(progressKeyNow())}catch{}}
   }
-  function rememberDriveSuccess(fileId,url,elapsed){writeJson(driveRouteKey(fileId),{url,updatedAt:Date.now(),elapsed:Math.round(elapsed||0),width:video.videoWidth||0,height:video.videoHeight||0});clearDriveFail(fileId);driveHealth?.recordSuccess(fileId)}
+  function rememberDriveSuccess(fileId,url,elapsed){
+    DRIVE_ROUTES.savePreference(localStorage,driveRouteKey(fileId),url,elapsed);
+    clearDriveFail(fileId);
+    driveHealth?.recordSuccess(fileId);
+  }
   function rememberDriveFailure(fileId,issue){
     const code=DRIVE_DIAGNOSTICS.info(issue?.code).code;
     driveHealth?.recordFailure(fileId,code,Number(issue?.status)||0);
@@ -291,7 +297,10 @@
     const box=$('driveDiagnostic');
     if(box){box.hidden=true;delete box.dataset.reason}
   }
-  function driveDirectCandidates(fileId){const id=encodeURIComponent(fileId||'');const resource=driveResourceKey?'&resourcekey='+encodeURIComponent(driveResourceKey):'';const all=[`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t${resource}`,`https://drive.google.com/uc?export=download&id=${id}${resource}`];const saved=readJson(driveRouteKey(fileId));if(saved?.url&&Date.now()-Number(saved.updatedAt||0)<DRIVE_ROUTE_TTL&&all.includes(saved.url))return [saved.url,...all.filter(x=>x!==saved.url)];return all}
+  function driveDirectCandidates(fileId){
+    const preferred=DRIVE_ROUTES.readPreference(localStorage,driveRouteKey(fileId));
+    return DRIVE_ROUTES.candidates(fileId,driveResourceKey,preferred).map(candidate=>candidate.url);
+  }
   function driveConnectionPolicy(){
     const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
     return PLAYER_DRIVE_CORE.connectionPolicy({
@@ -364,8 +373,8 @@
         syncCustomControls();showControls(3500);
         $('audioTrack').hidden=true;$('subtitleTrack').hidden=true;
         loadDriveSubtitles().catch(error=>console.warn('Legenda externa:',error));
-        const routeSaved=readJson(driveRouteKey(fileId));
-        const routeNote=routeSaved?.url===candidate?'rota otimizada memorizada':'rota direta';
+        const routeSaved=DRIVE_ROUTES.readPreference(localStorage,driveRouteKey(fileId));
+        const routeNote=routeSaved?.route===DRIVE_ROUTES.routeId(candidate)?'rota otimizada memorizada':'rota direta';
         const info=[currentItem?.genre,currentItem?.year,currentItem?.language,formatTime(video.duration),'Google Drive',routeNote].filter(Boolean);
         $('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('');
         $('driveTipText').innerHTML=`<b>Drive Engine ativo.</b> ${safe(routeNote)} • retomada exata e recuperação automática.`;
@@ -376,7 +385,7 @@
         lastError=error;
         const mediaCode=Number(error?.code)||Number(video.error?.code)||0;
         const timedOut=/tempo limite/i.test(String(error?.message||''));
-        console.warn('Rota direta do Drive falhou',i+1,error);
+        console.warn('Falha na rota direta do Drive (tentativa)',i+1);
         // MediaError não fornece status HTTP; HEAD só é consultado APÓS
         // falha e pode ser bloqueado por CORS. Nunca baixar o vídeo inteiro
         // para fazer diagnóstico.
