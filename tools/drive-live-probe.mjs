@@ -24,16 +24,33 @@ export function classifyProbe(status,contentType='',range='',host=''){
   if(status===200&&mime.startsWith('video/'))return 'media-headers-no-range';
   return 'unconfirmed';
 }
-export function evaluateRange(response,requestedStart=0,maxBytes=4096){
+export function evaluateRange(response,requestedStart=0,maxBytes=4096,requestedEnd=null){
   if(!response||response.status!==206)return {ok:false,reason:response?.kind||'unconfirmed'};
+  if(response.kind&&response.kind!=='byte-range')return {ok:false,reason:response.kind};
   const parsed=parseContentRange(response.range);
   if(!parsed)return {ok:false,reason:'invalid-range'};
   if(parsed.start!==requestedStart)return {ok:false,reason:'wrong-offset'};
   if(parsed.end-parsed.start+1>maxBytes)return {ok:false,reason:'oversized-range'};
+  if(requestedEnd!==null){
+    const expected=parsed.total===null?requestedEnd:Math.min(requestedEnd,parsed.total-1);
+    if(parsed.end!==expected)return {ok:false,reason:'wrong-end'};
+  }
   if(response.length&&Number.isFinite(Number(response.length))&&
      Number(response.length)!==parsed.end-parsed.start+1)
-     return {ok:false,reason:'length-mismatch'};
+    return {ok:false,reason:'length-mismatch'};
   return {ok:true,total:parsed.total,start:parsed.start,end:parsed.end};
+}
+export function planRangeChecks(total,chunk=4096){
+  if(!Number.isSafeInteger(total)||total<=2*1024*1024)return [];
+  const seen=new Set([0]);
+  return [.25,.5,.9].map(percent=>{
+    const start=Math.floor((total*percent)/chunk)*chunk;
+    const end=Math.min(total-1,start+chunk-1);
+    return {percent:Math.round(percent*100),start,end};
+  }).filter(entry=>{
+    if(seen.has(entry.start))return false;
+    seen.add(entry.start);return true;
+  });
 }
 export async function probeDrive(fileId,fetcher=fetch,resourceKey=''){
   if(!/^[A-Za-z0-9_-]{8,200}$/.test(String(fileId)))throw new Error('ID público inválido');
@@ -41,7 +58,7 @@ export async function probeDrive(fileId,fetcher=fetch,resourceKey=''){
   url.searchParams.set('id',fileId);
   url.searchParams.set('export','download');
   if(resourceKey)url.searchParams.set('resourcekey',resourceKey);
-  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),26000);
   const inspect=async(method,headers={})=>{
     const response=await fetcher(url,{method,headers,signal:controller.signal,redirect:'follow',cache:'no-store'});
     const host=new URL(response.url||url).hostname;
@@ -49,6 +66,8 @@ export async function probeDrive(fileId,fetcher=fetch,resourceKey=''){
       range:response.headers?.get?.('content-range')||'',
       length:response.headers?.get?.('content-length')||'',
       redirectHost:host};
+    // Nunca ler o corpo. A solicitação Range pede no máximo 4 KiB,
+    // mas a origem pode ignorá-la. Cancelar imediatamente nesses casos.
     try{await response.body?.cancel?.()}catch{}
     data.kind=classifyProbe(data.status,data.contentType,data.range,host);
     return data;
@@ -57,25 +76,30 @@ export async function probeDrive(fileId,fetcher=fetch,resourceKey=''){
     let head=null,headError='';
     try{head=await inspect('HEAD')}catch(error){
       headError=error?.name==='AbortError'?'timeout':'unavailable';
-      // HEAD não é obrigatório: alguns servidores o rejeitam, apesar do GET funcionar.
+      // Alguns provedores não respondem a HEAD, mas respondem a GET Range.
     }
     const first=await inspect('GET',{Range:'bytes=0-4095'});
-    const firstValid=evaluateRange(first,0);
-    let distant=null,distantValid=null;
-    if(firstValid.ok&&firstValid.total!==null&&firstValid.total>2*1024*1024){
-      // A segunda sondagem verifica se o servidor aceita uma posição distante.
-      // Evita baixar um filme inteiro e nunca depende de conhecer duração/metadados.
-      const start=Math.floor((firstValid.total/2)/4096)*4096;
-      const end=Math.min(firstValid.total-1,start+4095);
-      distant=await inspect('GET',{Range:`bytes=${start}-${end}`});
-      distantValid=evaluateRange(distant,start);
+    const firstValid=evaluateRange(first,0,4096,4095);
+    const checks=[],plan=firstValid.ok?planRangeChecks(firstValid.total):[];
+    for(const check of plan){
+      const response=await inspect('GET',{Range:'bytes='+check.start+'-'+check.end});
+      const result=evaluateRange(response,check.start,4096,check.end);
+      checks.push({percent:check.percent,start:check.start,end:check.end,
+        response,ok:result.ok,reason:result.ok?'ok':result.reason});
+      // Permissão ou limitação após um seek é condição terminal; não repetir.
+      if(['access','missing','limited','login-or-response'].includes(response.kind))break;
     }
+    const fail=checks.find(c=>!c.ok);
+    const allChecked=checks.length===plan.length;
+    const verified=firstValid.ok&&allChecked&&!fail;
+    const middle=checks.find(c=>c.percent===50)||null;
     return {
-      head,headError,range:first,distant,
+      head,headError,range:first,distant:middle?.response||null,
+      checks,plannedPercents:plan.map(p=>p.percent),
       usable:firstValid.ok,
-      distantSeek:firstValid.ok?(distant===null?null:!!distantValid?.ok):null,
-      verifiedRange:firstValid.ok?(distantValid?.ok??true):false,
-      rangeReason:firstValid.ok?(distantValid&&!distantValid.ok?distantValid.reason:'ok'):firstValid.reason
+      distantSeek:plan.length?(verified?true:false):null,
+      verifiedRange:!!verified,
+      rangeReason:firstValid.ok?(fail?.reason||(!allChecked?'incomplete':'ok')):firstValid.reason
     };
   }finally{clearTimeout(timer);controller.abort()}
 }
@@ -90,15 +114,15 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
       const result=await probeDrive(id,fetch,key);
       console.log('Drive público — resposta HEAD:',JSON.stringify(result.head));
       console.log('Drive público — amostra com Range:',JSON.stringify(result.range));
-      if(result.distant)console.log('Drive público — amostra distante:',JSON.stringify(result.distant));
+      for(const entry of result.checks)console.log('Drive público — '+entry.percent+'% dos bytes:',JSON.stringify({status:entry.response.status,kind:entry.response.kind,range:entry.response.range,ok:entry.ok,reason:entry.reason}));
       console.log('Drive público — validação Range:',result.rangeReason);
       if(!result.usable){
         console.log('::warning::Arquivo não comprovadamente acessível pelo endpoint de download. Não inferir acesso ao player iframe ou ao codec.');
         process.exitCode=1;
       }else if(!result.verifiedRange){
-        console.log('::warning::Origem não confirmou HTTP 206 e Content-Range; busca para pontos distantes pode falhar.');
+        console.log('::warning::Origem não confirmou HTTP Range em todos os pontos solicitados; seek pode falhar.');
       }else{
-        console.log('::notice::HTTP 206 e Content-Range verificados'+(result.distantSeek===true?' também em trecho distante':' no trecho inicial')+'. Reprodução e áudio requerem teste em navegador.');
+        console.log('::notice::HTTP Range validado para posições de bytes: '+(result.plannedPercents.join(', ')||'início')+'. Esses percentuais NÃO são posições temporais. Decodificação, áudio e retomada requerem teste em navegador.');
       }
     }catch(error){
       console.log('::error::Teste real indisponível: '+(error?.name||'Error')+' — '+(error?.message||'erro de rede'));
