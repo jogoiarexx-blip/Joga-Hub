@@ -58,6 +58,9 @@ test('restrição de acesso 403 é diagnosticada sem repetir rotas @crossbrowser
 test('player preserva vídeo inline e controles conforme capacidades do navegador @crossbrowser',async({page})=>{
   await page.goto(playerUrl('Filme.MKV'),{waitUntil:'domcontentloaded'});
   await expect(page.locator('#stage')).toBeVisible();
+  // Em telas pequenas PiP fica na seção Mais opções; abra-a antes de
+  // conferir a capacidade real do navegador, não a visibilidade do menu.
+  if(await page.locator('#morePlayerControls').isVisible())await page.locator('#morePlayerControls').click();
   const state=await page.evaluate(()=>{
     const video=document.getElementById('video');
     const stage=document.getElementById('stage');
