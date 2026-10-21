@@ -151,7 +151,14 @@ const sharedKeyFile={
   url:'https://drive.google.com/file/d/qa-resourcekey-file/view?resourcekey=chave-de-teste',
   player:'https://drive.google.com/file/d/qa-resourcekey-file/preview?resourcekey=chave-de-teste'
 };
-const keyedFiles=[...rawFiles,sharedKeyFile];
+const urlOnlyFile={
+  ...sharedKeyFile,id:'qa-resourcekey-url-only',
+  name:'Arquivo de teste somente link 2026.mp4',
+  resourceKey:'',
+  url:'https://drive.google.com/file/d/qa-resourcekey-url-only/view?resourcekey=chave-somente-url',
+  player:'https://drive.google.com/file/d/qa-resourcekey-url-only/preview?resourcekey=chave-somente-url'
+};
+const keyedFiles=[...rawFiles,sharedKeyFile,urlOnlyFile];
 context.fetch=async()=>({ok:true,json:async()=>({ok:true,files:keyedFiles,total:keyedFiles.length,errors:[]})});
 await context.window.JOGAHUB_DRIVE_SYNC.sync();
 const keyedItem=context.FILMES_CATALOGO.find(item=>item.driveFileId===sharedKeyFile.id);
@@ -162,6 +169,12 @@ const cachedFile=JSON.parse(storage.get('jogahub_drive_catalog_cache_v6_compact'
   .find(item=>item.id===sharedKeyFile.id);
 if(cachedFile?.resourceKey!=='chave-de-teste')
   throw new Error('Chave de recurso não persistiu no cache local sem URL');
+const urlOnly=context.FILMES_CATALOGO.find(item=>item.driveFileId===urlOnlyFile.id);
+const urlOnlyCached=JSON.parse(storage.get('jogahub_drive_catalog_cache_v6_compact')||'[]')
+  .find(item=>item.id===urlOnlyFile.id);
+if(urlOnly?.driveResourceKey!=='chave-somente-url'||urlOnlyCached?.resourceKey!=='chave-somente-url')
+  throw new Error('Recurso somente na URL perdeu a chave no cache local');
+
 
 console.log(JSON.stringify({
   rawFiles: rawFiles.length,
