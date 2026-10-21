@@ -1,0 +1,27 @@
+name: Testar arquivo público real do Drive
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_id:
+        description: "ID de um arquivo de vídeo compartilhado publicamente (sem URL, apenas ID)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  drive-public-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Consultar headers e suporte a Range (até 4 KiB, sem baixar o filme)
+        env:
+          DRIVE_QA_PUBLIC_FILE_ID: ${{ inputs.file_id }}
+          DRIVE_QA_RESOURCE_KEY: ${{ secrets.DRIVE_QA_RESOURCE_KEY }}
+        run: node tools/drive-live-probe.mjs
