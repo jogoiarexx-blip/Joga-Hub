@@ -4,6 +4,7 @@
 
 const CONFIG_KEY='jogahub_drive_sync_url';
 const DATA_KEY='jogahub_drive_catalog_cache_v6_compact';
+const SUB_DATA_KEY='jogahub_drive_subtitle_cache_v1';
 const LEGACY_DATA_KEYS=['jogahub_drive_catalog_cache_v5_deduplicated','jogahub_drive_catalog_cache_v4_single_root','jogahub_drive_catalog_cache_v3_single_root','jogahub_drive_catalog_cache_v2'];
 const LAST_SYNC_KEY='jogahub_drive_last_sync';
 const CLIENT_TTL=10*60*1000;
@@ -13,6 +14,9 @@ const root=window.JOGAHUB_DRIVE_ROOT||{id:'1FpJ__h7dTKpD-VOTl3WUIgpBBUc4vhut',na
 const ROOTS=[{id:root.id,name:root.name}];
 const MEDIA_POLICY=window.JOGAHUB_DRIVE_MEDIA_POLICY;
 if(!MEDIA_POLICY)throw new Error('Classificação de vídeos do Drive não carregada');
+const SUBTITLE_CORE=window.JOGAHUB_DRIVE_SUBTITLE_CORE;
+if(!SUBTITLE_CORE)throw new Error('Associador de legendas do Drive não carregado');
+let knownSubtitles=[];
 let syncPromise=null;
 let lastSuccess=false;
 
@@ -101,7 +105,10 @@ function normalizeResponse(j){
   }
   const files=normalized.filter(MEDIA_POLICY.isVideo);
   if(!files.length)throw new Error('A resposta não contém arquivos de vídeo válidos; catálogo anterior preservado');
-  return {files,errors:Array.isArray(j.errors)?j.errors:[],rootName:String(j.pastaRaiz||j.rootName||root.name||'Google Drive')};
+  const subtitles=Array.isArray(j.subtitles)?j.subtitles.map(normalizeFile).filter(f=>f&&MEDIA_POLICY.isSubtitle(f)):null;
+  if(subtitles&&j.subtitleCount!==undefined&&Number(j.subtitleCount)!==subtitles.length)
+    throw new Error('Resposta de legendas incompleta');
+  return {files,subtitles,errors:Array.isArray(j.errors)?j.errors:[],rootName:String(j.pastaRaiz||j.rootName||root.name||'Google Drive')};
 }
 function preferred(a,b){
   const ta=Date.parse(a.updated)||0,tb=Date.parse(b.updated)||0;
@@ -131,6 +138,8 @@ function compactForCache(file){
   const f=normalizeFile(file);if(!f)return null;
   return {id:f.id,name:f.name,mime:f.mime,size:f.size,path:f.path,resourceKey:f.resourceKey||'',updated:f.updated};
 }
+function readSubCache(){try{const list=JSON.parse(safeGet(SUB_DATA_KEY)||'[]');return Array.isArray(list)?list.map(normalizeFile).filter(f=>f&&MEDIA_POLICY.isSubtitle(f)):[]}catch{return []}}
+function saveSubCache(){safeSet(SUB_DATA_KEY,JSON.stringify(knownSubtitles.map(f=>({id:f.id,name:f.name,path:f.path,mime:f.mime,resourceKey:f.resourceKey||'',updated:f.updated}))))}
 function latestUpdated(files){let latest=0;for(const f of files||[])latest=Math.max(latest,Date.parse(f?.updated)||0);return latest}
 function readCache(){try{const value=JSON.parse(safeGet(DATA_KEY)||'[]');return Array.isArray(value)?value.map(normalizeFile).filter(Boolean):[]}catch{return []}}
 function writeCache(files){
@@ -151,6 +160,7 @@ function addFiles(files,sourceRoot,options={}){
   if(typeof FILMES_CATALOGO==='undefined')return {added:0,removed:0,total:0,duplicates:0,received:0};
   const unique=deduplicateFiles(Array.isArray(files)?files:[]);
   const old=options.replace?removeAutoEntries():[];
+  const subtitleMatch=SUBTITLE_CORE.attach(unique.files,knownSubtitles);
   const oldIds=new Set(old.map(x=>x.driveFileId).filter(Boolean)),existing=new Set(FILMES_CATALOGO.map(x=>x.driveFileId).filter(Boolean)),newIds=new Set();let added=0;
   for(const f of unique.files){
     if(existing.has(f.id))continue;
@@ -162,7 +172,7 @@ function addFiles(files,sourceRoot,options={}){
       }
       return '';
     })();
-    FILMES_CATALOGO.push({id:'drive-auto-'+f.id,type:'filme',title:displayTitle,year:p.year||'Google Drive',genre:p.serie?'Série • Google Drive':'Filme • Google Drive',mediaType:p.serie?'serie':'filme',language:'Conforme o arquivo',portuguese:true,colorContent:true,accent:'var(--brand-blue)',thumb:p.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp',...(p.serie?{seriesId:seriesKey,seriesTitle:p.seriesTitle||p.title,season:p.season,episode:p.episode}:{}),driveFileId:f.id,driveFileSize:f.size,driveMime:f.mime,driveResourceKey:resourceKey,drivePlayerUrl:f.player||('https://drive.google.com/file/d/'+f.id+'/preview'),sourceUrl:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),url:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),sourceLabel:'Google Drive',sourceCollection:sourceRoot?.name||'Google Drive',embed:false,desc:'Conteúdo sincronizado automaticamente da pasta principal do Google Drive.',nostalgiaTags:['Google Drive',p.serie?'série':'filme'],_driveName:f.name||'',_drivePath:f.path||'',_driveUpdated:f.updated||''});
+    FILMES_CATALOGO.push({id:'drive-auto-'+f.id,type:'filme',title:displayTitle,year:p.year||'Google Drive',genre:p.serie?'Série • Google Drive':'Filme • Google Drive',mediaType:p.serie?'serie':'filme',language:'Conforme o arquivo',portuguese:true,colorContent:true,accent:'var(--brand-blue)',thumb:p.serie?'assets/banner-cat-series.webp':'assets/banner-cat-filmes.webp',...(p.serie?{seriesId:seriesKey,seriesTitle:p.seriesTitle||p.title,season:p.season,episode:p.episode}:{}),driveFileId:f.id,driveFileSize:f.size,driveMime:f.mime,driveResourceKey:resourceKey,drivePlayerUrl:f.player||('https://drive.google.com/file/d/'+f.id+'/preview'),sourceUrl:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),url:f.url||('https://drive.google.com/file/d/'+f.id+'/view?usp=sharing'),sourceLabel:'Google Drive',sourceCollection:sourceRoot?.name||'Google Drive',embed:false,desc:'Conteúdo sincronizado automaticamente da pasta principal do Google Drive.',nostalgiaTags:['Google Drive',p.serie?'série':'filme'],driveSubtitles:subtitleMatch.get(f.id)||[],_driveName:f.name||'',_drivePath:f.path||'',_driveUpdated:f.updated||''});
     existing.add(f.id);newIds.add(f.id);if(!oldIds.has(f.id))added++;
   }
   const removed=options.replace?[...oldIds].filter(id=>!newIds.has(id)).length:0;
@@ -191,6 +201,9 @@ async function requestCatalog(baseUrl,folderId){
 }
 function hydrateInitial(){
   LEGACY_DATA_KEYS.forEach(safeRemove);
+  const archived=Array.isArray(window.JOGAHUB_DRIVE_SUBTITLES)?window.JOGAHUB_DRIVE_SUBTITLES.map(normalizeFile).filter(f=>f&&MEDIA_POLICY.isSubtitle(f)):[];
+  const saved=readSubCache();
+  knownSubtitles=saved.length?saved:archived;
   const cached=readCache();
   const snapshot=Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT)?window.JOGAHUB_DRIVE_SNAPSHOT.map(normalizeFile).filter(f=>f&&MEDIA_POLICY.isVideo(f)):[];
   const cacheLatest=latestUpdated(cached),snapshotLatest=latestUpdated(snapshot);
@@ -227,6 +240,10 @@ async function performSync(){
         folderStats.push({name:sourceRoot.name,found:incomingCount,added:0,removed:0,duplicates:0,error:reason});
         continue;
       }
+      if(payload.subtitles){
+        knownSubtitles=payload.subtitles;
+        saveSubCache();
+      }
       const result=addFiles(payload.files,{...sourceRoot,name:payload.rootName||sourceRoot.name},{replace:true,persist:true});
       successes++;totalAdded+=result.added;totalRemoved+=result.removed;totalFound+=result.total;totalDuplicates+=result.duplicates;
       folderStats.push({name:sourceRoot.name,found:result.total,received:result.received,added:result.added,removed:result.removed,duplicates:result.duplicates});
@@ -246,9 +263,9 @@ function sync(){
 }
 window.JOGAHUB_DRIVE_SYNC={
   configure:function(url){const value=String(url||'').trim();if(value)safeSet(CONFIG_KEY,value);else safeRemove(CONFIG_KEY);return sync()},
-  clearCache:function(){safeRemove(DATA_KEY);safeRemove(LAST_SYNC_KEY);LEGACY_DATA_KEYS.forEach(safeRemove);removeAutoEntries();if(Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT))addFiles(window.JOGAHUB_DRIVE_SNAPSHOT,ROOTS[0],{replace:false,persist:false});if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS()},
+  clearCache:function(){safeRemove(DATA_KEY);safeRemove(SUB_DATA_KEY);knownSubtitles=Array.isArray(window.JOGAHUB_DRIVE_SUBTITLES)?window.JOGAHUB_DRIVE_SUBTITLES.map(normalizeFile).filter(f=>f&&MEDIA_POLICY.isSubtitle(f)):[];safeRemove(LAST_SYNC_KEY);LEGACY_DATA_KEYS.forEach(safeRemove);removeAutoEntries();if(Array.isArray(window.JOGAHUB_DRIVE_SNAPSHOT))addFiles(window.JOGAHUB_DRIVE_SNAPSHOT,ROOTS[0],{replace:false,persist:false});if(typeof window.JOGAHUB_REFRESH_ITEMS==='function')window.JOGAHUB_REFRESH_ITEMS()},
   clear:function(){safeRemove(CONFIG_KEY);this.clearCache()},
-  sync,roots:ROOTS,getUrl:getConfiguredUrl,
+  sync,roots:ROOTS,getUrl:getConfiguredUrl,getSubtitles:()=>knownSubtitles.slice(),
   getStatus:function(){const last=Number(window.JOGAHUB_DRIVE_SYNC_LAST_SYNC||safeGet(LAST_SYNC_KEY)||0);return {configured:!!getConfiguredUrl(),usingDefault:!safeGet(CONFIG_KEY)&&!!DEFAULT_URL,url:getConfiguredUrl(),cached:readCache().length,cacheFresh:clientCacheFresh(),success:lastSuccess,cacheAgeMs:last?Date.now()-last:null,found:Number(window.JOGAHUB_DRIVE_SYNC_FOUND||0),added:Number(window.JOGAHUB_DRIVE_SYNC_COUNT||0),removed:Number(window.JOGAHUB_DRIVE_SYNC_REMOVED||0),duplicates:Number(window.JOGAHUB_DRIVE_SYNC_DUPLICATES||0),syncing:!!syncPromise,errors:window.JOGAHUB_DRIVE_SYNC_ERRORS||[],folders:window.JOGAHUB_DRIVE_SYNC_FOLDERS||[],lastSync:last}}
 };
 hydrateInitial();
