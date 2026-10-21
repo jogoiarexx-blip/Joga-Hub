@@ -249,7 +249,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     }else if(remain>22){$('nextOverlay').classList.remove('show')}
   }
   function prefetchNextEpisode(){
-    if(!nextItem||settings.dataSaver)return;
+    if(!nextItem||!driveConnectionPolicy().warmNext)return;
     try{
       const href=movieHref(nextItem);
       if(!href||document.querySelector('link[data-next-episode-prefetch]'))return;
@@ -548,8 +548,58 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   video.addEventListener('click',togglePlay);video.addEventListener('dblclick',e=>{const r=video.getBoundingClientRect();seek(e.clientX<r.left+r.width/2?-10:10)});
   ['timeupdate','durationchange','play','pause','ratechange','volumechange','seeked'].forEach(ev=>video.addEventListener(ev,syncCustomControls));
   video.addEventListener('waiting',()=>bufferBadge.hidden=false);video.addEventListener('stalled',()=>bufferBadge.hidden=false);['playing','canplay','seeked'].forEach(ev=>video.addEventListener(ev,()=>bufferBadge.hidden=true));
-  function flashSeek(txt,x){const f=document.createElement('div');f.className='tap-feedback';f.textContent=txt;f.style.left=x;stage.appendChild(f);setTimeout(()=>f.remove(),520)}
-  let playerBrightness=Math.max(.35,Math.min(1.35,Number(settings.brightness)||1)),gestureStartBrightness=playerBrightness;function applyBrightness(){video.style.filter=`brightness(${playerBrightness})`;saveSettings({brightness:playerBrightness})}applyBrightness();function bindGesture(el,dir){let last=0;el.addEventListener('pointerup',e=>{if(e.pointerType==='mouse')return;const now=Date.now();if(!gestureMoved&&now-last<320){seek(dir*10);flashSeek(dir<0?'↶ 10s':'10s ↷',dir<0?'25%':'75%');last=0}else last=now});el.addEventListener('pointerdown',e=>{gestureStartY=e.clientY;gestureStartVolume=video.volume;gestureStartBrightness=playerBrightness;gestureMoved=false});el.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||!e.buttons)return;const delta=(gestureStartY-e.clientY)/180;if(Math.abs(delta)>.04){gestureMoved=true;if(dir<0){playerBrightness=Math.max(.35,Math.min(1.35,gestureStartBrightness+delta));applyBrightness();flashSeek(`☀ ${Math.round(playerBrightness*100)}%`,'25%')}else{video.muted=false;video.volume=Math.max(0,Math.min(1,gestureStartVolume+delta));saveSettings({volume:video.volume});flashSeek(`🔊 ${Math.round(video.volume*100)}%`,'75%')}syncCustomControls();showControls(1800)}})}bindGesture($('gestureLeft'),-1);bindGesture($('gestureRight'),1);
+  let flashFeedback=null,flashTimer=0;
+  function flashSeek(txt,x){
+    // Um só indicador por gesto: não criar dezenas de nós DOM por segundo.
+    if(!flashFeedback){flashFeedback=document.createElement('div');flashFeedback.className='tap-feedback';stage.appendChild(flashFeedback)}
+    flashFeedback.textContent=txt;flashFeedback.style.left=x;
+    clearTimeout(flashTimer);
+    flashTimer=setTimeout(()=>{flashFeedback?.remove();flashFeedback=null},520);
+  }
+  let playerBrightness=Math.max(.35,Math.min(1.35,Number(settings.brightness)||1));
+  let gestureStartBrightness=playerBrightness,lastGestureDraw=0;
+  function applyBrightness(){video.style.filter='brightness('+playerBrightness+')'}
+  applyBrightness();
+  function bindGesture(el,dir){
+    let last=0;
+    el.addEventListener('pointerup',e=>{
+      if(e.pointerType==='mouse')return;
+      const now=Date.now();
+      if(!gestureMoved&&now-last<320){
+        seek(dir*10);flashSeek(dir<0?'↶ 10s':'10s ↷',dir<0?'25%':'75%');last=0;
+      }else last=now;
+    });
+    el.addEventListener('pointerdown',e=>{
+      gestureStartY=e.clientY;gestureStartVolume=video.volume;
+      gestureStartBrightness=playerBrightness;gestureMoved=false;lastGestureDraw=0;
+    });
+    el.addEventListener('pointermove',e=>{
+      if(e.pointerType==='mouse'||!e.buttons)return;
+      const delta=(gestureStartY-e.clientY)/180;
+      if(Math.abs(delta)<=.04)return;
+      gestureMoved=true;
+      if(dir<0){
+        playerBrightness=Math.max(.35,Math.min(1.35,gestureStartBrightness+delta));applyBrightness();
+      }else{
+        video.muted=false;video.volume=Math.max(0,Math.min(1,gestureStartVolume+delta));
+      }
+      // No máximo ~30 atualizações visuais/s no gesto.
+      const now=performance.now();
+      if(now-lastGestureDraw>=32){
+        lastGestureDraw=now;
+        flashSeek(dir<0?'☀ '+Math.round(playerBrightness*100)+'%':'🔊 '+Math.round(video.volume*100)+'%',dir<0?'25%':'75%');
+        syncCustomControls();showControls(1800);
+      }
+    });
+    const commit=()=>{
+      if(!gestureMoved)return;
+      if(dir<0)saveSettings({brightness:playerBrightness});
+      // Volume persistido pelo listener debounce de volumechange.
+      gestureMoved=false;
+    };
+    el.addEventListener('pointerup',commit);el.addEventListener('pointercancel',commit);
+  }
+  bindGesture($('gestureLeft'),-1);bindGesture($('gestureRight'),1);
 
   let sleepTimer=0,sleepEndsAt=0,sleepTick=0,toastTimer=0;
   function toast(msg){const el=$('toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200)}
@@ -673,7 +723,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   async function downloadCurrent(){const btn=$('downloadBtn'),key=currentItem?.id||id;if(!directMediaUrl||!key)return;const reg=loadMediaRegistry();if(reg[key]){if(confirm('Remover este vídeo dos downloads offline?'))await removeCurrentDownload();return}if(!navigator.onLine){alert('Conecte-se à internet para fazer o download.');return}try{btn.disabled=true;btn.classList.add('downloading');$('downloadMeter').classList.add('show');$('downloadText').textContent='Baixando vídeo…';const res=await fetch(directMediaUrl,{mode:'cors'});if(!res.ok)throw new Error('download '+res.status);const total=Number(res.headers.get('content-length'))||directMediaSize||0;const [cacheStream,progressStream]=res.body.tee();const headers=new Headers(res.headers);const cache=await caches.open(MEDIA_CACHE);const saving=cache.put(directMediaUrl,new Response(cacheStream,{status:res.status,statusText:res.statusText,headers}));const reader=progressStream.getReader();let done=0;while(true){const r=await reader.read();if(r.done)break;done+=r.value.byteLength;const pct=total?Math.min(100,Math.round(done/total*100)):0;$('downloadPct').textContent=total?`${pct}%`:formatBytes(done);$('downloadBar').style.width=total?`${pct}%`:'35%';btn.textContent=total?`⬇ ${pct}%`:`⬇ ${formatBytes(done)}`}await saving;reg[key]={id:key,title:currentItem?.title||title,year:currentItem?.year||'',genre:currentItem?.genre||'',thumb:currentItem?.thumb||video.poster||'',url:directMediaUrl,size:done,mime:directMediaMime,savedAt:Date.now(),archiveId,playerHref:location.pathname.split('/').pop()+location.search};saveMediaRegistry(reg);btn.dataset.saved='1';btn.textContent='✓ salvo offline';$('downloadText').textContent='Download concluído';$('downloadPct').textContent='100%';$('downloadBar').style.width='100%';setTimeout(()=>$('downloadMeter').classList.remove('show'),1400)}catch(e){console.error(e);alert('Não foi possível salvar este vídeo offline. A fonte pode bloquear o download ou não haver espaço suficiente.');$('downloadMeter').classList.remove('show');btn.textContent='⬇ tentar novamente'}finally{btn.disabled=false;btn.classList.remove('downloading')}}
   $('downloadBtn').onclick=downloadCurrent;
   $('driveModeBtn').onclick=async()=>{if(provider!=='iframe')return;if(mode==='enhanced'){localStorage.setItem(driveModeKey(),'compat');useDriveFallback()}else{localStorage.setItem(driveModeKey(),'auto');localStorage.setItem('jogahub.drive.playerMode','auto');clearDriveFail(currentItem?.driveFileId||'');$('driveModeBtn').disabled=true;try{await useDriveDirect(true,true)}catch(e){diagnoseDriveError(e?.driveIssue||'unknown');useDriveFallback(false)}finally{$('driveModeBtn').disabled=false}}};
-  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});video.addEventListener('volumechange',()=>saveSettings({volume:video.volume}));video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl)});
+  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});let volumeSaveTimer=0;video.addEventListener('volumechange',()=>{clearTimeout(volumeSaveTimer);volumeSaveTimer=setTimeout(()=>saveSettings({volume:video.volume}),350)});video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);clearInterval(statsTicker);clearTimeout(volumeSaveTimer);saveSettings({volume:video.volume});releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl)});
   function seek(delta){if(mode==='enhanced')video.currentTime=Math.max(0,Math.min(video.duration||Infinity,video.currentTime+delta));else if(mode==='youtube'&&ytPlayer?.seekTo)ytPlayer.seekTo(Math.max(0,getTime()+delta),true)}
   $('rewindBtn').onclick=()=>seek(-10);$('forwardBtn').onclick=()=>seek(10);$('restartBtn').onclick=()=>{localStorage.removeItem(progressKeyNow());if(mode==='enhanced'){video.currentTime=0;video.play().catch(()=>{})}else if(mode==='youtube'&&ytPlayer){ytPlayer.seekTo(0,true);ytPlayer.playVideo()}updateContinueText()};$('fullBtn').onclick=async()=>{
     const result=await BROWSER_CORE.requestFullscreen(stage,video);
