@@ -73,7 +73,7 @@ export async function probeDrive(fileId,fetcher=fetch,resourceKey=''){
     return {
       head,headError,range:first,distant,
       usable:firstValid.ok,
-      distantSeek:firstValid.ok&&(distant===null?null:!!distantValid?.ok),
+      distantSeek:firstValid.ok?(distant===null?null:!!distantValid?.ok):null,
       verifiedRange:firstValid.ok?(distantValid?.ok??true):false,
       rangeReason:firstValid.ok?(distantValid&&!distantValid.ok?distantValid.reason:'ok'):firstValid.reason
     };
