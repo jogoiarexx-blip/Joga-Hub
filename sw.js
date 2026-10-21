@@ -35,6 +35,7 @@ const SHELL_FILES = [
   './js/drive-sync.js?v=18',
   './js/drive-health-core.js?v=1',
   './js/player-drive-core.js?v=1',
+  './js/player-media-qa.js?v=1',
   './js/player-drive-diagnostics.js?v=1',
   './js/player-episode-core.js?v=1',
   './js/player-browser-core.js?v=1',
