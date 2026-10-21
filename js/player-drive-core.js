@@ -84,11 +84,52 @@
     };
   }
 
+  // Pré-carregar somente metadados reduz o consumo antecipado de dados.
+  // O navegador pode ignorar a dica; não controla o buffer real do Drive.
+  function mediaPreload(){
+    return 'metadata';
+  }
+  function connectionPolicy({effectiveType='',saveData=false,dataSaver=false,downlink=0,deviceMemory=0,online=true,hidden=false}={}){
+    const slow=['slow-2g','2g','3g'].includes(String(effectiveType));
+    const lowMemory=Number(deviceMemory)>0&&Number(deviceMemory)<=2;
+    const constrained=!!dataSaver||!!saveData||slow||lowMemory||(Number(downlink)>0&&Number(downlink)<1.5);
+    const timeout=slow?16000:constrained?12000:8500;
+    return {
+      preload:mediaPreload(),
+      timeout,
+      warmNext:online!==false&&!hidden&&!constrained
+    };
+  }
+  function resumeTarget(time,duration){
+    const t=Number(time),d=Number(duration);
+    if(!Number.isFinite(t)||t<=0)return 0;
+    if(Number.isFinite(d)&&d>0)return Math.min(t,Math.max(0,d-0.25));
+    return t;
+  }
+  function makeRecoveryBudget({maxAttempts=2,windowMs=120000,cooldownMs=15000}={}){
+    let attempts=[];
+    function prune(now){attempts=attempts.filter(t=>now-t<windowMs&&now>=t)}
+    function status(now=Date.now()){
+      prune(now);
+      return {count:attempts.length,exhausted:attempts.length>=maxAttempts,
+        cooling:attempts.length>0&&now-attempts[attempts.length-1]<cooldownMs};
+    }
+    function begin(now=Date.now()){
+      const s=status(now);
+      if(s.exhausted||s.cooling)return false;
+      attempts.push(now);
+      return true;
+    }
+    function reset(){attempts=[]}
+    return Object.freeze({begin,status,reset});
+  }
+
   function shouldTrackStall({paused=false,ended=false,seeking=false,readyState=0,buffer=0}={}) {
     return !paused && !ended && !seeking && readyState > 0 && buffer < 3;
   }
 
   root.JOGAHUB_PLAYER_DRIVE_CORE=Object.freeze({
-    needsCompatiblePlayer,directMime,makeSession,hasExactProgress,episodeProgress,shouldTrackStall
+    needsCompatiblePlayer,directMime,makeSession,hasExactProgress,episodeProgress,shouldTrackStall,
+    mediaPreload,connectionPolicy,resumeTarget,makeRecoveryBudget
   });
 })(window);
