@@ -83,11 +83,13 @@ export async function probeDrive(fileId,fetcher=fetch,resourceKey=''){
     const checks=[],plan=firstValid.ok?planRangeChecks(firstValid.total):[];
     for(const check of plan){
       const response=await inspect('GET',{Range:'bytes='+check.start+'-'+check.end});
-      const result=evaluateRange(response,check.start,4096,check.end);
+      let result=evaluateRange(response,check.start,4096,check.end);
+      if(result.ok&&firstValid.total!==null&&result.total!==firstValid.total)
+        result={ok:false,reason:'size-changed'};
       checks.push({percent:check.percent,start:check.start,end:check.end,
         response,ok:result.ok,reason:result.ok?'ok':result.reason});
       // Permissão ou limitação após um seek é condição terminal; não repetir.
-      if(['access','missing','limited','login-or-response'].includes(response.kind))break;
+      if(!result.ok)break;
     }
     const fail=checks.find(c=>!c.ok);
     const allChecked=checks.length===plan.length;
@@ -108,7 +110,8 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
   const id=String(process.argv[2]||process.env.DRIVE_QA_PUBLIC_FILE_ID||'').trim();
   const key=String(process.env.DRIVE_QA_RESOURCE_KEY||'').trim();
   if(!id){
-    console.log('::notice::Teste do Drive real NÃO executado: informe um ID público com permissão de acesso.');
+    console.log('::error::Informe um ID público para executar o teste real; nenhum arquivo foi verificado.');
+    process.exitCode=2;
   }else{
     try{
       const result=await probeDrive(id,fetch,key);
