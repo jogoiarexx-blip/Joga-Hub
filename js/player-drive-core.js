@@ -130,8 +130,24 @@
     return !paused && !ended && !seeking && readyState > 0 && buffer < 3;
   }
 
+  // Agrupa sinais waiting/stalled da mesma interrupção, evitando contar
+  // eventos repetidos como vários travamentos distintos.
+  function makeStallTracker({windowMs=30000,minGapMs=2500}={}) {
+    let events=[];
+    let last=-Infinity;
+    function mark(now=Date.now()){
+      if(!Number.isFinite(now))return {count:events.length,accepted:false};
+      events=events.filter(t=>now>=t&&now-t<windowMs);
+      if(now-last<minGapMs)return {count:events.length,accepted:false};
+      events.push(now);last=now;
+      return {count:events.length,accepted:true};
+    }
+    function reset(){events=[];last=-Infinity}
+    return Object.freeze({mark,reset});
+  }
+
   root.JOGAHUB_PLAYER_DRIVE_CORE=Object.freeze({
     needsCompatiblePlayer,directMime,makeSession,hasExactProgress,episodeProgress,shouldTrackStall,
-    mediaPreload,connectionPolicy,resumeTarget,makeRecoveryBudget
+    mediaPreload,connectionPolicy,resumeTarget,makeRecoveryBudget,makeStallTracker
   });
 })(window);
