@@ -103,7 +103,21 @@
     updateContinueText();
   }
   function saveSettings(patch){settings={...settings,...patch};localStorage.setItem(settingsKey,JSON.stringify(settings))}
-  function setMode(newMode,label){mode=newMode;modeChip.className='mode-chip '+(newMode==='enhanced'||newMode==='youtube'?'good':'warn');modeChip.textContent=label;setTimeout(()=>{try{updateQualityChip()}catch{}},0);stage.classList.remove('enhanced','fallback','youtube');stage.classList.add(newMode);const direct=newMode==='enhanced',controlled=direct||newMode==='youtube';if(typeof pc!=='undefined'){pc.hidden=!direct;if(direct){syncCustomControls();showControls(3200)}}['rewindBtn','forwardBtn','speed','restartBtn'].forEach(id=>$(id).disabled=!controlled);$('pipBtn').disabled=!direct;const tip=$('driveTip');if(provider==='iframe'&&tip){tip.classList.add('show');tip.classList.toggle('compat',newMode==='fallback');$('driveTipText').innerHTML=newMode==='enhanced'?'<b>Drive Engine 5.3 ativo.</b> Controles próprios, retomada exata, gestos, velocidade, PiP e próximo episódio.':'<b>Player oficial do Google Drive.</b> Reprodução direta indisponível ou incompatível neste navegador. Use os controles do Drive acima. Se o vídeo não abrir, toque em Fonte ↗ para assistir no Drive e verificar o acesso ao arquivo.'}}
+  function setMode(newMode,label){if(newMode!=='fallback')clearCompatibleHelp();mode=newMode;modeChip.className='mode-chip '+(newMode==='enhanced'||newMode==='youtube'?'good':'warn');modeChip.textContent=label;setTimeout(()=>{try{updateQualityChip()}catch{}},0);stage.classList.remove('enhanced','fallback','youtube');stage.classList.add(newMode);const direct=newMode==='enhanced',controlled=direct||newMode==='youtube';if(typeof pc!=='undefined'){pc.hidden=!direct;if(direct){syncCustomControls();showControls(3200)}}['rewindBtn','forwardBtn','speed','restartBtn'].forEach(id=>$(id).disabled=!controlled);$('pipBtn').disabled=!direct;const tip=$('driveTip');if(provider==='iframe'&&tip){tip.classList.add('show');tip.classList.toggle('compat',newMode==='fallback');$('driveTipText').innerHTML=newMode==='enhanced'?'<b>Drive Engine 5.3 ativo.</b> Controles próprios, retomada exata, gestos, velocidade, PiP e próximo episódio.':'<b>Player oficial do Google Drive.</b> Reprodução direta indisponível ou incompatível neste navegador. Use os controles do Drive acima. Se o vídeo não abrir, toque em Fonte ↗ para assistir no Drive e verificar o acesso ao arquivo.'}}
+  let compatibleHelpTimer=0;
+  function clearCompatibleHelp(){clearTimeout(compatibleHelpTimer);compatibleHelpTimer=0;}
+  function showCompatibleHelp(){
+    if(mode!=='fallback'||provider!=='iframe')return;
+    const notice=$('driveCompatHelp');
+    if(notice)notice.hidden=false;
+  }
+  function armCompatibleHelp(){
+    clearCompatibleHelp();
+    const notice=$('driveCompatHelp');
+    if(notice)notice.hidden=true;
+    // O evento load do iframe confirma somente o documento, nunca o play.
+    compatibleHelpTimer=setTimeout(showCompatibleHelp,12000);
+  }
   function fallback(reason=''){
     loading.classList.add('hide');
     const fileId=currentItem?.driveFileId;
@@ -114,12 +128,14 @@
     const view=safeId?'https://drive.google.com/file/d/'+encodeURIComponent(safeId)+'/view'+resource:null;
     const target=isDrive?preview:u?.href;
     if(target){
+      if(isDrive)armCompatibleHelp();else clearCompatibleHelp();
       frame.src=target;
       setMode('fallback',isDrive?'Google Drive • compatibilidade':(provider==='youtube'?'YouTube':'player Internet Archive'));
       if(isDrive){
         markDriveResume();
         const open=$('external'),fallbackLink=$('fallback');
         if(open&&view){open.href=view;open.target='_blank';open.rel='noopener noreferrer';}
+        const compatOpen=$('driveCompatOpen');if(compatOpen&&view)compatOpen.href=view;
         if(fallbackLink&&view){fallbackLink.href=view;fallbackLink.target='_blank';fallbackLink.rel='noopener noreferrer';}
       }
     }else{
@@ -477,6 +493,7 @@
     video.pause();video.removeAttribute('src');video.load();
     directMediaUrl='';$('downloadBtn').hidden=true;
   }
+  $('driveCompatRetry')?.addEventListener('click',()=>{if(provider==='iframe'&&mode==='fallback')fallback('recarregamento manual do modo compatível')});
   function warmNextDriveEpisode(){if(!driveConnectionPolicy().warmNext||!nextItem?.driveFileId)return;const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(c?.saveData||c?.effectiveType==='2g'||c?.effectiveType==='slow-2g')return;try{const host=document.head;['https://drive.usercontent.google.com','https://drive.google.com'].forEach(h=>{if(document.querySelector(`link[data-jh-preconnect="${h}"]`))return;const l=document.createElement('link');l.rel='preconnect';l.href=h;l.crossOrigin='anonymous';l.dataset.jhPreconnect=h;host.appendChild(l)})}catch{}}
   async function initDrive(){
     if(await loadOfflineCopy())return;
