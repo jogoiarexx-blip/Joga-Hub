@@ -76,9 +76,9 @@ test('falha no armazenamento não impede reprodução',()=>{
 
 test('HTML de player carrega CSS, planejador e controlador nesta ordem',async()=>{
   const html=await readFile('link-player.html','utf8');
-  const stylesheet=html.indexOf('css/player.css?v=1');
+  const stylesheet=html.indexOf('css/player.css?v=2');
   const plannerIndex=html.indexOf('js/player-drive-routes.js?v=1');
-  const controller=html.indexOf('js/player-app.js?v=2');
+  const controller=html.indexOf('js/player-app.js?v=3');
   assert.ok(stylesheet>=0&&plannerIndex>=0&&controller>plannerIndex);
   assert.ok(!/<style[\s>]/i.test(html));
   assert.ok(!/<script>([\s\S]*?)<\/script>/i.test(html));
@@ -87,6 +87,6 @@ test('HTML de player carrega CSS, planejador e controlador nesta ordem',async()=
   assert.ok(code.includes('JOGAHUB_PLAYER_DRIVE_ROUTES'));
   const sw=await readFile('sw.js','utf8');
   assert.ok(sw.includes('js/player-drive-routes.js?v=1'));
-  assert.ok(sw.includes('js/player-app.js?v=2'));
-  assert.ok(sw.includes('css/player.css?v=1'));
+  assert.ok(sw.includes('js/player-app.js?v=3'));
+  assert.ok(sw.includes('css/player.css?v=2'));
 });
