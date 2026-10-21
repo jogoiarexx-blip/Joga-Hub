@@ -31,3 +31,18 @@ export function missingFileIds(previousFiles, nextFiles) {
   const newIds = new Set((nextFiles || []).map(file => String(file?.id || '').trim()).filter(Boolean));
   return [...oldIds].filter(id => !newIds.has(id));
 }
+
+/* Mesma regra final aplicada no navegador e no Apps Script. */
+export function isSubtitleFile(file) {
+  const name=String(file?.name??file?.nome??'').trim();
+  const mime=String(file?.mime||'').toLowerCase().split(';')[0].trim();
+  return /\.(?:srt|vtt|ass|ssa|sub|ttml|sbv)$/i.test(name)||
+    mime==='application/x-subrip'||mime==='text/vtt';
+}
+export function isVideoFile(file) {
+  const name=String(file?.name??file?.nome??'').trim();
+  const mime=String(file?.mime||'').toLowerCase().split(';')[0].trim();
+  if(!name||isSubtitleFile(file)||/\.(?:website|html?|json|txt|pdf|zip|rar|7z|exe|url|lnk)$/i.test(name))return false;
+  if(/\.(?:mp4|m4v|mkv|webm|mov|avi|wmv|flv|ogv|mpeg|mpg|3gp|ts|m2ts)$/i.test(name))return true;
+  return !/\.[a-z0-9]{1,8}$/i.test(name)&&mime.startsWith('video/');
+}
