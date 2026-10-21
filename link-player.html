@@ -360,7 +360,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
       refreshTrackControls();
       showSubtitleInfo('Legenda disponível no seletor CC. Se não aparecer, abra o arquivo original.');
     }catch(error){
-      if(!controller.signal.aborted)showSubtitleInfo('Não foi possível carregar a legenda diretamente (CORS, rede ou permissão).');
+      if(driveSubtitleAbort===controller)showSubtitleInfo('Não foi possível carregar a legenda diretamente (CORS, tempo de espera, rede ou permissão).');
     }finally{clearTimeout(timer);if(driveSubtitleAbort===controller)driveSubtitleAbort=null}
   }
     function clearVideoTracks(){video.querySelectorAll('track').forEach(t=>t.remove())}
