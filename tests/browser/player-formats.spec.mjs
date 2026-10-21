@@ -6,7 +6,7 @@ import {join} from 'node:path';
 
 // Vídeos reais curtos gerados localmente: as rotas Drive são simuladas,
 // mas o navegador realmente decodifica os bytes MP4/WebM.
-let dir='',mp4,webm;
+let dir='',mp4,webm,audioCodecs={};
 test.beforeAll(()=>{
   dir=mkdtempSync(join(tmpdir(),'jogahub-video-test-'));
   const base=['-hide_banner','-loglevel','error','-f','lavfi','-i','color=c=blue:size=32x32:rate=3','-f','lavfi','-i','sine=frequency=440:sample_rate=48000','-t','2'];
@@ -16,6 +16,12 @@ test.beforeAll(()=>{
     execFileSync('ffmpeg',[...base,'-c:v','libvpx','-b:v','12k','-c:a','libopus','-b:a','48k','-deadline','realtime','-cpu-used','8','-y',webmPath]);
   }catch(error){throw new Error('Falha ao gerar MP4/WebM com ffmpeg: '+error.message)}
   mp4=readFileSync(mp4Path);webm=readFileSync(webmPath);
+  for(const [label,file] of [['mp4',mp4Path],['webm',webmPath]]){
+    audioCodecs[label]=execFileSync('ffprobe',[
+      '-v','error','-select_streams','a:0',
+      '-show_entries','stream=codec_name','-of','default=noprint_wrappers=1:nokey=1',file
+    ],{encoding:'utf8'}).trim();
+  }
 });
 test.afterAll(()=>{if(dir)rmSync(dir,{recursive:true,force:true})});
 
@@ -90,6 +96,8 @@ test('arquivos MP4/WebM de teste possuem vídeo e áudio codificados',()=>{
     // automatizada não equivale a verificar som num alto-falante real.
     expect(data.byteLength).toBeGreaterThan(1000);
   }
+  expect(audioCodecs.mp4).toBe('aac');
+  expect(audioCodecs.webm).toBe('opus');
 });
 
 test('resposta HTTP inválida não é confundida com MP4 reproduzível',async({page})=>{
