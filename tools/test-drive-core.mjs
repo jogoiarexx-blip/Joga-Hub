@@ -1,11 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
-const [snapshotCode, syncCode, catalogCode, mediaPolicyCode] = await Promise.all([
+const [snapshotCode, syncCode, catalogCode, mediaPolicyCode, subtitleCoreCode, subtitleFilesCode] = await Promise.all([
   readFile('js/drive-snapshot.js', 'utf8'),
   readFile('js/drive-sync.js', 'utf8'),
   readFile('js/app.js', 'utf8'),
-  readFile('js/drive-media-policy.js', 'utf8')
+  readFile('js/drive-media-policy.js', 'utf8'),
+  readFile('js/drive-subtitle-core.js', 'utf8'),
+  readFile('js/drive-subtitles.js', 'utf8')
 ]);
 
 const snapshotMatch = snapshotCode.match(/window\.JOGAHUB_DRIVE_SNAPSHOT\s*=\s*(\[[\s\S]*\]);?\s*$/);
@@ -44,6 +46,8 @@ context.window = {
 };
 
 vm.runInNewContext(mediaPolicyCode, context, {filename:'js/drive-media-policy.js'});
+vm.runInNewContext(subtitleFilesCode, context,{filename:'js/drive-subtitles.js'});
+vm.runInNewContext(subtitleCoreCode, context,{filename:'js/drive-subtitle-core.js'});
 vm.runInNewContext(syncCode, context, { filename: 'js/drive-sync.js' });
 
 const items = context.FILMES_CATALOGO.filter(item => String(item.id || '').startsWith('drive-auto-'));
@@ -118,6 +122,10 @@ if (profundezasFiles.length) {
   }
 }
 
+const matchedSubs=items.filter(item=>Array.isArray(item.driveSubtitles)&&item.driveSubtitles.length);
+if(matchedSubs.length<24)throw new Error('Legendas históricas não foram associadas aos episódios (encontradas: '+matchedSubs.length+')');
+if(matchedSubs.some(item=>item.driveSubtitles.some(sub=>sub.name.replace(/\.srt$/i,'')!==item._driveName.replace(/\.mp4$/i,''))))
+  throw new Error('Legenda foi associada ao episódio errado');
 const directPreferred = items.filter(item => /\.mp4$/i.test(item._driveName || '') && /x264|h[ ._-]?264/i.test(item._driveName || ''));
 if (!directPreferred.length) throw new Error('Nenhum MP4/H.264 reconhecido para reprodução direta');
 
