@@ -64,11 +64,13 @@
       }
     }
   }
-  const MEDIA_CACHE='jogahub-offline-media-v1', MEDIA_REGISTRY_KEY='jogahub.offline.media.registry';
+  const OFFLINE=window.JOGAHUB_PLAYER_OFFLINE;
+  if(!OFFLINE)throw new Error('Gerenciador de mídia offline não carregado');
+  const offlineManager=OFFLINE.createManager();
+  const MEDIA_CACHE=OFFLINE.CACHE_NAME;
   const id=currentItem?.id||itemId||archiveId||youtubeId||queryTitle;
   let directMediaUrl='',directMediaSize=0,directMediaMime='',offlineObjectUrl=null;
-  function loadMediaRegistry(){try{return JSON.parse(localStorage.getItem(MEDIA_REGISTRY_KEY)||'{}')}catch{return {}}}
-  function saveMediaRegistry(value){localStorage.setItem(MEDIA_REGISTRY_KEY,JSON.stringify(value))}
+  function loadMediaRegistry(){return offlineManager.registry()}
   function formatBytes(value){let n=Number(value)||0;if(!n)return 'tamanho desconhecido';const units=['B','KB','MB','GB'];let i=0;while(n>=1024&&i<units.length-1){n/=1024;i++}return `${n>=10||i===0?n.toFixed(0):n.toFixed(1)} ${units[i]}`}
   const title=currentItem?.title||queryTitle, progressId=archiveId||itemId||youtubeId||currentItem?.id||(driveFileId?'drive-auto-'+driveFileId:title), baseProgressKey=`jogahub.movie.progress.${progressId}`, settingsKey='jogahub.movie.player.settings'; let archiveEpisodeKey='',archivePlaylistFiles=[],archivePlaylistIndex=0; const progressKeyNow=()=>archiveEpisodeKey?`${baseProgressKey}:${archiveEpisodeKey}`:baseProgressKey;
   let settings={};try{settings=JSON.parse(localStorage.getItem(settingsKey)||'{}')}catch{};settings={autoplayNext:settings.autoplayNext!==false,autoSkipIntro:!!settings.autoSkipIntro,autoSkipRecap:!!settings.autoSkipRecap,dataSaver:!!settings.dataSaver,autoRecoverDrive:settings.autoRecoverDrive!==false,captionSize:Number(settings.captionSize)||100,captionBg:Number(settings.captionBg)||.72,...settings}
@@ -232,7 +234,7 @@
     }finally{clearTimeout(timer);if(driveSubtitleAbort===controller)driveSubtitleAbort=null}
   }
     function clearVideoTracks(){video.querySelectorAll('track').forEach(t=>t.remove())}
-  function selectArchiveEpisode(index,autoplay=false){if(index<0||index>=archivePlaylistFiles.length)return;saveProgress(true);archivePlaylistIndex=index;const f=archivePlaylistFiles[index];archiveEpisodeKey=archiveCanonical(f);directMediaUrl=archiveFileUrl(f);directMediaSize=Number(f.size)||0;directMediaMime=(f.format||'').toLowerCase().includes('webm')?'video/webm':'video/mp4';video.pause();clearVideoTracks();video.src=directMediaUrl;video.poster=`https://archive.org/services/img/${encodeURIComponent(archiveId)}`;$('topTitle').textContent=`${currentItem?.seriesTitle||'Pole Position'} — ${archiveEpisodeLabel(f,index)}`;$('title').textContent=`${currentItem?.seriesTitle||currentItem?.title||'Série'} — ${archiveEpisodeLabel(f,index)}`;$('downloadBtn').hidden=false;loading.classList.remove('hide');loadingText.textContent=`Carregando episódio ${index+1} de ${archivePlaylistFiles.length}…`;renderArchiveEpisodes();video.addEventListener('loadedmetadata',()=>{const p=readProgress();if(p&&p.time>20&&!p.finished&&p.time<video.duration-20)video.currentTime=Math.min(p.time,Math.max(0,video.duration-5));video.playbackRate=Number(settings.speed)||1;if(typeof settings.volume==='number')video.volume=Math.max(0,Math.min(1,settings.volume));$('speed').value=String(video.playbackRate);loading.classList.add('hide');setMode('enhanced',`episódio ${index+1}/${archivePlaylistFiles.length}`);const info=[currentItem?.genre,currentItem?.year,currentItem?.language,`Episódio ${index+1}/${archivePlaylistFiles.length}`,formatTime(video.duration),directMediaSize?formatBytes(directMediaSize):''].filter(Boolean);$('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('');if(autoplay)video.play().catch(()=>{})},{once:true});video.load()}
+  function selectArchiveEpisode(index,autoplay=false){if(index<0||index>=archivePlaylistFiles.length)return;saveProgress(true);archivePlaylistIndex=index;const f=archivePlaylistFiles[index];archiveEpisodeKey=archiveCanonical(f);directMediaUrl=archiveFileUrl(f);directMediaSize=Number(f.size)||0;directMediaMime=(f.format||'').toLowerCase().includes('webm')?'video/webm':'video/mp4';video.pause();clearVideoTracks();video.src=directMediaUrl;video.poster=`https://archive.org/services/img/${encodeURIComponent(archiveId)}`;$('topTitle').textContent=`${currentItem?.seriesTitle||'Pole Position'} — ${archiveEpisodeLabel(f,index)}`;$('title').textContent=`${currentItem?.seriesTitle||currentItem?.title||'Série'} — ${archiveEpisodeLabel(f,index)}`;$('downloadBtn').hidden=false;loading.classList.remove('hide');loadingText.textContent=`Carregando episódio ${index+1} de ${archivePlaylistFiles.length}…`;renderArchiveEpisodes();video.addEventListener('loadedmetadata',()=>{const p=readProgress();const resume=MEDIA_QA.resumeTime(p,video.duration);if(resume!==null)video.currentTime=resume;video.playbackRate=Number(settings.speed)||1;if(typeof settings.volume==='number')video.volume=Math.max(0,Math.min(1,settings.volume));$('speed').value=String(video.playbackRate);loading.classList.add('hide');setMode('enhanced',`episódio ${index+1}/${archivePlaylistFiles.length}`);const info=[currentItem?.genre,currentItem?.year,currentItem?.language,`Episódio ${index+1}/${archivePlaylistFiles.length}`,formatTime(video.duration),directMediaSize?formatBytes(directMediaSize):''].filter(Boolean);$('meta').innerHTML=info.map(v=>`<span class="pill">${safe(v)}</span>`).join('');if(autoplay)video.play().catch(()=>{})},{once:true});video.load()}
   function refreshTrackControls(){
     const audioSel=$('audioTrack'), subSel=$('subtitleTrack');
     if(!audioSel||!subSel)return;
@@ -730,11 +732,65 @@
   }
 
   async function init(){if(provider==='youtube'&&(youtubeId||playlistId)){await initYouTube();return}if(provider==='iframe'&&u){await initDrive();return}await initArchive()}init();
-  async function removeCurrentDownload(){const key=currentItem?.id||id,reg=loadMediaRegistry(),saved=reg[key];if(!saved)return;const cache=await caches.open(MEDIA_CACHE);await cache.delete(saved.url);delete reg[key];saveMediaRegistry(reg);$('downloadBtn').dataset.saved='';$('downloadBtn').textContent='⬇ baixar offline'}
-  async function downloadCurrent(){const btn=$('downloadBtn'),key=currentItem?.id||id;if(!directMediaUrl||!key)return;const reg=loadMediaRegistry();if(reg[key]){if(confirm('Remover este vídeo dos downloads offline?'))await removeCurrentDownload();return}if(!navigator.onLine){alert('Conecte-se à internet para fazer o download.');return}try{btn.disabled=true;btn.classList.add('downloading');$('downloadMeter').classList.add('show');$('downloadText').textContent='Baixando vídeo…';const res=await fetch(directMediaUrl,{mode:'cors'});if(!res.ok)throw new Error('download '+res.status);const total=Number(res.headers.get('content-length'))||directMediaSize||0;const [cacheStream,progressStream]=res.body.tee();const headers=new Headers(res.headers);const cache=await caches.open(MEDIA_CACHE);const saving=cache.put(directMediaUrl,new Response(cacheStream,{status:res.status,statusText:res.statusText,headers}));const reader=progressStream.getReader();let done=0;while(true){const r=await reader.read();if(r.done)break;done+=r.value.byteLength;const pct=total?Math.min(100,Math.round(done/total*100)):0;$('downloadPct').textContent=total?`${pct}%`:formatBytes(done);$('downloadBar').style.width=total?`${pct}%`:'35%';btn.textContent=total?`⬇ ${pct}%`:`⬇ ${formatBytes(done)}`}await saving;reg[key]={id:key,title:currentItem?.title||title,year:currentItem?.year||'',genre:currentItem?.genre||'',thumb:currentItem?.thumb||video.poster||'',url:directMediaUrl,size:done,mime:directMediaMime,savedAt:Date.now(),archiveId,playerHref:location.pathname.split('/').pop()+location.search};saveMediaRegistry(reg);btn.dataset.saved='1';btn.textContent='✓ salvo offline';$('downloadText').textContent='Download concluído';$('downloadPct').textContent='100%';$('downloadBar').style.width='100%';setTimeout(()=>$('downloadMeter').classList.remove('show'),1400)}catch(e){console.error(e);alert('Não foi possível salvar este vídeo offline. A fonte pode bloquear o download ou não haver espaço suficiente.');$('downloadMeter').classList.remove('show');btn.textContent='⬇ tentar novamente'}finally{btn.disabled=false;btn.classList.remove('downloading')}}
+  async function removeCurrentDownload(){
+    const key=currentItem?.id||id;
+    await offlineManager.remove(key);
+    const btn=$('downloadBtn');
+    btn.dataset.saved='';
+    btn.textContent='⬇ baixar offline';
+  }
+  async function downloadCurrent(){
+    const btn=$('downloadBtn'),key=currentItem?.id||id;
+    if(offlineManager.isBusy()){
+      offlineManager.cancel();
+      $('downloadText').textContent='Cancelando…';
+      return;
+    }
+    if(!directMediaUrl||!key)return;
+    if(loadMediaRegistry()[key]){
+      if(confirm('Remover este vídeo dos downloads offline?')){
+        try{await removeCurrentDownload()}catch{toast('Não foi possível remover o vídeo offline')}
+      }
+      return;
+    }
+    if(navigator.onLine===false){toast('Conecte-se à internet para fazer o download.');return}
+    const meter=$('downloadMeter'),bar=$('downloadBar'),pct=$('downloadPct');
+    try{
+      btn.classList.add('downloading');
+      btn.textContent='✕ cancelar download';
+      meter.classList.add('show');
+      $('downloadText').textContent='Baixando vídeo…';
+      bar.style.width='0%';pct.textContent='0%';
+      const record=await offlineManager.download({
+        key,url:directMediaUrl,
+        meta:{
+          title:currentItem?.title||title,year:currentItem?.year||'',genre:currentItem?.genre||'',
+          thumb:currentItem?.thumb||video.poster||'',mime:directMediaMime,archiveId,
+          playerHref:location.pathname.split('/').pop()+location.search
+        },
+        onProgress({done,total,percent}){
+          pct.textContent=total?percent+'%':formatBytes(done);
+          bar.style.width=total?percent+'%':'35%';
+        }
+      });
+      btn.dataset.saved='1';
+      btn.textContent='✓ salvo offline';
+      $('downloadText').textContent='Download concluído • '+formatBytes(record.size);
+      pct.textContent='100%';bar.style.width='100%';
+      toast('Vídeo salvo para uso offline');
+    }catch(error){
+      const canceled=error?.name==='AbortError'||/cancelad|abort/i.test(String(error?.message||''));
+      btn.textContent='⬇ tentar novamente';
+      $('downloadText').textContent=canceled?'Download cancelado':'Falha ao salvar vídeo offline';
+      toast(canceled?'Download cancelado':'Não foi possível baixar o vídeo; verifique acesso, rede e espaço livre');
+    }finally{
+      btn.classList.remove('downloading');
+      setTimeout(()=>{if(!offlineManager.isBusy())meter.classList.remove('show')},1700);
+    }
+  }
   $('downloadBtn').onclick=downloadCurrent;
   $('driveModeBtn').onclick=async()=>{if(provider!=='iframe')return;if(mode==='enhanced'){localStorage.setItem(driveModeKey(),'compat');useDriveFallback()}else{localStorage.setItem(driveModeKey(),'auto');localStorage.setItem('jogahub.drive.playerMode','auto');clearDriveFail(currentItem?.driveFileId||'');$('driveModeBtn').disabled=true;try{await useDriveDirect(true,true)}catch(e){diagnoseDriveError(e?.driveIssue||'unknown');useDriveFallback(false)}finally{$('driveModeBtn').disabled=false}}};
-  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});let volumeSaveTimer=0;video.addEventListener('volumechange',()=>{clearTimeout(volumeSaveTimer);volumeSaveTimer=setTimeout(()=>saveSettings({volume:video.volume}),350)});video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);clearInterval(statsTicker);stopVideoFrameMonitor();resetSeekWatch();clearTimeout(volumeSaveTimer);saveSettings({volume:video.volume});releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl);cleanDriveSubtitle()});
+  $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});let volumeSaveTimer=0;video.addEventListener('volumechange',()=>{clearTimeout(volumeSaveTimer);volumeSaveTimer=setTimeout(()=>saveSettings({volume:video.volume}),350)});video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);clearInterval(statsTicker);offlineManager.cancel();stopVideoFrameMonitor();resetSeekWatch();clearTimeout(volumeSaveTimer);saveSettings({volume:video.volume});releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl);cleanDriveSubtitle()});
   function seek(delta){if(mode==='enhanced')seekToChecked(Math.max(0,(video.currentTime||0)+delta));else if(mode==='youtube'&&ytPlayer?.seekTo)ytPlayer.seekTo(Math.max(0,getTime()+delta),true)}
   $('rewindBtn').onclick=()=>seek(-10);$('forwardBtn').onclick=()=>seek(10);$('restartBtn').onclick=()=>{localStorage.removeItem(progressKeyNow());if(mode==='enhanced'){video.currentTime=0;video.play().catch(()=>{})}else if(mode==='youtube'&&ytPlayer){ytPlayer.seekTo(0,true);ytPlayer.playVideo()}updateContinueText()};$('fullBtn').onclick=async()=>{
     const result=await BROWSER_CORE.requestFullscreen(stage,video);
