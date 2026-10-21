@@ -65,3 +65,23 @@ test('CSS modular mantém layout estável e player funcional em celular @crossbr
   expect(state.width).toBeLessThanOrEqual(state.viewport+2);
   expect(state.x).toBeGreaterThanOrEqual(-2);
 });
+
+
+test('celular mostra ações essenciais e recolhe ferramentas avançadas @crossbrowser',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(playerUrl(''),{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#stage')).toBeVisible();
+  await expect(page.locator('#morePlayerControls')).toBeVisible();
+  await expect(page.locator('#settingsBtn')).toBeVisible();
+  await expect(page.locator('#fullBtn')).toBeVisible();
+  await expect(page.locator('#miniBtn')).toBeHidden();
+  await expect(page.locator('#pipBtn')).toBeHidden();
+  await page.locator('#morePlayerControls').click();
+  await expect(page.locator('#morePlayerControls')).toHaveAttribute('aria-expanded','true');
+  await expect(page.locator('#miniBtn')).toBeVisible();
+  const data=await page.locator('#toolbar').boundingBox();
+  expect(data.width).toBeLessThanOrEqual(392);
+  await page.locator('#morePlayerControls').click();
+  await expect(page.locator('#miniBtn')).toBeHidden();
+  await expect(page.locator('#morePlayerControls')).toHaveAttribute('aria-expanded','false');
+});
