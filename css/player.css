@@ -29,3 +29,30 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
 .drive-diagnostic p{margin:5px 0}
 .drive-diagnostic #driveDiagnosticAction{color:#c8d2ff;font-weight:650}
 #driveSubtitleNotice:not([hidden]){display:flex;flex-wrap:wrap}#driveSubtitleNotice[hidden],#driveSubtitleLink[hidden]{display:none!important}
+
+
+/* Player responsivo: ações essenciais sempre visíveis; extras sob demanda.
+   Os botões existentes mantêm seus IDs e handlers em JS. */
+.player-more-toggle{display:none}
+@media(max-width:720px){
+  .stage-shell:not(.mini) .toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    overflow:visible;
+    gap:6px;
+    justify-content:flex-start;
+    padding:8px max(8px,env(safe-area-inset-right)) 8px max(8px,env(safe-area-inset-left));
+  }
+  .stage-shell:not(.mini) .toolbar .btn,
+  .stage-shell:not(.mini) .toolbar .select{
+    min-height:40px;
+    padding:8px 9px;
+    font-size:12px;
+  }
+  .stage-shell:not(.mini) .toolbar .spacer{display:none}
+  .stage-shell:not(.mini) .toolbar .player-more-toggle{display:inline-flex;align-items:center;justify-content:center}
+  .stage-shell:not(.mini) .toolbar:not(.show-advanced) .player-advanced{display:none!important}
+  .stage-shell:not(.mini) .toolbar.show-advanced .player-advanced:not([hidden]){display:inline-flex}
+  .stage-shell:not(.mini) .toolbar .select[hidden],
+  .stage-shell:not(.mini) .toolbar .btn[hidden]{display:none!important}
+}
