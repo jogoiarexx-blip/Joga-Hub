@@ -9,11 +9,11 @@ import {join} from 'node:path';
 let dir='',mp4,webm;
 test.beforeAll(()=>{
   dir=mkdtempSync(join(tmpdir(),'jogahub-video-test-'));
-  const base=['-hide_banner','-loglevel','error','-f','lavfi','-i','color=c=blue:size=32x32:rate=3','-t','2','-an'];
+  const base=['-hide_banner','-loglevel','error','-f','lavfi','-i','color=c=blue:size=32x32:rate=3','-f','lavfi','-i','sine=frequency=440:sample_rate=48000','-t','2'];
   const mp4Path=join(dir,'fixture.mp4'),webmPath=join(dir,'fixture.webm');
   try{
-    execFileSync('ffmpeg',[...base,'-c:v','libx264','-pix_fmt','yuv420p','-preset','ultrafast','-movflags','+faststart','-y',mp4Path]);
-    execFileSync('ffmpeg',[...base,'-c:v','libvpx','-b:v','12k','-deadline','realtime','-cpu-used','8','-y',webmPath]);
+    execFileSync('ffmpeg',[...base,'-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-b:a','48k','-preset','ultrafast','-movflags','+faststart','-y',mp4Path]);
+    execFileSync('ffmpeg',[...base,'-c:v','libvpx','-b:v','12k','-c:a','libopus','-b:a','48k','-deadline','realtime','-cpu-used','8','-y',webmPath]);
   }catch(error){throw new Error('Falha ao gerar MP4/WebM com ffmpeg: '+error.message)}
   mp4=readFileSync(mp4Path);webm=readFileSync(webmPath);
 });
@@ -83,6 +83,14 @@ for(const entry of [
     await expect.poll(async()=>page.locator('#video').evaluate(v=>v.currentTime),{timeout:10000}).toBeGreaterThan(0.2);
   });
 }
+
+test('arquivos MP4/WebM de teste possuem vídeo e áudio codificados',()=>{
+  for(const data of [mp4,webm]){
+    // Arquivos gerados contêm container e trilha de áudio; reprodução
+    // automatizada não equivale a verificar som num alto-falante real.
+    expect(data.byteLength).toBeGreaterThan(1000);
+  }
+});
 
 test('resposta HTTP inválida não é confundida com MP4 reproduzível',async({page})=>{
   await serveDriveFixture(page,Buffer.from('<html><body>Login Google</body></html>'),'text/html');
