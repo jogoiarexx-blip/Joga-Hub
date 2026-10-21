@@ -79,3 +79,16 @@ test('clipes curtos não ficam assistidos quando ainda falta muito tempo',()=>{
   assert.equal(qa.finishedByProgress(1,0),false);
   assert.equal(qa.finishedByProgress(0,65,true),true);
 });
+
+
+test('retomada reabre vídeo em 90% sem tratar como finalizado',()=>{
+  assert.equal(qa.resumeTime({time:58.5,duration:65},65),58.5);
+  assert.equal(qa.resumeTime({time:32.5,duration:65},65),32.5);
+  assert.equal(qa.resumeTime({time:61.8,duration:65},65),null);
+  assert.equal(qa.resumeTime({time:3585,duration:3600},3600),null);
+  assert.equal(qa.resumeTime({time:2,duration:65},65),null);
+  assert.equal(qa.resumeTime({time:50,episodeOnly:true},65),null);
+  assert.equal(qa.resumeTime(null,65),null);
+  // Marcações de conclusão antigas não impedem retomar se o tempo é válido.
+  assert.equal(qa.resumeTime({time:58.5,finished:true},65),58.5);
+});
