@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="css/header-upgrade.css?v=131">
 <link rel="stylesheet" href="css/core-upgrades.css?v=132">
 <link rel="stylesheet" href="css/tv-catalog.css?v=144">
+<link rel="stylesheet" href="css/drive-health.css?v=1">
 <link rel="icon" href="assets/favicon.png">
 <link rel="manifest" href="manifest.webmanifest?v=142">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180.png">
@@ -31,6 +32,7 @@
 <script defer src="js/data-drive-filmes.js?v=7"></script>
 <script defer src="js/drive-snapshot.js?v=4"></script>
 <script defer src="js/drive-sync.js?v=16"></script>
+<script defer src="js/drive-health-core.js?v=1"></script>
 <script defer src="js/site-upgrades.js?v=5"></script>
 <script defer src="js/imdb-ratings.js?v=2"></script>
 <script defer src="js/data-tv.js?v=144"></script>
@@ -38,6 +40,7 @@
 <script defer src="js/catalog-core.js?v=1"></script>
 <script defer src="js/navigation-core.js?v=1"></script>
 <script defer src="js/app.js?v=153"></script>
+<script defer src="js/drive-health-panel.js?v=1"></script>
 <script defer src="js/tv-catalog.js?v=144"></script>
 <script defer src="js/launcher-upgrade.js?v=150"></script>
 <script defer src="js/sidebar-upgrade.js?v=129"></script>
@@ -63,7 +66,7 @@
       <button class="nav-link" data-action="favorites" type="button">♥ Minha Lista</button>
       <button class="nav-link" data-action="downloads" type="button">⬇ Downloads</button>
     </nav>
-    <div class="header-actions"><button class="header-search" data-action="search" type="button" aria-label="Buscar">⌕</button><button class="header-search" data-action="settings" type="button" aria-label="Configurações">⚙</button><button id="installApp" class="install-app install-jogahub-trigger" type="button" aria-label="Instalar o JogaHub">⬇ Instalar JogaHub</button></div>
+    <div class="header-actions"><button class="header-search" data-action="drive-health" type="button" aria-label="Diagnóstico do Google Drive" title="Diagnóstico do Drive">☁</button><button class="header-search" data-action="search" type="button" aria-label="Buscar">⌕</button><button class="header-search" data-action="settings" type="button" aria-label="Configurações">⚙</button><button id="installApp" class="install-app install-jogahub-trigger" type="button" aria-label="Instalar o JogaHub">⬇ Instalar JogaHub</button></div>
   </div>
 </header>
 
@@ -112,6 +115,7 @@
 <div id="settingsModal" class="settings-modal" hidden>
   <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <div class="settings-head"><div><span class="eyebrow">JogaHub</span><h2 id="settingsTitle">⚙ Configurações</h2></div><button id="closeSettings" class="downloads-close" type="button">✕</button></div>
+    <button class="setting-row" data-action="drive-health" type="button" style="width:100%;text-align:left;background:transparent;color:inherit;border:0;cursor:pointer"><div><strong>☁ Diagnóstico do Google Drive</strong><small>Veja falhas, compatibilidade e testes de cada filme ou episódio neste aparelho.</small></div></button>
     <label class="setting-row"><div><strong>📻 Rádios Online</strong><small>Mostra ou oculta a aba de rádios e permite ouvir estações enquanto navega pelo JogaHub.</small></div><input id="radioFeatureToggle" type="checkbox" checked></label>
   </section>
 </div>
@@ -134,6 +138,30 @@
     <span id="radioDockVolumeValue" class="radio-volume-value">70%</span>
   </div>
   <button id="radioDockStop" class="radio-control radio-stop" type="button" aria-label="Parar rádio" title="Parar">■</button>
+</div>
+
+<div id="driveHealthModal" class="downloads-modal drive-health-modal" hidden>
+  <section class="drive-health-panel" role="dialog" aria-modal="true" aria-labelledby="driveHealthTitle">
+    <header class="drive-health-head">
+      <div><span class="eyebrow">Google Drive · diagnóstico local</span><h2 id="driveHealthTitle">☁ Estado dos filmes e episódios</h2>
+      <p id="driveHealthSummary" class="drive-health-stats" role="status">Carregando diagnóstico dos arquivos…</p></div>
+      <button id="closeDriveHealth" class="downloads-close" type="button" aria-label="Fechar diagnóstico">✕</button>
+    </header>
+    <div class="drive-health-controls">
+      <input id="driveHealthSearch" type="search" autocomplete="off" placeholder="Buscar filme, série ou motivo da falha…" aria-label="Buscar diagnóstico por título ou motivo">
+      <select id="driveHealthFilter" aria-label="Filtrar estado dos arquivos">
+        <option value="all">Todos os arquivos</option>
+        <option value="failed">Com falha</option>
+        <option value="compatible">Modo Drive</option>
+        <option value="direct">Carga direta</option>
+        <option value="untested">Sem teste</option>
+      </select>
+    </div>
+    <div class="drive-health-toolbar"><span id="driveHealthResults" aria-live="polite"></span><button type="button" id="driveHealthClearAll">Apagar histórico local</button></div>
+    <div id="driveHealthList" class="drive-health-list"></div>
+    <button id="driveHealthMore" class="drive-health-more" type="button" hidden>Mostrar mais arquivos</button>
+    <p class="drive-health-note">Informações somente deste navegador. Não são enviados relatórios, links privados ou chaves de compartilhamento. O modo compatível não confirma que o vídeo foi reproduzido no Google Drive.</p>
+  </section>
 </div>
 
 <div id="downloadsModal" class="downloads-modal" hidden>
