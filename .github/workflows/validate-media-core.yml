@@ -17,6 +17,10 @@ on:
       - 'js/launcher-upgrade.js'
       - 'js/tv-catalog.js'
       - 'link-player.html'
+      - 'css/player.css'
+      - 'js/player-app.js'
+      - 'js/player-drive-routes.js'
+      - 'tools/test-player-drive-routes.mjs'
       - 'js/player-drive-core.js'
       - 'js/player-media-qa.js'
       - 'js/player-browser-core.js'
@@ -55,6 +59,10 @@ on:
       - 'js/launcher-upgrade.js'
       - 'js/tv-catalog.js'
       - 'link-player.html'
+      - 'css/player.css'
+      - 'js/player-app.js'
+      - 'js/player-drive-routes.js'
+      - 'tools/test-player-drive-routes.mjs'
       - 'js/player-drive-core.js'
       - 'js/player-media-qa.js'
       - 'js/player-browser-core.js'
@@ -94,6 +102,8 @@ jobs:
           node --check js/catalog-core.js
           node --check js/navigation-core.js
           node --check js/player-drive-core.js
+          node --check js/player-drive-routes.js
+          node --check js/player-app.js
           node --check js/player-media-qa.js
           node --check js/player-browser-core.js
           node --check js/player-drive-diagnostics.js
@@ -130,19 +140,8 @@ jobs:
       - name: Validar sequência e passagem de episódios
         run: node --test tools/test-player-episode-core.mjs
 
-      - name: Validar JavaScript do player HTML
-        run: |
-          node - <<'NODE'
-          const fs=require('fs');
-          const html=fs.readFileSync('link-player.html','utf8');
-          const blocks=[...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1].trim()).filter(Boolean);
-          if(!blocks.length) throw new Error('Nenhum script inline encontrado em link-player.html');
-          for(const [i,code] of blocks.entries()){
-            try{ new Function(code); }
-            catch(e){ throw new Error('Script inline '+(i+1)+' inválido: '+e.message); }
-          }
-          console.log('link-player.html:',blocks.length,'bloco(s) JavaScript válido(s)');
-          NODE
+      - name: Validar módulos extraídos do player e privacidade do cache Drive
+        run: node --test tools/test-player-drive-routes.mjs
 
       - name: Validar núcleo isolado de catálogo
         run: node --test tools/test-catalog-core.mjs
