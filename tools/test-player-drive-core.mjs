@@ -91,3 +91,40 @@ test('apenas travamento em reprodução ativa aciona recuperação',()=>{
   assert.equal(core.shouldTrackStall({paused:false,readyState:4,buffer:5}),false);
   assert.equal(core.shouldTrackStall({paused:false,readyState:3,buffer:0}),true);
 });
+
+
+test('rede lenta aumenta prazo, respeita economia de dados e bloqueia prefetch',()=>{
+  const slow=core.connectionPolicy({effectiveType:'2g',saveData:true,deviceMemory:1,downlink:.4});
+  assert.equal(slow.preload,'metadata');
+  assert.equal(slow.timeout,16000);
+  assert.equal(slow.warmNext,false);
+  const normal=core.connectionPolicy({effectiveType:'4g',downlink:10,deviceMemory:8});
+  assert.equal(normal.timeout,8500);
+  assert.equal(normal.warmNext,true);
+  assert.equal(normal.preload,'metadata');
+  assert.equal(core.connectionPolicy({effectiveType:'4g',downlink:10,online:false}).warmNext,false);
+  assert.equal(core.connectionPolicy({effectiveType:'4g',downlink:10,hidden:true}).warmNext,false);
+  assert.equal(core.connectionPolicy({effectiveType:'4g',downlink:10,dataSaver:true}).warmNext,false);
+});
+
+test('política de recuperação limita duas tentativas e respeita cooldown',()=>{
+  const gate=core.makeRecoveryBudget({maxAttempts:2,windowMs:120000,cooldownMs:15000});
+  assert.equal(gate.begin(1000),true);
+  assert.equal(gate.begin(2000),false);
+  assert.equal(gate.status(2000).cooling,true);
+  assert.equal(gate.begin(16001),true);
+  assert.equal(gate.status(33000).exhausted,true);
+  assert.equal(gate.begin(33000),false);
+  assert.equal(gate.begin(121001),true);
+  gate.reset();
+  assert.equal(gate.status(122000).count,0);
+});
+
+test('posição de recuperação nunca passa do final e ignora valores inválidos',()=>{
+  assert.equal(core.resumeTarget(120,240),120);
+  assert.equal(core.resumeTarget(300,240),239.75);
+  assert.equal(core.resumeTarget(NaN,100),0);
+  assert.equal(core.resumeTarget(-3,100),0);
+  assert.equal(core.resumeTarget(120,NaN),120);
+  assert.equal(core.resumeTarget(0,100),0);
+});
