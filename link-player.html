@@ -44,6 +44,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
 <script src="js/player-drive-diagnostics.js?v=1"></script>
 <script src="js/drive-health-core.js?v=1"></script>
 <script src="js/player-episode-core.js?v=1"></script>
+<script src="js/player-browser-core.js?v=1"></script>
 </head>
 <body>
 <header class="top">
@@ -55,7 +56,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
 <main class="main">
   <section class="stage-shell" id="stageShell">
     <div id="stage" class="stage">
-      <video id="video" playsinline preload="metadata"></video>
+      <video id="video" playsinline webkit-playsinline preload="metadata"></video>
       <div id="playerControls" class="player-controls" hidden>
         <div class="gesture-zone gesture-left" id="gestureLeft" aria-hidden="true"></div>
         <div class="gesture-zone gesture-right" id="gestureRight" aria-hidden="true"></div>
@@ -141,6 +142,8 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   const driveHealth=window.JOGAHUB_DRIVE_HEALTH?.createStore();
   const DRIVE_DIAGNOSTICS=window.JOGAHUB_DRIVE_DIAGNOSTICS;
   if(!DRIVE_DIAGNOSTICS)throw new Error('Módulo de diagnóstico do Drive não carregado');
+  const BROWSER_CORE=window.JOGAHUB_PLAYER_BROWSER_CORE;
+  if(!BROWSER_CORE)throw new Error('Compatibilidade do player não carregada');
   const EPISODE_CORE=window.JOGAHUB_PLAYER_EPISODE_CORE;
   if(!EPISODE_CORE)throw new Error('Núcleo de episódios não carregado');
   try{u=new URL(raw);if(!/^https?:$/.test(u.protocol))u=null}catch{} try{external=new URL(rawExternal);if(!/^https?:$/.test(external.protocol))external=null}catch{}
@@ -621,7 +624,21 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   $('driveModeBtn').onclick=async()=>{if(provider!=='iframe')return;if(mode==='enhanced'){localStorage.setItem(driveModeKey(),'compat');useDriveFallback()}else{localStorage.setItem(driveModeKey(),'auto');localStorage.setItem('jogahub.drive.playerMode','auto');clearDriveFail(currentItem?.driveFileId||'');$('driveModeBtn').disabled=true;try{await useDriveDirect(true,true)}catch(e){diagnoseDriveError(e?.driveIssue||'unknown');useDriveFallback(false)}finally{$('driveModeBtn').disabled=false}}};
   $('speed').value=String(settings.speed||1);$('speed').addEventListener('change',()=>{const rate=Number($('speed').value)||1;if(mode==='enhanced')video.playbackRate=rate;if(mode==='youtube'&&ytPlayer?.setPlaybackRate)ytPlayer.setPlaybackRate(rate);saveSettings({speed:rate})});video.addEventListener('volumechange',()=>saveSettings({volume:video.volume}));video.addEventListener('timeupdate',()=>saveProgress(false));video.addEventListener('pause',()=>saveProgress(true));video.addEventListener('ended',()=>{saveProgress(true);updateContinueText();startCountdown()});async function requestWake(){try{if('wakeLock'in navigator&&!wakeLock)wakeLock=await navigator.wakeLock.request('screen')}catch{}}function releaseWake(){try{wakeLock?.release?.()}catch{}wakeLock=null}video.addEventListener('play',requestWake);video.addEventListener('pause',releaseWake);video.addEventListener('ended',releaseWake);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&mode==='enhanced'&&!video.paused)requestWake();else if(document.visibilityState==='hidden'){saveProgress(true);releaseWake()}});document.addEventListener('freeze',()=>saveProgress(true));window.addEventListener('beforeunload',()=>saveProgress(true));window.addEventListener('pagehide',()=>{saveProgress(true);clearInterval(ytTicker);releaseWake();if(offlineObjectUrl)URL.revokeObjectURL(offlineObjectUrl)});
   function seek(delta){if(mode==='enhanced')video.currentTime=Math.max(0,Math.min(video.duration||Infinity,video.currentTime+delta));else if(mode==='youtube'&&ytPlayer?.seekTo)ytPlayer.seekTo(Math.max(0,getTime()+delta),true)}
-  $('rewindBtn').onclick=()=>seek(-10);$('forwardBtn').onclick=()=>seek(10);$('restartBtn').onclick=()=>{localStorage.removeItem(progressKeyNow());if(mode==='enhanced'){video.currentTime=0;video.play().catch(()=>{})}else if(mode==='youtube'&&ytPlayer){ytPlayer.seekTo(0,true);ytPlayer.playVideo()}updateContinueText()};$('fullBtn').onclick=async()=>{const target=stage;try{await (target.requestFullscreen||target.webkitRequestFullscreen)?.call(target);if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{})}catch{}};$('pipBtn').onclick=async()=>{if(mode!=='enhanced')return;try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled)await video.requestPictureInPicture()}catch{}};if(!document.pictureInPictureEnabled)$('pipBtn').style.display='none';
+  $('rewindBtn').onclick=()=>seek(-10);$('forwardBtn').onclick=()=>seek(10);$('restartBtn').onclick=()=>{localStorage.removeItem(progressKeyNow());if(mode==='enhanced'){video.currentTime=0;video.play().catch(()=>{})}else if(mode==='youtube'&&ytPlayer){ytPlayer.seekTo(0,true);ytPlayer.playVideo()}updateContinueText()};$('fullBtn').onclick=async()=>{
+    const result=await BROWSER_CORE.requestFullscreen(stage,video);
+    if(result==='document'&&screen.orientation?.lock){
+      try{await screen.orientation.lock('landscape')}catch{}
+    }
+    if(result==='unavailable')toast('Tela cheia indisponível neste navegador');
+  };
+  $('pipBtn').onclick=async()=>{
+    if(mode!=='enhanced')return;
+    if(!await BROWSER_CORE.togglePictureInPicture(document,video)){
+      toast('Picture-in-Picture indisponível neste navegador');
+    }
+  };
+  if(!BROWSER_CORE.pictureInPictureAvailable(document,video))$('pipBtn').style.display='none';
+  if(!BROWSER_CORE.fullscreenAvailable(stage,video))$('fullBtn').disabled=true;
   $('miniBtn').onclick=()=>{const on=stageShell.classList.toggle('mini');$('miniBtn').textContent=on?'▱ fechar mini':'▱ mini';if(on)document.body.classList.remove('cinema')};$('cinemaBtn').onclick=()=>{const on=document.body.classList.toggle('cinema');stageShell.classList.remove('mini');$('miniBtn').textContent='▱ mini';$('cinemaBtn').textContent=on?'◑ sair cinema':'◐ cinema'};$('backBtn').onclick=()=>{if(history.length>1)history.back();else location.href='index.html'};
   let controlsLocked=false;
   const lockBtn=$('lockBtn'); if(lockBtn) lockBtn.onclick=()=>{controlsLocked=!controlsLocked;document.body.classList.toggle('controls-locked',controlsLocked);lockBtn.textContent=controlsLocked?'🔓 desbloquear':'🔒 bloquear'};
