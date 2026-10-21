@@ -3,8 +3,8 @@
  */
 (function(root) {
   'use strict';
-  const COMPATIBLE_NAME = /\.(?:mkv|avi|wmv|flv|mov)(?:$|[?#])/i;
-  const COMPATIBLE_MIME = /matroska|x-msvideo|quicktime|x-ms-wmv|x-flv/i;
+  const COMPATIBLE_NAME = /\.(?:mkv|avi|wmv|flv|mov|ts|m2ts|mpeg|mpg|3gp)(?:$|[?#])/i;
+  const COMPATIBLE_MIME = /matroska|x-msvideo|quicktime|x-ms-wmv|x-flv|mp2t|mp2p|mpeg|3gpp/i;
 
   function needsCompatiblePlayer(name='', mime='') {
     return COMPATIBLE_NAME.test(String(name || '')) || COMPATIBLE_MIME.test(String(mime || ''));
@@ -17,7 +17,9 @@
     const ext=String(name||'').split(/[?#]/)[0].toLowerCase();
     if(/\.webm$/.test(ext))return 'video/webm';
     if(/\.og[vg]$/.test(ext))return 'video/ogg';
-    return 'video/mp4';
+    if(/\.(mp4|m4v)$/.test(ext))return 'video/mp4';
+    // Não presumir MP4 quando o arquivo não declara um formato reconhecido.
+    return '';
   }
 
   function makeSession() {
