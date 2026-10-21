@@ -24,6 +24,8 @@ on:
       - 'tools/test-player-offline-manager.mjs'
       - 'tools/test-player-drive-routes.mjs'
       - 'js/player-drive-core.js'
+      - 'js/player-drive-reconnect.js'
+      - 'tools/test-player-drive-reconnect.mjs'
       - 'js/player-media-qa.js'
       - 'js/player-browser-core.js'
       - 'js/player-drive-diagnostics.js'
@@ -68,6 +70,8 @@ on:
       - 'tools/test-player-offline-manager.mjs'
       - 'tools/test-player-drive-routes.mjs'
       - 'js/player-drive-core.js'
+      - 'js/player-drive-reconnect.js'
+      - 'tools/test-player-drive-reconnect.mjs'
       - 'js/player-media-qa.js'
       - 'js/player-browser-core.js'
       - 'js/player-drive-diagnostics.js'
@@ -106,6 +110,7 @@ jobs:
           node --check js/catalog-core.js
           node --check js/navigation-core.js
           node --check js/player-drive-core.js
+          node --check js/player-drive-reconnect.js
           node --check js/player-drive-routes.js
           node --check js/player-offline-manager.js
           node --check js/player-app.js
@@ -126,6 +131,9 @@ jobs:
 
       - name: Validar Drive Engine e recuperação do player
         run: node --test tools/test-player-drive-core.mjs
+
+      - name: Validar recuperação ao reconectar o Drive
+        run: node --test tools/test-player-drive-reconnect.mjs
 
       - name: Validar diagnósticos de falha do Drive
         run: node --test tools/test-player-drive-diagnostics.mjs
