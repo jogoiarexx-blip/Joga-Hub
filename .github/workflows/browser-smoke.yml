@@ -46,8 +46,8 @@ jobs:
           node-version: '22'
       - name: Instalar Playwright
         run: npm install --no-audit --no-fund
-      - name: Instalar navegador Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Instalar Chromium, Firefox e WebKit (Safari)
+        run: npx playwright install --with-deps chromium firefox webkit
       - name: Preparar vídeo de teste MP4 e WebM
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1; then
