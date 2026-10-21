@@ -24,7 +24,8 @@ test('intervalos buscáveis descontínuos são informativos, não sobrepostos',(
   assert.equal(qa.rangeInfo(null,80).count,0);
 });
 test('diagnóstico separa busca confirmada, pendente e sem confirmação',()=>{
-  assert.equal(qa.seekResult({target:90,actual:90.1}).state,'ok');
+  assert.equal(qa.seekResult({target:90,actual:90.1,seeked:true}).state,'ok');
+  assert.equal(qa.seekResult({target:90,actual:90.1}).state,'pending');
   assert.equal(qa.seekResult({target:90,actual:0,seeking:true,elapsedMs:100}).state,'pending');
   assert.equal(qa.seekResult({target:90,actual:0,elapsedMs:9000,timeoutMs:8500,seekable:{count:0}}).state,'timeout');
   assert.equal(qa.seekResult({target:90,actual:0,elapsedMs:9000,timeoutMs:8500,seekable:{count:1,includesTarget:false}}).state,'unavailable');
