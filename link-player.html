@@ -598,10 +598,11 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
   function resetSeekWatch(){
     seekTicket++;if(pendingSeek){clearTimeout(pendingSeek.timer);pendingSeek=null}
   }
-  function finishSeekWatch(){
+  function finishSeekWatch(event){
     if(!pendingSeek)return;
+    if(event?.type==='seeked')pendingSeek.confirmed=true;
     const elapsed=performance.now()-pendingSeek.started;
-    const result=MEDIA_QA.seekResult({target:pendingSeek.target,actual:video.currentTime,
+    const result=MEDIA_QA.seekResult({target:pendingSeek.target,actual:video.currentTime,seeked:pendingSeek.confirmed,
       seeking:video.seeking,elapsedMs:elapsed,timeoutMs:pendingSeek.timeout,
       seekable:MEDIA_QA.rangeInfo(video.seekable,pendingSeek.target)});
     if(result.state==='pending')return;
@@ -622,7 +623,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     if(target===null||video.readyState<1)return;
     resetSeekWatch();
     const token=seekTicket;
-    pendingSeek={target,started:performance.now(),timeout:driveConnectionPolicy().timeout,
+    pendingSeek={target,confirmed:false,started:performance.now(),timeout:driveConnectionPolicy().timeout,
       timer:setTimeout(()=>{if(token===seekTicket)finishSeekWatch()},driveConnectionPolicy().timeout+60)};
     seekHealthLabel='Verificando avanço…';
     const notice=$('seekHealthNotice');if(notice)notice.hidden=true;
@@ -633,7 +634,7 @@ body.cinema{background:#000}body.cinema .top,body.cinema .info,body.cinema .seri
     }
     // seeked pode disparar antes de a imagem estar pronta; confirmamos só o relógio,
     // sem afirmar que todos os frames ou o áudio foram decodificados.
-    queueMicrotask(()=>{if(token===seekTicket)finishSeekWatch()});
+    // Alterar currentTime sozinho não confirma uma busca; o evento seeked confirma.
   }
   ['seeked','timeupdate','playing'].forEach(ev=>video.addEventListener(ev,finishSeekWatch));
   seekBar.addEventListener('input',()=>{
