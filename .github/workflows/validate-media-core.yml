@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'js/drive-media-policy.js'
       - 'js/drive-sync.js'
       - 'js/drive-snapshot.js'
       - 'js/app.js'
@@ -22,6 +23,7 @@ on:
       - 'js/player-episode-core.js'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/test-drive-media-policy.mjs'
       - 'tools/test-player-drive-core.mjs'
       - 'tools/test-player-browser-core.mjs'
       - 'tools/test-player-drive-diagnostics.mjs'
@@ -34,6 +36,7 @@ on:
       - '.github/workflows/validate-media-core.yml'
   pull_request:
     paths:
+      - 'js/drive-media-policy.js'
       - 'js/drive-sync.js'
       - 'js/drive-snapshot.js'
       - 'js/app.js'
@@ -51,6 +54,7 @@ on:
       - 'js/player-episode-core.js'
       - 'tools/google-drive-sync.gs'
       - 'tools/test-drive-core.mjs'
+      - 'tools/test-drive-media-policy.mjs'
       - 'tools/test-player-drive-core.mjs'
       - 'tools/test-player-browser-core.mjs'
       - 'tools/test-player-drive-diagnostics.mjs'
@@ -84,6 +88,7 @@ jobs:
           node --check js/data-links.js
           node --check js/data-filmes.js
           node --check js/launcher-upgrade.js
+          node --check js/drive-media-policy.js
           node --check js/drive-sync.js
           node --check js/tv-catalog.js
 
@@ -121,6 +126,9 @@ jobs:
 
       - name: Validar filtros e navegação isolados
         run: node --test tools/test-navigation-core.mjs
+
+      - name: Validar formatos de vídeo, legendas e chaves compartilhadas
+        run: node --test tools/test-drive-media-policy.mjs
 
       - name: Validar catálogo e parser do Drive
         run: node tools/test-drive-core.mjs
