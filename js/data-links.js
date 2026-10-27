@@ -35,6 +35,18 @@
 
 const LINK_ITEMS = [
   {
+    id: 'driver-2-three-js',
+    type: 'jogo',
+    title: 'Driver 2 — Three.js',
+    genre: 'Direção / Ação / Mundo aberto 3D',
+    category: 'corrida',
+    accent: 'var(--brand-orange)',
+    desc: 'Jogo de direção 3D inspirado em Driver 2, com missões e exploração de cidades. Projeto de fã não oficial.',
+    url: 'https://jogoiarexx-blip.github.io/Driver-2-Three-js/',
+    installable: false,
+    embed: false
+  },
+  {
     id: 'asfalto-brutal',
     type: 'jogo',
     title: 'Asfalto Brutal',
