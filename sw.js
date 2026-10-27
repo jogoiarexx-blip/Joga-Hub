@@ -1,4 +1,4 @@
-const SHELL = 'jogahub-1.4.7-shell';
+const SHELL = 'jogahub-1.4.8-shell';
 const CONTENT = 'jogahub-1.3.2-content';
 const MEDIA = 'jogahub-offline-media-v1';
 
@@ -25,7 +25,7 @@ const SHELL_FILES = [
   './css/tv-catalog.css?v=144',
   './css/drive-health.css?v=1',
   './js/data-jogos.js?v=40',
-  './js/data-links.js?v=50',
+  './js/data-links.js?v=51',
   './js/data-arcana.js?v=3',
   './js/data-filmes.js?v=139',
   './js/data-drive-filmes.js?v=7',
